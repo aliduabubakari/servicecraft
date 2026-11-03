@@ -1,0 +1,303 @@
+{
+  "type": "object",
+  "required": [
+    "schema_version",
+    "pipeline_id",
+    "benchmark_revision",
+    "review_status",
+    "title",
+    "domain",
+    "family_id",
+    "topology",
+    "inputs",
+    "tasks",
+    "artifacts",
+    "dependencies",
+    "rq1_policy",
+    "reference",
+    "numeric_tolerance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "inlumen.benchmark.task-graph@2"
+    },
+    "pipeline_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benchmark_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_status": {
+      "enum": [
+        "author_review_pending",
+        "reviewed"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "family_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "topology": {
+      "enum": [
+        "linear",
+        "parallel",
+        "fan_in",
+        "fan_out",
+        "fan_in_fan_out",
+        "linear_to_fan_in",
+        "linear_to_fan_out"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "format",
+          "required_columns"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "format": {
+            "const": "csv"
+          },
+          "required_columns": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "operation",
+          "required",
+          "inputs",
+          "outputs",
+          "requirements",
+          "parameters"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "operation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required": {
+            "const": true
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "requirements": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "parameters": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "format",
+          "required_columns"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "format": {
+            "enum": [
+              "csv",
+              "json",
+              "pkl"
+            ]
+          },
+          "required_columns": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "kind",
+          "artifacts"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "const": "data"
+          },
+          "artifacts": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rq1_policy": {
+      "type": "object",
+      "required": [
+        "task_matching",
+        "allow_split_or_merge",
+        "exact_node_count_required",
+        "data_edges_require_artifact_binding",
+        "unknown_semantics"
+      ],
+      "properties": {
+        "task_matching": {
+          "const": "reviewed_semantic_mapping"
+        },
+        "allow_split_or_merge": {
+          "const": true
+        },
+        "exact_node_count_required": {
+          "const": false
+        },
+        "data_edges_require_artifact_binding": {
+          "const": true
+        },
+        "unknown_semantics": {
+          "const": "unassessed_not_pass"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "entrypoint",
+        "task_functions"
+      ],
+      "properties": {
+        "entrypoint": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_functions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "numeric_tolerance": {
+      "type": "object",
+      "required": [
+        "atol",
+        "rtol"
+      ],
+      "properties": {
+        "atol": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rtol": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InLumen pilot sequential task/dependency graph; evaluator-owned"
+}

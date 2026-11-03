@@ -1,0 +1,608 @@
+{
+  "schema_version": "servicecraft.prompt-manifest@1",
+  "template_version": "servicecraft.task-prompt@2",
+  "renderer_sha256": "fb0c99f8d1b35ce1d61c224cdde71dfa6b09e598b17d293aa3c4daea56380ae2",
+  "case_count": 100,
+  "cases": [
+    {
+      "case_id": "001_analytics_statistical_cleaning_integration",
+      "description_sha256": "ca5b28129fd8c647ea71247fee8be1879eb2c86b6317dbcbfe4b72bfb346d359",
+      "input_inventory_sha256": "20b30b8c3681cc6cceba16aff7f5b3e685f175d068ac4fd5362039ef485ffe50",
+      "prompt_sha256": "bcea3ef00963880a8d91679a23f2c7c8562a124bedb87bea767b07d111d97c29"
+    },
+    {
+      "case_id": "002_analytics_statistical_integration",
+      "description_sha256": "476b68ddd4293d5a1a91a537446cd7cf25bbfbf8b8795cedd533dd280e4a96df",
+      "input_inventory_sha256": "70686b49a74343863549dda2b2940544c7f3f31baf21da6c0d57519b4a4ca961",
+      "prompt_sha256": "57f33922bbffad76075220817babea210d778da1039f5f64a6c3adf8b3ddcb48"
+    },
+    {
+      "case_id": "003_credit_risk",
+      "description_sha256": "52e70dbe3815b849a416fdea0782cc81695a083ca497990a51c0a537f72df323",
+      "input_inventory_sha256": "ddcfb7731d6900a9452c7716075bf6f2ea1a22648fb73b4dc60a27c9576cea11",
+      "prompt_sha256": "650f1cda6de8eb098be380bf55f613b875eedc24a1980b605604e555d72c1446"
+    },
+    {
+      "case_id": "004_customer_churn",
+      "description_sha256": "d58887b46f0afc6dc5aafcd33eac16be2ef37457e9d04aae0bac6c1a8919eb76",
+      "input_inventory_sha256": "7012ecbf52be4b53cddceba02b600dc8f5214d02e301a207eb3706528af7c020",
+      "prompt_sha256": "d15bc6c3d662d4412e367b356ee9a1de85f5adb3f03d4459d54be287825a5669"
+    },
+    {
+      "case_id": "005_demand_forecasting",
+      "description_sha256": "8014b54788bf1c2922f534f0e65e110493a2c646343cad5b73b8e67828a57594",
+      "input_inventory_sha256": "34ea4ba6d77ccbac76eca1bb904c8f74c6784cf429acc76c1f986aacd897bf9c",
+      "prompt_sha256": "fd40e89904a2a72cae7a95fc351ff5ceb0212f1e78a5f4e0bd26c0fbf2f17d27"
+    },
+    {
+      "case_id": "006_ecommerce_recommendation",
+      "description_sha256": "87c064fd31bea95929de3edd2ec077e4371ffdaee920c98ba61d71afebcb43d8",
+      "input_inventory_sha256": "9b32f5c6623e4718689b6134358a1e4e69726a3b928ea007be1b3199785e6a7b",
+      "prompt_sha256": "a4b853d76436f4e8c7c286daf36814b175ed7097b3ae1908e70b5fe05a1a4bff"
+    },
+    {
+      "case_id": "007_employee_attrition",
+      "description_sha256": "a64346fccc6ddc7e189b16f9993d2f7b59a567123b5a63aaca33614c676846eb",
+      "input_inventory_sha256": "745f437069091c7ddf14e7ab8d28993ba95102cd4a422e77ffb9b6f086be91e9",
+      "prompt_sha256": "1f5b7f70ef5c40cf6c6daea46121d1ff812f8ae1eae118f646217346fb083f88"
+    },
+    {
+      "case_id": "008_energy_forecasting",
+      "description_sha256": "00bf6ee1b2ac1c875236dad7b2bcb7bf07e5a489162318db2e8afdbde5a44421",
+      "input_inventory_sha256": "0ecd8e36b1a8272cae7db5d87dad5721f80236e7dcb15ecf1686d2ca714d1295",
+      "prompt_sha256": "5bba168ebcd6ebb1157d40f8179c5b69f2a8f876868b29a966df9ac73faaa9e3"
+    },
+    {
+      "case_id": "009_healthcare_readmission",
+      "description_sha256": "c0a8381bae2f268ce4a67bbccc8acfb57cb621339adfb0f0b6cbfbb1753030fa",
+      "input_inventory_sha256": "cf8de35c84d8acb68fb5451f7a8d9d40951744d95e1ab9076b0990afe789da13",
+      "prompt_sha256": "01b4990964cb42c30c73684e1980274483d64f37b6985c36ed2ac5792f1f49c1"
+    },
+    {
+      "case_id": "010_hr_regression_visualization_integration",
+      "description_sha256": "deec0bb6528f23870ba6208e7d54801eb8d633de6c84999d7358193ad0b72386",
+      "input_inventory_sha256": "eccac543c9439bdb6b360f19f70ccae0339c582d5b6ede9762e8bef562c3e805",
+      "prompt_sha256": "4b9ce57a98b52c48a19c03bd5fa28547d89087c331b2bb8bcc6aeabe32aadeb1"
+    },
+    {
+      "case_id": "011_hr_visualization_integration_validation",
+      "description_sha256": "fba8cd6ed6aa4bb4e2f436b8e0f18bdd3db72c2ad56cd3f9502fc58ec767e3a2",
+      "input_inventory_sha256": "51f5ada08604119551b01e5e686dcf60a230eb1520a2f71526c15f39c2eabd99",
+      "prompt_sha256": "dffe90b422273d5073ef62d3a106d45cfe9a21366682f476efaf5bcf04399dca"
+    },
+    {
+      "case_id": "012_insurance_claims",
+      "description_sha256": "99af0768d1bb2f2507116c253dc0c49dd64971fc09252df95f30905d219158c8",
+      "input_inventory_sha256": "fea16629a8f1cd7013139b6e7d1cff5cab996ae902584cf79f09557412f11552",
+      "prompt_sha256": "642a27fa2d61b99ef93a07f4adff24a6af1405f4cf990af830427821fb52eeec"
+    },
+    {
+      "case_id": "013_predictive_maintenance",
+      "description_sha256": "944faa477cff5899339a1498ed11d054fe243fc302930ef08672327372847bc4",
+      "input_inventory_sha256": "fbe1ad856bf815e6521d5f47098249281a35e752948f84f323cbdb4b42a44901",
+      "prompt_sha256": "ac14d2cfc3b4b476825f5e4aefe96483d615cda36f3b2c0a2a3d72886bea7777"
+    },
+    {
+      "case_id": "014_sports_clustering_integration_validation",
+      "description_sha256": "88123dbb2203a736e27d67651f8e6732c56a3de9f25baf7ca5a891dc7f6993fe",
+      "input_inventory_sha256": "47f0b68cfeef928f376d818c9489c61dbf8d93c305a0c4af6fc7aa627ad25158",
+      "prompt_sha256": "d9ecdd0fc658f01a8cfbb7d8cfb6118523fc205eab29264cd9fbd8d6822790c0"
+    },
+    {
+      "case_id": "015_sports_clustering_prediction_statistical",
+      "description_sha256": "fc97c027a1c75e3c8f7d640d612655c91de3695b9c68b07b494315862e69c43e",
+      "input_inventory_sha256": "a58d2c7424571ed7d79e26dd26a7a2a4259b31bd603d7d765406cd02a159942e",
+      "prompt_sha256": "00a47001e73dfb2ebffb926e2e7516b4c25fa634e2e1b3c7cbb0e42be7d2e051"
+    },
+    {
+      "case_id": "016_sports_clustering_prediction_visualization",
+      "description_sha256": "e8d3d09f3f77bfe0ebb40f30314c5623f995626dbcb377191c5239b127162b23",
+      "input_inventory_sha256": "ef032f4b24015ca6d383746031a957638f7e2020285cf566b4d8f1fabf6e025e",
+      "prompt_sha256": "6a18c6f43b404a296cb9334e4e355fa75e589be4eaf44058c4195cf9f7290494"
+    },
+    {
+      "case_id": "017_sports_clustering_statistical_visualization",
+      "description_sha256": "245079a385be8214bb10be1dc053a6e3c51c9668d4f55c6586cf1a6c18d1a745",
+      "input_inventory_sha256": "ed96bf966ba439e4bb6bd785cb3317e1d587f4bd9c29daaa7370206e2f96e18a",
+      "prompt_sha256": "3eb10567dbcb05dd5361332da4ba2bfe5a9d1a3495a209514b659cfe0daedcac"
+    },
+    {
+      "case_id": "018_sports_clustering_visualization_integration",
+      "description_sha256": "c77844d9105ddb0cfc699c8b1596281c723e6526627a5ca7f4d5aae4bf2f0347",
+      "input_inventory_sha256": "47f0b68cfeef928f376d818c9489c61dbf8d93c305a0c4af6fc7aa627ad25158",
+      "prompt_sha256": "5a044b08275ea5738609a55b3cd5922f43ac5f0f119d024e344c94a75b360e8e"
+    },
+    {
+      "case_id": "019_sports_prediction_cleaning_integration",
+      "description_sha256": "9907f86ed4341c1ff5546f18bb886f23f17dce7bd0e28d49f263b87faa25cb03",
+      "input_inventory_sha256": "0644afc966c76034bbe11b3b2a5650ef90ddc581cc8ff4f1abc1585abca5bad4",
+      "prompt_sha256": "332a22e8967880a6e4465858fb54c7f9afddb9f23da47dda8605cd31b3b539fe"
+    },
+    {
+      "case_id": "020_sports_prediction_statistical_visualization",
+      "description_sha256": "eff56d928a13cdd50570933ae4a4a6a3c61c0bc0482f4979c36a3c9b890e1725",
+      "input_inventory_sha256": "9e871bc13e14312c36db774843e2b338fe29f5911d59612de3a4a946e2335fc7",
+      "prompt_sha256": "0144c8b36cd14b13a6537f1dd95f053743d36a89483571ee9b567601c492867f"
+    },
+    {
+      "case_id": "021_sports_prediction_statistical_visualization_v2",
+      "description_sha256": "060d9f1ff0a6ef547664d169493471ee55c71cf56a63b4863c661cbcfcdfc201",
+      "input_inventory_sha256": "9e871bc13e14312c36db774843e2b338fe29f5911d59612de3a4a946e2335fc7",
+      "prompt_sha256": "d5d481b8b280cfb5cc8993bc4a2df4f20fb1588b46151e4d0bc7abbc1e047c60"
+    },
+    {
+      "case_id": "022_sports_prediction_visualization_cleaning",
+      "description_sha256": "ef161e2f1764d1b24522f45cbdc81ab8afdd9016138c0a1b4610dac130b11a9b",
+      "input_inventory_sha256": "0644afc966c76034bbe11b3b2a5650ef90ddc581cc8ff4f1abc1585abca5bad4",
+      "prompt_sha256": "7704fea027c49d31d8a6361a4205558d127f9122c4959a4888e618d5b63e867f"
+    },
+    {
+      "case_id": "023_sports_regression_clustering_visualization",
+      "description_sha256": "bd0ca7af1e1edf5404925dbe9ed95c76cf6a5c73b8596298d55eb9b2e052cd77",
+      "input_inventory_sha256": "a02f83430eae027e885c20156cdb8ba3a6eb284eb40e9835f9f276c4a1d31d92",
+      "prompt_sha256": "238bbe3a4571aee82748c93c1b20c4d0a678e2bef2b72c1789d000d6120c660f"
+    },
+    {
+      "case_id": "024_sports_regression_prediction_statistical",
+      "description_sha256": "09d18ff4f44d18075fd0a57a001335e7852557f1f51f3e75542ad2c2061e8398",
+      "input_inventory_sha256": "e678c7118540863d37c3420ce245fbc7e7b5052983a725df894c73c3eb954d2e",
+      "prompt_sha256": "fce9452112b257f30148c8612f34f64eaf7a06790b1b8fde684dd369244948fa"
+    },
+    {
+      "case_id": "025_sports_regression_prediction_statistical_v2",
+      "description_sha256": "96d8b8261cad5fe12f25ed77ab0ebf65bcb9e2c2862b0dadd78aae7bbfd19e11",
+      "input_inventory_sha256": "e678c7118540863d37c3420ce245fbc7e7b5052983a725df894c73c3eb954d2e",
+      "prompt_sha256": "5ffad4443880ae48820424d31f4d4482c91b4227105aac359fa66f2fc2fc84c1"
+    },
+    {
+      "case_id": "026_sports_regression_prediction_statistical_v3",
+      "description_sha256": "7ec0a2027b4f5cc2ac9d2fd3c46d69f6b49d8f6ef806145cb3018a21f2bb61b6",
+      "input_inventory_sha256": "e678c7118540863d37c3420ce245fbc7e7b5052983a725df894c73c3eb954d2e",
+      "prompt_sha256": "d137c42124527fa9c9417052885ac70e8a08adf20ee28898a73b44f978ae472b"
+    },
+    {
+      "case_id": "027_sports_regression_prediction_visualization",
+      "description_sha256": "9aefc2224bf84b15a2fa8c52ab8e9d0ec068c8a5587c77460fb37c5dee4d1adb",
+      "input_inventory_sha256": "3acae35c246acd22dbb95bbd160eb42a0298c546c685452c02096cf7dd06fe85",
+      "prompt_sha256": "9b91baac17d21caadc557dea2cdfffc00faca8c75a775778ea16059eb1c59b8c"
+    },
+    {
+      "case_id": "028_sports_regression_prediction_visualization_v2",
+      "description_sha256": "c66b40b96182c62669a8533a9cf43bf1daee56c03b6881154fe9ff72d85231d5",
+      "input_inventory_sha256": "3acae35c246acd22dbb95bbd160eb42a0298c546c685452c02096cf7dd06fe85",
+      "prompt_sha256": "db13cde40323d3a9d073858836d632bf71494dd2205767aa1adeaa1c3e3a2dd3"
+    },
+    {
+      "case_id": "029_sports_regression_statistical_visualization",
+      "description_sha256": "1f2e62ea569db6fdab1df168c30dc1f7e0b2b0801deae86041e9bc0238c238cd",
+      "input_inventory_sha256": "1de11342971ca0e433bd6298ccbe7d41004efd7434fd84402fe2f0c32445acf3",
+      "prompt_sha256": "1cfe711a976ae0577a18491e88ac908fe21673c360d02285fd4f35b57e554c79"
+    },
+    {
+      "case_id": "030_sports_statistical_cleaning",
+      "description_sha256": "a33154b2d6bd068da88736425da921542ed9d27d7caa284e45f3f4cbfbb43114",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "194350ba509840593f917f954c91dcc5e36a61ee8d989afca521c9ac05b87bd1"
+    },
+    {
+      "case_id": "031_sports_statistical_cleaning_integration",
+      "description_sha256": "2392a512a18ec7f429e5408300484539103492f0a206cd40bc72e7e331030afc",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "9aad5ba41394a2b196d8adc130db869118dbcb576624d6d25bcd601201b55d27"
+    },
+    {
+      "case_id": "032_sports_statistical_cleaning_integration_v2",
+      "description_sha256": "3bacd8f27b81e3903d1efb256eef2abd9636fcb45ac45971de83075a77ed7530",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "07864b877d65df54abaef79d92fbe1a0982911f55c96ccf786ca4077e84fc798"
+    },
+    {
+      "case_id": "033_sports_statistical_cleaning_integration_v3",
+      "description_sha256": "84de8d44006ceb0a9ff671ea4952237ae964146cad27719367b220f2a93e3782",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "ee37335e66796bd06517e30f3421765ba8bc123b5677630ed76168130b17fc13"
+    },
+    {
+      "case_id": "034_sports_statistical_cleaning_integration_v4",
+      "description_sha256": "bc6aab64e60cb39bb51ab7b6918c3eeac9920fff8612b6241bc264612231a396",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "76cb1557ab04135c61bbc7e5c90d138b448303d523e29c257280c4ad0e5250cf"
+    },
+    {
+      "case_id": "035_sports_statistical_cleaning_integration_v5",
+      "description_sha256": "2b5192234e778375c49f7cda8cc6405a958457ed642897f564d06880714ddd86",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "be82c1283c226a44e231ec71c097e3d299567130ca887dc870224b09bf9057b3"
+    },
+    {
+      "case_id": "036_sports_statistical_cleaning_validation",
+      "description_sha256": "4ffd1bd058e592501d01e54eb4b2b18e8e1c13c92a53e14598a5b2f986f3a250",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "14fdaf47de1f29c04b9b4823355fecfc57154066bd70a9fdc7c38bdbe1d15958"
+    },
+    {
+      "case_id": "037_sports_statistical_integration",
+      "description_sha256": "81ab054a7773d53591da992907958b9a675eb61f450682a88876a23bbf930268",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "a3ad91d96f6c5d2a69c5ffcf998102376173daeb99368b65d3da088aeab873e0"
+    },
+    {
+      "case_id": "038_sports_statistical_integration_v2",
+      "description_sha256": "ebd541504e59b2f84f6a80a86c1917900f1ee56b9a1cb198a7c2e692c693b000",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "a7283ecab9c3fa119cab6ce6a1397338cbe4f094f21959ddc91ff3485cf3b7e5"
+    },
+    {
+      "case_id": "039_sports_statistical_visualization_cleaning",
+      "description_sha256": "a23affc980ca23ff61e25af7f34f60d35ec4b63bf712767e5473be4a2985ba5b",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "33c8753613af0df5b92a0e14d015786c85fe9232f35882cefce7a71e0003f520"
+    },
+    {
+      "case_id": "040_sports_statistical_visualization_cleaning_v2",
+      "description_sha256": "6a98b6ba4ab1eb0573c1d433c8e2a70a2e22b0e2a03e804276f9f165455bb64e",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "7337c9c3fbf0fa36abe04794934c1a502bd916dc9a2865b2574cc683736b18f1"
+    },
+    {
+      "case_id": "041_sports_statistical_visualization_integration",
+      "description_sha256": "d727875744f046d18804b96204239d0e0d2bb27510fffb7aeb0192f645819308",
+      "input_inventory_sha256": "9fe76b786f9a75734ca6d1e2997c8b6959142acd4435a848438ce47d842c468e",
+      "prompt_sha256": "913e01754bf26d2e8953e63ce99b5a1b492e7e62ca41e9fd15ad7c69e3f637f8"
+    },
+    {
+      "case_id": "042_sports_validation_recovery",
+      "description_sha256": "c327dd32527d5f0ff1c7f3706b6444cf173661a27135e4067b76b0ea4383712a",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "3ecbea6c565654105e7391c674a98ab8a27610e3d728fc3d9836e31e438152e2"
+    },
+    {
+      "case_id": "043_sports_visualization",
+      "description_sha256": "ab2efa6dcf4169e0d6e7d54a667bb46fd6d09466f934d6efd545b52b4b013f3b",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "ca24bfe1b70f49dd7e178849e74bfedf95b52746f4660ad6f94c6ff153520049"
+    },
+    {
+      "case_id": "044_sports_visualization_cleaning_integration",
+      "description_sha256": "bec6a2a8b669323171a52e58466ce0951f9fcd35b2bfe32d18bc12deb338e577",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "57582908247f80abbc7d0d48931d22a06e0f6f45374876b5d6965ff56b954e7f"
+    },
+    {
+      "case_id": "045_sports_visualization_cleaning_recovery",
+      "description_sha256": "09c2ceafe77b478551806c7ebbf4b72dd86bc0f3a5136e3f96977b6c7aa91953",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "df184c2c8ab6c2251002407b44e8162655db44a4bbb9d2ae12a4034f55ad1865"
+    },
+    {
+      "case_id": "046_sports_visualization_cleaning_recovery_v2",
+      "description_sha256": "57d12b0b8adc001cac05248c6439ba665f14594386e5610e2173e68b402a86bb",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "149207cc0be195c212f67f565f3bc9a5313be5de1a4c48d5d7536095e047bee3"
+    },
+    {
+      "case_id": "047_sports_visualization_integration_features",
+      "description_sha256": "1fbbd49bf93db35c0527a70533f375d3701c1683bf087acfc079bf90bda72817",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "44771553b2679cad9c8939653a30e09b112441990e30998fea1ffff828644cfe"
+    },
+    {
+      "case_id": "048_sports_visualization_integration_geospatial",
+      "description_sha256": "6a163ef9703684a0c2886facc1f29ec09b8a478769ba866544cbccf74cd63d4a",
+      "input_inventory_sha256": "a5b587c211a45124ac0b37daeb33a3c8e8d1943a0711272b39e0c7302c06ab5d",
+      "prompt_sha256": "4d0b2c091097764daa2fcbc44bd385275731bc8049b4ea57300dba41087c98f8"
+    },
+    {
+      "case_id": "049_sports_visualization_integration_recovery",
+      "description_sha256": "f884cb4c1923324d3ac6ea6de0e4ff2fd418e7387a8e6ae7b40d5783c6f4a605",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "2bd311f16e278acf89d47ee0c30ac7fb4677c91a1fdcfcbfdec44970b5c3f336"
+    },
+    {
+      "case_id": "050_sports_visualization_integration_recovery_v2",
+      "description_sha256": "c4c436760634f5e5f35a8d9fa6d91c2360cf6097f358365962aa52c0f22ce319",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "2eb13afe935dbfa5a7b46341dc065a4b46127ad92cabb3000812f20a4b9f4a3f"
+    },
+    {
+      "case_id": "051_sports_visualization_integration_validation",
+      "description_sha256": "902c723d1ed7583089b025bc1c7dbdfcf7047fde2aedd5ea894303e2f7bbbadb",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "6293ab08b439cfd3f5e2adb623ba3fd4bff601511c1885bb57be21912d0203c4"
+    },
+    {
+      "case_id": "052_sports_visualization_integration_validation_v2",
+      "description_sha256": "6f7e74a7a275c179883dcf2e24a747a31944b9a1a8138aa8dab280688161a66d",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "aca7cabbeea5a3daafbc00c47536afe8cd5a3ea659674c77a8a2cc3ee31d8ff4"
+    },
+    {
+      "case_id": "053_sports_visualization_validation_recovery",
+      "description_sha256": "db4b405424cf1da3e192d64df96c9224e41529628512da0994310badad251887",
+      "input_inventory_sha256": "df34344b2664d4445eaefe39d7173c3fb5809234736f4321c9a424e6f136145e",
+      "prompt_sha256": "d200ade9400de1aa72af5e1be709649a4c2ce5f5b2577b51eb82edadc0a08644"
+    },
+    {
+      "case_id": "054_student_performance",
+      "description_sha256": "8dc859dd9443e6e6333461c275cb3f57beaa27c340880a4303191be4f28922e5",
+      "input_inventory_sha256": "6c493640475d5a2b03c0f23be1503902949b5e03acc505f92c25d8fa36d22944",
+      "prompt_sha256": "9f1e56387f19712b29cbdaa779f14dd68e5c8f9fa44d4c8a9645d5c98904fd19"
+    },
+    {
+      "case_id": "055_transportation_analysis",
+      "description_sha256": "704a3fa585cd0a8597094ea1e1b0ca6c2e6202e8e1fd4bfe81b45ee06efeb148",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "058ae52b9a72071f5a6fa431e793da257d806056a81b7bc2b6bae1c3d3b317b8"
+    },
+    {
+      "case_id": "056_transportation_cleaning",
+      "description_sha256": "dfef27629b4f1669013a584bb9551ff208d23da2ea312b27102c8b45e96b51dc",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "9b655ff663061da9426642e14c664c01bd6ed4693eef480c8b03d116ef65160b"
+    },
+    {
+      "case_id": "057_transportation_cleaning_integration",
+      "description_sha256": "5ed824235a7397f323029b4240adbafb989f0b843eedfef8e2228ae87c420287",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "1a578f2d2f360656cddf7c9bf3e03d399a23c9b20ae9ff681579fbe04f3ff12d"
+    },
+    {
+      "case_id": "058_transportation_cleaning_integration_geospatial",
+      "description_sha256": "8c4ef0e14c9f00de81d3308c147c89dc7074efed7a9bbd9334111cb216cf71e0",
+      "input_inventory_sha256": "c0d770a564a419cfa1c8de566145b3718399fcd36d7a3e477a9b6c4472540781",
+      "prompt_sha256": "2e80e443160d02c33e0fac30e96c4d453df9ea3d13fc094bcb2112afb6a05dc5"
+    },
+    {
+      "case_id": "059_transportation_cleaning_integration_recovery",
+      "description_sha256": "917701a498355ecdbe14cd99ec3c313a96a1825477d6eefaeb9b24bfb1abb505",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "0c99bbf9748950eed050f665350ca0eb2dbcf69372209e7c9bf4133f6f21d5ed"
+    },
+    {
+      "case_id": "060_transportation_cleaning_integration_validation",
+      "description_sha256": "ce4907f32b4289473d344de0e386eb86c30456066cab327dc7ec8cdd4dbfe4be",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "38ecbea491b5656ad5d22d000df0cd449be2284cd70024474739450e52208e3d"
+    },
+    {
+      "case_id": "061_transportation_cleaning_v2",
+      "description_sha256": "71787222f5c84a6bd371bf225c15650b094a0c7698e98bf6e3e433814f190552",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "cb4c2f18835ade66e07a1ea8b348f8aca0910dfc6c99f708b45b8936fcf065bc"
+    },
+    {
+      "case_id": "062_transportation_cleaning_validation_features",
+      "description_sha256": "cbe376c4572b279704ad566d59beb4146172021d93b59637d6aae3a15a31ed2a",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "0d2a6d16a6cccd2331a9e7a5b46030c6aca4a8df8ea90858ad09d41a6b3e2e93"
+    },
+    {
+      "case_id": "063_transportation_clustering_validation",
+      "description_sha256": "9c3e47c75d0ecfc8c88a450993aa801ff9542f5bfd16ef9dc1357146368abeb6",
+      "input_inventory_sha256": "f64851dc02ba4f6670bbc53c2a56f117398a25363996b0040a31f9d6287b2990",
+      "prompt_sha256": "66e3bf946fb5198f476400eb064de279ad8ad98cff9c4ed67249eef6ba740bb4"
+    },
+    {
+      "case_id": "064_transportation_integration",
+      "description_sha256": "cb3409fd692297c3e7de0e637dbaf7fe65bbde47633fbd95b92bd25aeba1a010",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "1157348753d5f7ff4b5e3b7412d8cd11ae801404a9f7478d10405e178e9c3339"
+    },
+    {
+      "case_id": "065_transportation_integration_extra",
+      "description_sha256": "a6a7a214126ef2ce3afec4288e8ec33f225e92375958ef7e6916a3d8e8ebff68",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "4ed593e669aca56318911bda4e81060492bfe051cdfefc98e8370769b97f2cb9"
+    },
+    {
+      "case_id": "066_transportation_integration_geospatial",
+      "description_sha256": "4bda675cc107f8757104c0da4aa8fe8d576cee102741db28e5294a12c4a42627",
+      "input_inventory_sha256": "c0d770a564a419cfa1c8de566145b3718399fcd36d7a3e477a9b6c4472540781",
+      "prompt_sha256": "b3c86c3c869662320b3cb2e90eeb9d89ac7f6ad9f4bc03ba00abcf97c3aa5cbf"
+    },
+    {
+      "case_id": "067_transportation_integration_validation",
+      "description_sha256": "747110ab1e7143a9b8b7a585e3a403daa589cdc3b30150c7d94645c5c97c398c",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "5a21f39b40e159ab89772853588ad9dd78ee7221b79180c98591c5b95973c2fc"
+    },
+    {
+      "case_id": "068_transportation_prediction_cleaning",
+      "description_sha256": "f53ba050a17123a0a39b790adda26d19ef88695c37f2155fe1752918025d4bd7",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "67e18b8886c33415d62eebfd06acaaa0eaf3fec9bb46755d17e0767747f96b09"
+    },
+    {
+      "case_id": "069_transportation_prediction_cleaning_integration",
+      "description_sha256": "c78d3eb2cc13e8b979c3db72fdd4d6a3f8572fefe194f2f9b5df06df83d9963e",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "da34bc36934ecb34f1c923562aef645f27286fadd46c541781340c3fc29515a9"
+    },
+    {
+      "case_id": "070_transportation_prediction_cleaning_validation",
+      "description_sha256": "04416c0eccf84960d2178504eb520c30b9cceebba48da0f8739e4029299cd0db",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "f93c2eba9554716e142802dd5361d1eeae04ea63878c2899f6b70d1542869de4"
+    },
+    {
+      "case_id": "071_transportation_prediction_statistical_cleaning",
+      "description_sha256": "42fcac0661ee8c749c09d48de06f61199da4f0de07dc021f3002d609ce51e6c7",
+      "input_inventory_sha256": "7e058f6dab767a60ceb011b7733bed4433b7d3fb7c6487a2b734c0e22aa69356",
+      "prompt_sha256": "a17a78d051859440d8e864b45414eb835c98dfea479b0610cefdd235ee3aab7b"
+    },
+    {
+      "case_id": "072_transportation_prediction_statistical_integration",
+      "description_sha256": "00e1bcf11c7786a1f0a2c481e839a727be5845f59fcebf1dfbf23139b8692dc8",
+      "input_inventory_sha256": "7e058f6dab767a60ceb011b7733bed4433b7d3fb7c6487a2b734c0e22aa69356",
+      "prompt_sha256": "19fa4b48732632547646f2462f39c0241f19e9ffc416ca0f9dfb8598877bb237"
+    },
+    {
+      "case_id": "073_transportation_prediction_validation",
+      "description_sha256": "27dd3f0e5a7c51685c2737256bb10cc4073bf1caf1b4854f67825d161fa6ebfb",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "05c1d1800d91b3b17368582d543bff5b7f3ad2db5f27f22ebb7c4ea4e55ba5b8"
+    },
+    {
+      "case_id": "074_transportation_prediction_validation_recovery",
+      "description_sha256": "3fa47900e0968e43f086146da66a47c150c507b148740a1900f9c43cb7ea63c0",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "367995adb47ab40f217b55a47052fc47461278021b7e5958c7c0a58161f34109"
+    },
+    {
+      "case_id": "075_transportation_prediction_validation_v2",
+      "description_sha256": "7ec915c901a35a93acd0ef1713ea6aa34679f3c1a8629f213c0bd5fcc40133c9",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "1cccd7704ed152da118ac066aec63e3eac78b1529a2c291cda1978f7ce76a406"
+    },
+    {
+      "case_id": "076_transportation_prediction_visualization_geospatial",
+      "description_sha256": "455880d7783a1a9c9d2a6f946366e14151b127e95d9d3850d43ab62997c88a0a",
+      "input_inventory_sha256": "8807bb27b02f436644d271f41ac0fb3cb8ff45a0483e29351fa54cb22d161cf5",
+      "prompt_sha256": "e7dd605a0358ec70964e32eecc9f0bbe324c74e651251d579060a4b74e06c374"
+    },
+    {
+      "case_id": "077_transportation_prediction_visualization_integration",
+      "description_sha256": "c86d91f0d6207d44c48fdc11eaabe06137e2b410ea84176755f1a9a218bf7b1d",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "0cdaa84eed2d573d3444ff0a94b9f6857700e49903ea1731e01cea9f251e8f1a"
+    },
+    {
+      "case_id": "078_transportation_prediction_visualization_integration_v2",
+      "description_sha256": "753d2bb29f142df4594eee12b3080c87e7e93e100f4d415b33c4f58a70ce3571",
+      "input_inventory_sha256": "b24e276eaca4cb60f03003dcb8a1ebe8f6eea71a116bb575993f7378e12f5c1c",
+      "prompt_sha256": "7b55e2d2643056dd39298022bb007cbd59131d483fc68d7e938f8161acf66087"
+    },
+    {
+      "case_id": "079_transportation_regression",
+      "description_sha256": "cca0ee21df77c9434d04692b68fd00ea3bb8996501555e06b7f82546baf90540",
+      "input_inventory_sha256": "11f1256f139702914c35bad444f10ca062ddaebe331afbdfd58f4fbbc5c1be90",
+      "prompt_sha256": "000a84ca7bc72c2ec26e6af4295e7a06ce2e4f4ca1aee0d0e6a4cb22378ed9aa"
+    },
+    {
+      "case_id": "080_transportation_regression_cleaning_integration",
+      "description_sha256": "74af5194ed5f24c4fc5d988046a18ba3401af43a276a710d7c0e7d483a74d58b",
+      "input_inventory_sha256": "11f1256f139702914c35bad444f10ca062ddaebe331afbdfd58f4fbbc5c1be90",
+      "prompt_sha256": "128784744d3d31b87cc6b1702beb73d1c0c566b11d6ecadbfdccd67cbf400ab2"
+    },
+    {
+      "case_id": "081_transportation_regression_statistical_cleaning",
+      "description_sha256": "fa87ee55061b1cb28436fce78520752e616a8ae7bb3eb7d8066b62170ea895a2",
+      "input_inventory_sha256": "dad276bda3b73e2ef7b50e5ff56c72009a7e4ecf5fff4e684de2ba53a86e3650",
+      "prompt_sha256": "0292938d6fdae01cf27b82a1d678be6e4bbcee63bb453df7b80d437306518450"
+    },
+    {
+      "case_id": "082_transportation_regression_statistical_integration",
+      "description_sha256": "a57e2c6f8e97f09e45f1a256cea4c0edea6b229a19a231e6c9cad9fd251a4922",
+      "input_inventory_sha256": "dad276bda3b73e2ef7b50e5ff56c72009a7e4ecf5fff4e684de2ba53a86e3650",
+      "prompt_sha256": "8f01b2affe9377a8fbab0119bb813ce64741a128ce37f974f08a89691c2682b1"
+    },
+    {
+      "case_id": "083_transportation_regression_visualization_integration",
+      "description_sha256": "6348bd04b33a611e97cc733df72d2bd2a9fc657e2ac4fe3b678bd9660dbb20c8",
+      "input_inventory_sha256": "11f1256f139702914c35bad444f10ca062ddaebe331afbdfd58f4fbbc5c1be90",
+      "prompt_sha256": "8b1aeb367804661485cbbb6ae08b76adc9905f7e93b75a7070ea681a93fe363d"
+    },
+    {
+      "case_id": "084_transportation_statistical_cleaning_integration",
+      "description_sha256": "a6dbede5d542778990f6cb1857bf7607fbdc916bd5d53e102814973c683de703",
+      "input_inventory_sha256": "1e4420939986a0eae284dceb11a711b8fcd1d04451c8dc6071ec4d42bdd6f6db",
+      "prompt_sha256": "bf7729af4f8eb4be8440d9931e8baf9973c7fc873abb3665362a5a1aedd91564"
+    },
+    {
+      "case_id": "085_transportation_statistical_geospatial",
+      "description_sha256": "f522b8089401bd1db63893af37d0b963f372b1194d3f43c08e8adf335a455142",
+      "input_inventory_sha256": "09328fa483adb1bc1ee680f299d4a8f5ae4458fc24c59471aa27cb341c7a7225",
+      "prompt_sha256": "1d3a5b4033fc30ddfb7f42cbdcf2f4653d640c37c923a1e3aa1392248a2ea7e6"
+    },
+    {
+      "case_id": "086_transportation_statistical_geospatial_validation",
+      "description_sha256": "d266f99d2d64b1a40d7d84e4b336bedea0cefd5580c1afa48f49a8104ee73a0b",
+      "input_inventory_sha256": "09328fa483adb1bc1ee680f299d4a8f5ae4458fc24c59471aa27cb341c7a7225",
+      "prompt_sha256": "c57b1b5072dec23a1e53cc97f4e022a3d8e85765a3aa2631d223732d827daa74"
+    },
+    {
+      "case_id": "087_transportation_statistical_integration",
+      "description_sha256": "4601016ae142dc219cea6ab89fbe7b454f5131375651e9fbf109d8ab02804425",
+      "input_inventory_sha256": "1e4420939986a0eae284dceb11a711b8fcd1d04451c8dc6071ec4d42bdd6f6db",
+      "prompt_sha256": "3c60bec9c1c37198bb57b48094fd3b381d09d48286bf601aa13b4112c3635bd1"
+    },
+    {
+      "case_id": "088_transportation_statistical_integration_v2",
+      "description_sha256": "deccfb6399d6bac53f708b4968b4e53c6c99000b24fe932cfb82e17f0c2592df",
+      "input_inventory_sha256": "1e4420939986a0eae284dceb11a711b8fcd1d04451c8dc6071ec4d42bdd6f6db",
+      "prompt_sha256": "795971d8b71e51389dced2fae741111982b5cf717af34a6d3e02058a1a109437"
+    },
+    {
+      "case_id": "089_transportation_statistical_visualization_integration",
+      "description_sha256": "1e845570d9cfa414013c5ebe9370fcee49deb1919f0d408f88568f45752cc193",
+      "input_inventory_sha256": "1e4420939986a0eae284dceb11a711b8fcd1d04451c8dc6071ec4d42bdd6f6db",
+      "prompt_sha256": "e7e4233021c1c84fca3f649f45710d1b0ad705d0f4cb808c03ac6f2f7a9c7be9"
+    },
+    {
+      "case_id": "090_transportation_statistical_visualization_integration_v2",
+      "description_sha256": "a946a57cc486807f46de74c69da6cce017b80377fcf2b671389a2b0b914d67b9",
+      "input_inventory_sha256": "1e4420939986a0eae284dceb11a711b8fcd1d04451c8dc6071ec4d42bdd6f6db",
+      "prompt_sha256": "f9a8a28af8e7ba33de23bfb6ccc1d26593bd7c4f8375a93747f19316e6d7a250"
+    },
+    {
+      "case_id": "091_transportation_visualization",
+      "description_sha256": "47bae332869b6973490f2fe8a7b55bd8c482e257a4377289e8d885b7005b9906",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "884f3a09d857e15d2f00cfae434989c522701c8616c5cb7576b9187ece7dbb4b"
+    },
+    {
+      "case_id": "092_transportation_visualization_cleaning_integration",
+      "description_sha256": "4a907dab8199ae6856dfaed061e11fb9d2cb48261bddae71811aa88b055626d5",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "506d2881dbfafee6b3c79466b0eaf77db07e966e738fa6b4cb09ea2ec3111754"
+    },
+    {
+      "case_id": "093_transportation_visualization_cleaning_validation",
+      "description_sha256": "ac4901c4cd6786b4af5e105bb2e3e1c74de3dbd5eaf7b07c138df9f62f2de87d",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "9d33bbcd6849a32fedded4c729b60afb71c3f641c20adacd3585d2c7c260ee05"
+    },
+    {
+      "case_id": "094_transportation_visualization_cleaning_validation_v2",
+      "description_sha256": "855c89e3509814afb4df064682f3a3b789af7f7ab969860e680b09e62481a532",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "13264778a47e08efe6d700f0120b83fb2b2d0049247307c3385f57a94dab8912"
+    },
+    {
+      "case_id": "095_transportation_visualization_geospatial",
+      "description_sha256": "9437b5628b66937742b42ec1a28f549d9f06b380af071d4143462a4b64d7cf26",
+      "input_inventory_sha256": "c0d770a564a419cfa1c8de566145b3718399fcd36d7a3e477a9b6c4472540781",
+      "prompt_sha256": "84dcbebf80e3f403fd77f6a5b98eacf5afb3a97e0c27b321bfc455f39f1d9f43"
+    },
+    {
+      "case_id": "096_transportation_visualization_integration",
+      "description_sha256": "a730cd444bfd689c15e9bc6d52f0f9e1c8ab4424f02667596339167511a573d3",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "12612258d98dd99f674e634ff634ea267dcdf0fbe55eea6cf3e3566e49321dc3"
+    },
+    {
+      "case_id": "097_transportation_visualization_integration_v2",
+      "description_sha256": "bb6a724c75d66980b1ec95cb52b239cce34f5e250f4c1a390b3a30bf09a3d804",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "8a4680de241bc739769f45e7ca8c65462e8b2339477b07faf1be70aef928f761"
+    },
+    {
+      "case_id": "098_transportation_visualization_integration_validation",
+      "description_sha256": "bb286a5767313e794841ed1245f571056a4e93be2a0ca9623889437c845956e1",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "8f4bc4d3ee9087b6a43f77f95a00be3da60a520880e36d3de32fc85478ac8bf9"
+    },
+    {
+      "case_id": "099_transportation_visualization_recovery_reporting",
+      "description_sha256": "5cabcc4ffc0b7bc2f8e1afe667f87e8bd6707ea8735e48b36d8eef6c82d3e8ec",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "c70f0b7705f0d4e292047fff603a54b37b0887c0f7a55b2a8bcf4ce7838a2aca"
+    },
+    {
+      "case_id": "100_transportation_visualization_v2",
+      "description_sha256": "7af8c9ed14e009e01d84eb7adb6759e2c583b75ef1a94dc8f4af80e1a5eff668",
+      "input_inventory_sha256": "c947e0cc4d0a27265198b418bf76d6b139b8f9ad99a7ef4bd3a9194b786b748d",
+      "prompt_sha256": "2eb8509e77bc6807be0a4421b767cff188a4339bae77bc0ce1b2e32f1e1d53ee"
+    }
+  ]
+}

@@ -1,0 +1,289 @@
+{
+  "schema_version": "servicecraft.corpus-qualification@1",
+  "cases": 100,
+  "runtime_and_independent_oracle_passes": 100,
+  "required_input_column_rejections": 100,
+  "missing_output_rejections": 100,
+  "serialized_models_behaviorally_probed_and_corruptions_rejected": 47,
+  "artifacts_by_format": {
+    "csv": 472,
+    "json": 132,
+    "file": 47
+  },
+  "dependency_profiles": {
+    "scientific-v1": {
+      "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+      "required_packages": {
+        "dagster": "1.13.12",
+        "numpy": "2.0.1",
+        "pandas": "2.2.2",
+        "scikit-learn": "1.5.1",
+        "scipy": "1.14.1",
+        "openpyxl": "3.1.5"
+      },
+      "required_imports": [
+        "dagster",
+        "numpy",
+        "pandas",
+        "sklearn",
+        "scipy",
+        "openpyxl"
+      ]
+    }
+  },
+  "topologies": {
+    "linear_to_fan_in": 5,
+    "linear": 27,
+    "parallel": 15,
+    "fan_in_fan_out": 17,
+    "linear_to_fan_out": 11,
+    "fan_out": 16,
+    "fan_in": 9
+  },
+  "distinct_reference_code_fingerprints": 69,
+  "reference_implementation_groups": {
+    "implementation_37880e20ffdab067": [
+      "001_analytics_statistical_cleaning_integration"
+    ],
+    "implementation_1be5fff4462adc12": [
+      "002_analytics_statistical_integration"
+    ],
+    "implementation_1b618bb85c549ecb": [
+      "003_credit_risk"
+    ],
+    "implementation_3d72f449e96eeb7e": [
+      "004_customer_churn"
+    ],
+    "implementation_c2a7b4050c83b25d": [
+      "005_demand_forecasting"
+    ],
+    "implementation_532a4ee280c9531b": [
+      "006_ecommerce_recommendation"
+    ],
+    "implementation_b180ddc7ddd39419": [
+      "007_employee_attrition"
+    ],
+    "implementation_8f09f669b2627f58": [
+      "008_energy_forecasting"
+    ],
+    "implementation_fa90da89d046d8b3": [
+      "009_healthcare_readmission"
+    ],
+    "implementation_4022549133685513": [
+      "010_hr_regression_visualization_integration"
+    ],
+    "implementation_f034d3a97f8b8cb3": [
+      "011_hr_visualization_integration_validation"
+    ],
+    "implementation_e2a8261492e6b8ea": [
+      "012_insurance_claims"
+    ],
+    "implementation_a38e77005885572a": [
+      "013_predictive_maintenance"
+    ],
+    "implementation_90b07cc19afcf70d": [
+      "014_sports_clustering_integration_validation"
+    ],
+    "implementation_7a1c57dd0186f325": [
+      "015_sports_clustering_prediction_statistical"
+    ],
+    "implementation_1a7b318c8849cedb": [
+      "016_sports_clustering_prediction_visualization"
+    ],
+    "implementation_027102a11af11231": [
+      "017_sports_clustering_statistical_visualization"
+    ],
+    "implementation_a580851d92b762fe": [
+      "018_sports_clustering_visualization_integration"
+    ],
+    "implementation_452de6cef0382f21": [
+      "019_sports_prediction_cleaning_integration"
+    ],
+    "implementation_80a095d2b24df0d7": [
+      "020_sports_prediction_statistical_visualization"
+    ],
+    "implementation_58438432c6ccdb5b": [
+      "021_sports_prediction_statistical_visualization_v2"
+    ],
+    "implementation_fc1e2c04a07d04e8": [
+      "022_sports_prediction_visualization_cleaning"
+    ],
+    "implementation_d10e7b56296a4e46": [
+      "023_sports_regression_clustering_visualization"
+    ],
+    "implementation_ff6344c97d1d02fb": [
+      "024_sports_regression_prediction_statistical"
+    ],
+    "implementation_5e5359b0f59923e0": [
+      "025_sports_regression_prediction_statistical_v2",
+      "026_sports_regression_prediction_statistical_v3"
+    ],
+    "implementation_7477f6a6ccb7a6b9": [
+      "027_sports_regression_prediction_visualization"
+    ],
+    "implementation_e5be54add62e19bf": [
+      "028_sports_regression_prediction_visualization_v2"
+    ],
+    "implementation_5ab7d332c56ea001": [
+      "029_sports_regression_statistical_visualization"
+    ],
+    "implementation_b717a73131388f78": [
+      "030_sports_statistical_cleaning"
+    ],
+    "implementation_8d3942b524f54fbf": [
+      "031_sports_statistical_cleaning_integration"
+    ],
+    "implementation_a44a82db8a9ef1c2": [
+      "032_sports_statistical_cleaning_integration_v2",
+      "033_sports_statistical_cleaning_integration_v3",
+      "034_sports_statistical_cleaning_integration_v4",
+      "035_sports_statistical_cleaning_integration_v5",
+      "036_sports_statistical_cleaning_validation"
+    ],
+    "implementation_172e2cc404b2d27f": [
+      "037_sports_statistical_integration"
+    ],
+    "implementation_9dc590403976bd4c": [
+      "038_sports_statistical_integration_v2",
+      "039_sports_statistical_visualization_cleaning"
+    ],
+    "implementation_6632e086e31fd63b": [
+      "040_sports_statistical_visualization_cleaning_v2",
+      "041_sports_statistical_visualization_integration"
+    ],
+    "implementation_3c793641ed2a7bf8": [
+      "042_sports_validation_recovery"
+    ],
+    "implementation_d66cf615d111c227": [
+      "043_sports_visualization",
+      "044_sports_visualization_cleaning_integration"
+    ],
+    "implementation_3f8bf3106c06f073": [
+      "045_sports_visualization_cleaning_recovery",
+      "046_sports_visualization_cleaning_recovery_v2"
+    ],
+    "implementation_d307e7ab42390a91": [
+      "047_sports_visualization_integration_features",
+      "051_sports_visualization_integration_validation",
+      "052_sports_visualization_integration_validation_v2"
+    ],
+    "implementation_b3cad03a8d3c91dc": [
+      "048_sports_visualization_integration_geospatial"
+    ],
+    "implementation_7713dd714c40e51f": [
+      "049_sports_visualization_integration_recovery",
+      "050_sports_visualization_integration_recovery_v2",
+      "053_sports_visualization_validation_recovery"
+    ],
+    "implementation_ca74ae4737a27de8": [
+      "054_student_performance"
+    ],
+    "implementation_4f9b70b0b2bd5eca": [
+      "055_transportation_analysis"
+    ],
+    "implementation_76c7a9f159100e01": [
+      "056_transportation_cleaning",
+      "059_transportation_cleaning_integration_recovery",
+      "060_transportation_cleaning_integration_validation",
+      "061_transportation_cleaning_v2"
+    ],
+    "implementation_a864f08ea79c6c14": [
+      "057_transportation_cleaning_integration"
+    ],
+    "implementation_c94a60e974c127a9": [
+      "058_transportation_cleaning_integration_geospatial"
+    ],
+    "implementation_0f6790635f2d4f51": [
+      "062_transportation_cleaning_validation_features"
+    ],
+    "implementation_4204ca2c201aba72": [
+      "063_transportation_clustering_validation"
+    ],
+    "implementation_b66983b1df32467e": [
+      "064_transportation_integration",
+      "067_transportation_integration_validation"
+    ],
+    "implementation_2e54f6faf77f818f": [
+      "065_transportation_integration_extra",
+      "091_transportation_visualization",
+      "092_transportation_visualization_cleaning_integration",
+      "093_transportation_visualization_cleaning_validation",
+      "094_transportation_visualization_cleaning_validation_v2"
+    ],
+    "implementation_0735fbdf571ff440": [
+      "066_transportation_integration_geospatial"
+    ],
+    "implementation_ea73e9335d037bb2": [
+      "068_transportation_prediction_cleaning",
+      "069_transportation_prediction_cleaning_integration",
+      "070_transportation_prediction_cleaning_validation",
+      "073_transportation_prediction_validation",
+      "075_transportation_prediction_validation_v2"
+    ],
+    "implementation_c408e3692ff56ae9": [
+      "071_transportation_prediction_statistical_cleaning",
+      "072_transportation_prediction_statistical_integration"
+    ],
+    "implementation_6f85336f1f6f28a7": [
+      "074_transportation_prediction_validation_recovery"
+    ],
+    "implementation_2e35d90245fb2bc0": [
+      "076_transportation_prediction_visualization_geospatial"
+    ],
+    "implementation_c04e58cefd31b0da": [
+      "077_transportation_prediction_visualization_integration",
+      "078_transportation_prediction_visualization_integration_v2"
+    ],
+    "implementation_a5e1104a8a4e40bd": [
+      "079_transportation_regression"
+    ],
+    "implementation_6fc5b86d59ab72a5": [
+      "080_transportation_regression_cleaning_integration"
+    ],
+    "implementation_1a4bbb4a657bec95": [
+      "081_transportation_regression_statistical_cleaning"
+    ],
+    "implementation_7e3f25dccea3a455": [
+      "082_transportation_regression_statistical_integration"
+    ],
+    "implementation_f6a96b38b7c5bc61": [
+      "083_transportation_regression_visualization_integration"
+    ],
+    "implementation_4a2fe801435032a4": [
+      "084_transportation_statistical_cleaning_integration"
+    ],
+    "implementation_a95fa8a41e5da983": [
+      "085_transportation_statistical_geospatial"
+    ],
+    "implementation_4b4fefaeb756273a": [
+      "086_transportation_statistical_geospatial_validation"
+    ],
+    "implementation_bc1e0d05cffb82d3": [
+      "087_transportation_statistical_integration",
+      "088_transportation_statistical_integration_v2"
+    ],
+    "implementation_755e226f199bd066": [
+      "089_transportation_statistical_visualization_integration",
+      "090_transportation_statistical_visualization_integration_v2"
+    ],
+    "implementation_d34f2a016dc3fb08": [
+      "095_transportation_visualization_geospatial"
+    ],
+    "implementation_dc86623c8f634ef8": [
+      "096_transportation_visualization_integration",
+      "097_transportation_visualization_integration_v2",
+      "098_transportation_visualization_integration_validation"
+    ],
+    "implementation_dd723922c2e2df25": [
+      "099_transportation_visualization_recovery_reporting"
+    ],
+    "implementation_9d2ed8690f0ca80a": [
+      "100_transportation_visualization_v2"
+    ]
+  },
+  "oracle_implementation_ast_sha256": "ff3091279c9c3603f6bf18f58ca0fcc5e166d32710038abf3b3da3f9dc3c2e83",
+  "author_semantic_review": {
+    "author_review_pending": 100
+  },
+  "scope": "Automated qualification on visible fixtures; not LLM generation results or author semantic signoff"
+}

@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-03",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "001_analytics_statistical_cleaning_integration",
+      "title": "Stock and market return integration with convergent validation",
+      "domain": "finance",
+      "family_id": "multisource_market_integration",
+      "topology": "linear_to_fan_in",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "007_employee_attrition",
+      "title": "Independent workforce, engagement, and performance analytics",
+      "domain": "human_resources",
+      "family_id": "parallel_workforce_analytics",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "009_healthcare_readmission",
+      "title": "Patient readmission integration with model and descriptive branches",
+      "domain": "healthcare",
+      "family_id": "multisource_readmission_analysis",
+      "topology": "fan_in_fan_out",
+      "task_count": 9,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "010_hr_regression_visualization_integration",
+      "title": "Integrated workforce features with three analytical outputs",
+      "domain": "human_resources",
+      "family_id": "workforce_fanout_analysis",
+      "topology": "linear_to_fan_out",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "054_student_performance",
+      "title": "Student GPA regression with explicit feature and evaluation stages",
+      "domain": "education",
+      "family_id": "student_supervised_regression",
+      "topology": "linear",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

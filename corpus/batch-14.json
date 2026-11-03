@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-14",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "026_sports_regression_prediction_statistical_v3",
+      "title": "Shared player features feeding two models and a joint evaluation",
+      "domain": "sports",
+      "family_id": "shared_shooting_dual_model_fanin_fanout_v2",
+      "topology": "fan_in_fan_out",
+      "task_count": 9,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "043_sports_visualization",
+      "title": "Linear team performance ranking and chart preparation",
+      "domain": "sports",
+      "family_id": "team_performance_chart_linear",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "062_transportation_cleaning_validation_features",
+      "title": "Prepared trips fanning out to route, period, and weather views",
+      "domain": "transportation",
+      "family_id": "trip_route_period_weather_fanout",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "071_transportation_prediction_statistical_cleaning",
+      "title": "Parallel delay classification and route service analysis",
+      "domain": "transportation",
+      "family_id": "parallel_delay_route_service",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "080_transportation_regression_cleaning_integration",
+      "title": "Revenue and cost feature branches converging into route economics",
+      "domain": "transportation",
+      "family_id": "revenue_cost_fanin_economics",
+      "topology": "linear_to_fan_in",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

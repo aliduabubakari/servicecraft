@@ -1,0 +1,5 @@
+{
+  "image": "servicecraft-runtime:1.13.12",
+  "required_packages": {"dagster":"1.13.12","dagster-pipes":"1.13.12","numpy":"2.0.1","pandas":"2.2.2","scikit-learn":"1.5.1","scipy":"1.14.1","openpyxl":"3.1.5"},
+  "required_imports": ["dagster","dagster_pipes","numpy","pandas","sklearn","scipy","openpyxl"]
+}

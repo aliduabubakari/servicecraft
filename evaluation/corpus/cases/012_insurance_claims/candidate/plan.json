@@ -1,0 +1,193 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'claims.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['claim_id', 'claim_type', 'claim_amount', 'policy_type', 'incident_date', 'report_date', 'report_delay_days', 'claim_status', 'is_fraudulent']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "require(d, cols, 'claims.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "unique_nonblank(d, ['claim_id'], 'claims.csv')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "numeric(d, ['claim_amount', 'report_delay_days', 'is_fraudulent'], 'claims.csv')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if (d[['claim_amount', 'report_delay_days']] < 0).any().any() or not set(d.is_fraudulent.unique()) <= {0, 1}:\n    raise ValueError('claim values violate bounds')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "d['incident_date'] = pd.to_datetime(d.incident_date, errors='raise')",
+      "dependencies": {
+        "d": 5
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "d['report_date'] = pd.to_datetime(d.report_date, errors='raise')",
+      "dependencies": {
+        "d": 6
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "financial = d.groupby('claim_type', as_index=False).agg(claim_count=('claim_id', 'size'), total_claim_amount=('claim_amount', 'sum'), mean_claim_amount=('claim_amount', 'mean'), median_claim_amount=('claim_amount', 'median')).sort_values('claim_type')",
+      "dependencies": {
+        "d": 7
+      },
+      "writes": [
+        "financial"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "financial.to_csv(out / 'financial_by_claim_type.csv', index=False)",
+      "dependencies": {
+        "financial": 8
+      },
+      "writes": [],
+      "outputs": [
+        "financial_by_claim_type.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "process = d.groupby('claim_status', as_index=False).agg(claim_count=('claim_id', 'size'), mean_report_delay_days=('report_delay_days', 'mean'), median_report_delay_days=('report_delay_days', 'median'), mean_claim_amount=('claim_amount', 'mean')).sort_values('claim_status')",
+      "dependencies": {
+        "d": 7
+      },
+      "writes": [
+        "process"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "process.to_csv(out / 'processing_by_status.csv', index=False)",
+      "dependencies": {
+        "process": 10
+      },
+      "writes": [],
+      "outputs": [
+        "processing_by_status.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "fraud = d.groupby('policy_type', as_index=False).agg(claim_count=('claim_id', 'size'), fraud_count=('is_fraudulent', 'sum'), fraud_rate=('is_fraudulent', 'mean'), mean_claim_amount=('claim_amount', 'mean')).sort_values('policy_type')",
+      "dependencies": {
+        "d": 7
+      },
+      "writes": [
+        "fraud"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "fraud.to_csv(out / 'fraud_by_policy_type.csv', index=False)",
+      "dependencies": {
+        "fraud": 12
+      },
+      "writes": [],
+      "outputs": [
+        "fraud_by_policy_type.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "report = {'claims': int(financial.claim_count.sum()), 'total_claim_amount': financial.total_claim_amount.sum(), 'fraudulent_claims': int(fraud.fraud_count.sum()), 'highest_amount_claim_type': financial.sort_values(['total_claim_amount', 'claim_type'], ascending=[False, True]).iloc[0].claim_type, 'slowest_claim_status': process.sort_values(['mean_report_delay_days', 'claim_status'], ascending=[False, True]).iloc[0].claim_status, 'highest_fraud_rate_policy_type': fraud.sort_values(['fraud_rate', 'policy_type'], ascending=[False, True]).iloc[0].policy_type}",
+      "dependencies": {
+        "financial": 8,
+        "process": 10,
+        "fraud": 12
+      },
+      "writes": [
+        "report"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "write_json(out / 'claims_report.json', report)",
+      "dependencies": {
+        "report": 14
+      },
+      "writes": [],
+      "outputs": [
+        "claims_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "financial": [
+      9
+    ],
+    "processing": [
+      11
+    ],
+    "fraud": [
+      13
+    ],
+    "report": [
+      15
+    ]
+  }
+}

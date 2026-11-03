@@ -1,0 +1,328 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "require(d, cols, 'data.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "unique_nonblank(d, ['trip_id'], 'data.csv')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "numeric(d, ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'is_holiday'], 'data.csv')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if not d.departure_hour.between(0, 23).all() or (d[['distance_km', 'passengers', 'fare_amount', 'delay_minutes']] < 0).any().any() or (not set(d.is_holiday.unique()) <= {0, 1}):\n    raise ValueError('trip values violate bounds')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean = d[cols].sort_values('trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean.to_csv(out / 'trips_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "features = clean.copy()",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "features['fare_per_passenger'] = np.where(features.passengers > 0, features.fare_amount / features.passengers, 0)",
+      "dependencies": {
+        "features": 8
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "features['distance_holiday_interaction'] = features.distance_km * features.is_holiday",
+      "dependencies": {
+        "features": 9
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "features.to_csv(out / 'trip_features.csv', index=False)",
+      "dependencies": {
+        "features": 10
+      },
+      "writes": [],
+      "outputs": [
+        "trip_features.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "predictors = ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'is_holiday', 'fare_per_passenger', 'distance_holiday_interaction']",
+      "dependencies": {},
+      "writes": [
+        "predictors"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "train, test = train_test_split(features, test_size=0.2, random_state=42)",
+      "dependencies": {
+        "features": 10
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "train = train.sort_values('trip_id')",
+      "dependencies": {
+        "train": 13
+      },
+      "writes": [
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "test = test.sort_values('trip_id')",
+      "dependencies": {
+        "test": 13
+      },
+      "writes": [
+        "test"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "train.to_csv(out / 'train.csv', index=False)",
+      "dependencies": {
+        "train": 14
+      },
+      "writes": [],
+      "outputs": [
+        "train.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "test.to_csv(out / 'test.csv', index=False)",
+      "dependencies": {
+        "test": 15
+      },
+      "writes": [],
+      "outputs": [
+        "test.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', Ridge(alpha=1.0, solver='svd'))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "model.fit(train[predictors], train.delay_minutes)",
+      "dependencies": {
+        "model": 18,
+        "train": 14,
+        "predictors": 12
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "pred = model.predict(test[predictors])",
+      "dependencies": {
+        "model": 19,
+        "test": 15,
+        "predictors": 12
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "with (out / 'model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 19
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "model.pkl"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "predictions = pd.DataFrame({'trip_id': test.trip_id, 'actual_delay_minutes': test.delay_minutes, 'predicted_delay_minutes': pred})",
+      "dependencies": {
+        "test": 15,
+        "pred": 20
+      },
+      "writes": [
+        "predictions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "predictions.to_csv(out / 'predictions.csv', index=False)",
+      "dependencies": {
+        "predictions": 22
+      },
+      "writes": [],
+      "outputs": [
+        "predictions.csv"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "metrics = {'train_rows': len(train), 'test_rows': len(test), 'features': predictors, 'mae_minutes': mean_absolute_error(test.delay_minutes, pred), 'rmse_minutes': mean_squared_error(test.delay_minutes, pred) ** 0.5}",
+      "dependencies": {
+        "train": 14,
+        "predictors": 12,
+        "test": 15,
+        "pred": 20
+      },
+      "writes": [
+        "metrics"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "write_json(out / 'metrics.json', metrics)",
+      "dependencies": {
+        "metrics": 24
+      },
+      "writes": [],
+      "outputs": [
+        "metrics.json"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "write_json(out / 'delay_report.json', metrics)",
+      "dependencies": {
+        "metrics": 24
+      },
+      "writes": [],
+      "outputs": [
+        "delay_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      7
+    ],
+    "features": [
+      11
+    ],
+    "split": [
+      16,
+      17
+    ],
+    "fit_predict": [
+      21,
+      23
+    ],
+    "evaluate": [
+      25
+    ],
+    "report": [
+      26
+    ]
+  }
+}

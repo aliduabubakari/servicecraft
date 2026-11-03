@@ -1,0 +1,401 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'all_star', 'injury_games_missed', 'contract_year', 'market_value', 'win_shares', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prep(d, cols, 'player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "assert set(d.all_star.unique()) <= {0, 1}",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "d = d.sort_values('player_id')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "d.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 6,
+      "source": "p = d[['player_id', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'win_shares', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']].copy()",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "p['production_index'] = p[['points_per_game', 'assists_per_game', 'rebounds_per_game']].sum(axis=1)",
+      "dependencies": {
+        "p": 6
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "p['shooting_index'] = p[['field_goal_pct', 'three_point_pct', 'free_throw_pct']].mean(axis=1)",
+      "dependencies": {
+        "p": 7
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "p.to_csv(out / 'performance_features.csv', index=False)",
+      "dependencies": {
+        "p": 8
+      },
+      "writes": [],
+      "outputs": [
+        "performance_features.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "a = d[['player_id', 'team', 'position', 'games_played', 'age', 'experience_years', 'salary_millions', 'injury_games_missed', 'contract_year', 'market_value', 'all_star']].copy()",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "a"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "a['availability_rate'] = (a.games_played - a.injury_games_missed).clip(lower=0) / a.games_played",
+      "dependencies": {
+        "a": 10
+      },
+      "writes": [
+        "a"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "a.to_csv(out / 'availability_features.csv', index=False)",
+      "dependencies": {
+        "a": 11
+      },
+      "writes": [],
+      "outputs": [
+        "availability_features.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "m = p.merge(a, on='player_id', validate='one_to_one')",
+      "dependencies": {
+        "p": 8,
+        "a": 11
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "m.to_csv(out / 'model_data.csv', index=False)",
+      "dependencies": {
+        "m": 13
+      },
+      "writes": [],
+      "outputs": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "features = ['production_index', 'shooting_index', 'minutes_per_game', 'win_shares', 'availability_rate', 'age', 'experience_years', 'salary_millions', 'contract_year']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "tr, te = train_test_split(m, test_size=0.2, random_state=42)",
+      "dependencies": {
+        "m": 13
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "reg = Pipeline([('scale', StandardScaler()), ('model', Ridge(alpha=1))])",
+      "dependencies": {},
+      "writes": [
+        "reg"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "reg.fit(tr[features], tr.market_value)",
+      "dependencies": {
+        "features": 15,
+        "tr": 16,
+        "reg": 17
+      },
+      "writes": [
+        "reg"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "rp = reg.predict(te[features])",
+      "dependencies": {
+        "te": 16,
+        "features": 15,
+        "reg": 18
+      },
+      "writes": [
+        "rp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "with (out / 'market_model.pkl').open('wb') as h:\n    pickle.dump(reg, h)",
+      "dependencies": {
+        "reg": 18
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "market_model.pkl"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "pd.DataFrame({'player_id': te.player_id, 'actual_market_value': te.market_value, 'predicted_market_value': rp}).sort_values('player_id').to_csv(out / 'market_predictions.csv', index=False)",
+      "dependencies": {
+        "rp": 19,
+        "te": 16
+      },
+      "writes": [],
+      "outputs": [
+        "market_predictions.csv"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "js(out / 'market_metrics.json', {'train_rows': len(tr), 'test_rows': len(te), 'mae': mean_absolute_error(te.market_value, rp), 'rmse': mean_squared_error(te.market_value, rp) ** 0.5, 'r2': r2_score(te.market_value, rp)})",
+      "dependencies": {
+        "te": 16,
+        "tr": 16,
+        "rp": 19
+      },
+      "writes": [],
+      "outputs": [
+        "market_metrics.json"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "tr, te = train_test_split(m, test_size=0.25, random_state=42, stratify=m.all_star)",
+      "dependencies": {
+        "m": 13
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "clf = Pipeline([('scale', StandardScaler()), ('model', LogisticRegression(C=1, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {},
+      "writes": [
+        "clf"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "clf.fit(tr[features], tr.all_star)",
+      "dependencies": {
+        "features": 15,
+        "tr": 23,
+        "clf": 24
+      },
+      "writes": [
+        "clf"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "prob = clf.predict_proba(te[features])[:, 1]",
+      "dependencies": {
+        "te": 23,
+        "features": 15,
+        "clf": 25
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "yp = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 26
+      },
+      "writes": [
+        "yp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "with (out / 'allstar_model.pkl').open('wb') as h:\n    pickle.dump(clf, h)",
+      "dependencies": {
+        "clf": 25
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "allstar_model.pkl"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "pd.DataFrame({'player_id': te.player_id, 'actual_all_star': te.all_star, 'probability': prob, 'predicted_all_star': yp}).sort_values('player_id').to_csv(out / 'allstar_predictions.csv', index=False)",
+      "dependencies": {
+        "te": 23,
+        "prob": 26,
+        "yp": 27
+      },
+      "writes": [],
+      "outputs": [
+        "allstar_predictions.csv"
+      ]
+    },
+    {
+      "index": 30,
+      "source": "js(out / 'allstar_metrics.json', {'train_rows': len(tr), 'test_rows': len(te), 'accuracy': accuracy_score(te.all_star, yp), 'precision': precision_score(te.all_star, yp, zero_division=0), 'recall': recall_score(te.all_star, yp, zero_division=0), 'f1': f1_score(te.all_star, yp, zero_division=0), 'roc_auc': roc_auc_score(te.all_star, prob)})",
+      "dependencies": {
+        "yp": 27,
+        "te": 23,
+        "tr": 23,
+        "prob": 26
+      },
+      "writes": [],
+      "outputs": [
+        "allstar_metrics.json"
+      ]
+    },
+    {
+      "index": 31,
+      "source": "js(out / 'dual_model_report.json', {'players': len(m), 'regression_test_rows': int(np.ceil(len(m) * 0.2)), 'classification_test_rows': int(np.ceil(len(m) * 0.25)), 'models': ['market_value_ridge', 'all_star_logistic']})",
+      "dependencies": {
+        "m": 13
+      },
+      "writes": [],
+      "outputs": [
+        "dual_model_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      5
+    ],
+    "performance": [
+      9
+    ],
+    "availability": [
+      12
+    ],
+    "integrate": [
+      14
+    ],
+    "market_fit": [
+      20,
+      21
+    ],
+    "allstar_fit": [
+      28,
+      29
+    ],
+    "market_evaluate": [
+      22
+    ],
+    "allstar_evaluate": [
+      30
+    ],
+    "report": [
+      31
+    ]
+  }
+}

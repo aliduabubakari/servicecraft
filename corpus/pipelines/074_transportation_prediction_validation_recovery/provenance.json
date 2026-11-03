@@ -1,0 +1,36 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "074_transportation_prediction_validation_recovery",
+  "selection_reason": "Topology is supported by independently meaningful computations and extends task-count diversity.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy_then_inject_four_deterministic_missing_cells",
+      "defects": [
+        {
+          "row_index": 0,
+          "column": "distance_km"
+        },
+        {
+          "row_index": 1,
+          "column": "fare_amount"
+        },
+        {
+          "row_index": 2,
+          "column": "vehicle_type"
+        },
+        {
+          "row_index": 3,
+          "column": "weather_condition"
+        }
+      ]
+    }
+  ],
+  "pilot_input_sha256": {
+    "data.csv": "c45a8597cd395bacb941ffbc784865652cbbd51a393f4a471dce08946eaf737f"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

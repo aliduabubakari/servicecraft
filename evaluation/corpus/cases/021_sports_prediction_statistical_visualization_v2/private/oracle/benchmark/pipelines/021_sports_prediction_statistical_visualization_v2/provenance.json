@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "021_sports_prediction_statistical_visualization_v2",
+  "selection_reason": "Topology and behavior selected only where supported by source fields.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "data.csv": "f038af0d463a1feec027e71cd628f870d03e5a397956a5d734393a44aa036f4f"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

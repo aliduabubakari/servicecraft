@@ -1,0 +1,40 @@
+# Transportation economics with convergent feature branches
+
+1. Objective
+
+Build a `fan_in_fan_out` trip-economics DAG. Validate unique trip_id, finite nonnegative measures, and emit trips_clean.csv. It fans out into revenue features (revenue_per_passenger and revenue minus fare*passengers) and cost features (cost_per_km and cost_per_delay_minute, zero for zero delay). Join branches one-to-one with clean trips, derive profit=revenue-cost and profit_margin=profit/revenue, and emit trip_economics.csv.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: trip_id, route, vehicle_type, departure_hour, distance_km, passengers, fare_amount, delay_minutes, day_of_week, is_holiday, weather_condition, revenue, operational_cost
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+The integrated table fans out to a profit regression and route profitability summary. Regression uses ten ordered predictors, 80/20 split seed 42, train-only StandardScaler and LinearRegression; emits model/predictions and MAE/RMSE/R2 metrics. Route summary emits counts, total revenue/cost/profit and mean margin. economics_report.json reconverges metrics and summary, publishes global totals and most profitable route with route ascending tie-break.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `trips_clean.csv`
+- `revenue_features.csv`
+- `cost_features.csv`
+- `trip_economics.csv`
+- `profit_model.pkl`
+- `profit_predictions.csv`
+- `profit_metrics.json`
+- `route_profitability.csv`
+- `economics_report.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without networks, prior-run outputs, fixed answers, or human intervention. Preserve the declared topology and artifact-backed dependencies; an alternative node decomposition is acceptable only when logical tasks, observable checkpoints, and dependency semantics remain equivalent. Write outputs below the run output directory. Numeric comparisons use atol=1e-6 and rtol=1e-6; JSON must be finite. Missing columns, invalid identifiers, broken bounds, and non-finite required values fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

@@ -1,0 +1,15 @@
+{
+  "train_rows": 478,
+  "test_rows": 120,
+  "features": [
+    "departure_hour",
+    "distance_km",
+    "passengers",
+    "fare_amount",
+    "is_holiday",
+    "fare_per_passenger",
+    "distance_holiday_interaction"
+  ],
+  "mae_minutes": 4.208864190558995,
+  "rmse_minutes": 5.631841802729733
+}

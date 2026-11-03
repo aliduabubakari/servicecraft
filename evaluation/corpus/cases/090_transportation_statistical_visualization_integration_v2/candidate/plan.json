@@ -1,0 +1,127 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'delay_minutes', 'weather_condition', 'on_time_pct', 'passenger_satisfaction']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'trip_id', ['route', 'vehicle_type', 'weather_condition'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "route = d.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), mean_delay=('delay_minutes', 'mean'), mean_on_time=('on_time_pct', 'mean'), mean_satisfaction=('passenger_satisfaction', 'mean')).sort_values('route')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "route"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "route.to_csv(out / 'route_service.csv', index=False)",
+      "dependencies": {
+        "route": 3
+      },
+      "writes": [],
+      "outputs": [
+        "route_service.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "vehicle = d.groupby('vehicle_type', as_index=False).agg(trip_count=('trip_id', 'size'), mean_delay=('delay_minutes', 'mean'), mean_on_time=('on_time_pct', 'mean'), mean_satisfaction=('passenger_satisfaction', 'mean')).sort_values('vehicle_type')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "vehicle"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "vehicle.to_csv(out / 'vehicle_service.csv', index=False)",
+      "dependencies": {
+        "vehicle": 5
+      },
+      "writes": [],
+      "outputs": [
+        "vehicle_service.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "weather = d.groupby('weather_condition', as_index=False).agg(trip_count=('trip_id', 'size'), mean_delay=('delay_minutes', 'mean'), mean_on_time=('on_time_pct', 'mean'), mean_satisfaction=('passenger_satisfaction', 'mean')).sort_values('weather_condition')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "weather"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "weather.to_csv(out / 'weather_service.csv', index=False)",
+      "dependencies": {
+        "weather": 7
+      },
+      "writes": [],
+      "outputs": [
+        "weather_service.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "js(out / 'service_report.json', {'trips': int(route.trip_count.sum()), 'route_trips': int(route.trip_count.sum()), 'vehicle_trips': int(vehicle.trip_count.sum()), 'weather_trips': int(weather.trip_count.sum()), 'routes': len(route), 'vehicles': len(vehicle), 'weather_conditions': len(weather), 'best_route': route.sort_values(['mean_on_time', 'mean_satisfaction', 'route'], ascending=[False, False, True]).iloc[0].route})",
+      "dependencies": {
+        "route": 3,
+        "weather": 7,
+        "vehicle": 5
+      },
+      "writes": [],
+      "outputs": [
+        "service_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "routes": [
+      4
+    ],
+    "vehicles": [
+      6
+    ],
+    "weather": [
+      8
+    ],
+    "report": [
+      9
+    ]
+  }
+}

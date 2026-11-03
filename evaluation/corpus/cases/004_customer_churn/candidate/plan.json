@@ -1,0 +1,362 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "customers = pd.read_csv(data / 'customers.csv')",
+      "dependencies": {},
+      "writes": [
+        "customers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "transactions = pd.read_csv(data / 'transactions.csv')",
+      "dependencies": {},
+      "writes": [
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "cc = ['customer_id', 'segment', 'monthly_fee', 'support_contacts', 'is_churned']",
+      "dependencies": {},
+      "writes": [
+        "cc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "tc = ['transaction_id', 'customer_id', 'transaction_date', 'amount', 'items_count', 'is_return', 'discount_applied']",
+      "dependencies": {},
+      "writes": [
+        "tc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "require(customers, cc, 'customers.csv')",
+      "dependencies": {
+        "cc": 2,
+        "customers": 0
+      },
+      "writes": [
+        "customers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "require(transactions, tc, 'transactions.csv')",
+      "dependencies": {
+        "tc": 3,
+        "transactions": 1
+      },
+      "writes": [
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "if not customers.customer_id.is_unique or not transactions.transaction_id.is_unique or customers.customer_id.astype(str).str.strip().eq('').any() or transactions.transaction_id.astype(str).str.strip().eq('').any() or (not set(transactions.customer_id) <= set(customers.customer_id)):\n    raise ValueError('customer or transaction keys do not reconcile')",
+      "dependencies": {
+        "transactions": 5,
+        "customers": 4
+      },
+      "writes": [
+        "customers",
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "finite(customers, ['monthly_fee', 'support_contacts', 'is_churned'], 'customers.csv')",
+      "dependencies": {
+        "customers": 6
+      },
+      "writes": [
+        "customers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "finite(transactions, ['amount', 'items_count', 'is_return', 'discount_applied'], 'transactions.csv')",
+      "dependencies": {
+        "transactions": 6
+      },
+      "writes": [
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "if not set(customers.is_churned.unique()) <= {0, 1} or not set(transactions.is_return.unique()) <= {0, 1}:\n    raise ValueError('churn and return flags must be binary')",
+      "dependencies": {
+        "customers": 7,
+        "transactions": 8
+      },
+      "writes": [
+        "customers",
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "if (transactions.discount_applied < 0).any():\n    raise ValueError('discount_applied must be nonnegative')",
+      "dependencies": {
+        "transactions": 9
+      },
+      "writes": [
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "transactions['transaction_date'] = pd.to_datetime(transactions.transaction_date, errors='raise')",
+      "dependencies": {
+        "transactions": 10
+      },
+      "writes": [
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "cutoff = transactions.transaction_date.max().normalize()",
+      "dependencies": {
+        "transactions": 11
+      },
+      "writes": [
+        "cutoff"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "transactions['return_amount'] = np.where(transactions.is_return == 1, transactions.amount, 0.0)",
+      "dependencies": {
+        "transactions": 11
+      },
+      "writes": [
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "transactions['is_discounted'] = (transactions.discount_applied > 0).astype(int)",
+      "dependencies": {
+        "transactions": 13
+      },
+      "writes": [
+        "transactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "aggregate = transactions.groupby('customer_id', as_index=False).agg(transaction_count=('transaction_id', 'size'), total_spend=('amount', 'sum'), mean_order_value=('amount', 'mean'), total_items=('items_count', 'sum'), return_count=('is_return', 'sum'), returned_amount=('return_amount', 'sum'), discounted_transaction_count=('is_discounted', 'sum'), total_discount=('discount_applied', 'sum'), last_transaction_date=('transaction_date', 'max'))",
+      "dependencies": {
+        "transactions": 14
+      },
+      "writes": [
+        "aggregate"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "aggregate['return_rate'] = aggregate.return_count / aggregate.transaction_count",
+      "dependencies": {
+        "aggregate": 15
+      },
+      "writes": [
+        "aggregate"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "aggregate['days_since_last_transaction'] = (cutoff - aggregate.last_transaction_date.dt.normalize()).dt.days",
+      "dependencies": {
+        "aggregate": 16,
+        "cutoff": 12
+      },
+      "writes": [
+        "aggregate"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "aggregate.last_transaction_date = aggregate.last_transaction_date.dt.strftime('%Y-%m-%d')",
+      "dependencies": {
+        "aggregate": 17
+      },
+      "writes": [
+        "aggregate"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "aggregate = aggregate.sort_values('customer_id').reset_index(drop=True)",
+      "dependencies": {
+        "aggregate": 18
+      },
+      "writes": [
+        "aggregate"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "aggregate.to_csv(out / 'customer_metrics.csv', index=False)",
+      "dependencies": {
+        "aggregate": 19
+      },
+      "writes": [],
+      "outputs": [
+        "customer_metrics.csv"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "integrated = customers[cc].merge(aggregate, on='customer_id', how='left', validate='one_to_one')",
+      "dependencies": {
+        "cc": 2,
+        "aggregate": 19,
+        "customers": 9
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "numeric = ['transaction_count', 'total_spend', 'mean_order_value', 'total_items', 'return_count', 'returned_amount', 'discounted_transaction_count', 'total_discount', 'return_rate', 'days_since_last_transaction']",
+      "dependencies": {},
+      "writes": [
+        "numeric"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "integrated[numeric] = integrated[numeric].fillna(0)",
+      "dependencies": {
+        "integrated": 21,
+        "numeric": 22
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "integrated['last_transaction_date'] = integrated.last_transaction_date.fillna('')",
+      "dependencies": {
+        "integrated": 23
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "integrated = integrated.sort_values('customer_id').reset_index(drop=True)",
+      "dependencies": {
+        "integrated": 24
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "integrated.to_csv(out / 'customer_analysis.csv', index=False)",
+      "dependencies": {
+        "integrated": 25
+      },
+      "writes": [],
+      "outputs": [
+        "customer_analysis.csv"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "cohort = integrated.groupby('segment', as_index=False).agg(customer_count=('customer_id', 'size'), churn_rate=('is_churned', 'mean'), mean_total_spend=('total_spend', 'mean'), mean_transaction_count=('transaction_count', 'mean'), mean_days_since_last_transaction=('days_since_last_transaction', 'mean')).sort_values('segment')",
+      "dependencies": {
+        "integrated": 25
+      },
+      "writes": [
+        "cohort"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "cohort.to_csv(out / 'segment_summary.csv', index=False)",
+      "dependencies": {
+        "cohort": 27
+      },
+      "writes": [],
+      "outputs": [
+        "segment_summary.csv"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "report = {'cutoff_date': cutoff.strftime('%Y-%m-%d'), 'customers': len(integrated), 'transactions': len(transactions), 'overall_churn_rate': integrated.is_churned.mean(), 'total_spend': integrated.total_spend.sum(), 'segments': len(cohort)}",
+      "dependencies": {
+        "cohort": 27,
+        "cutoff": 12,
+        "transactions": 14,
+        "integrated": 25
+      },
+      "writes": [
+        "report"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "write_json(out / 'churn_report.json', report)",
+      "dependencies": {
+        "report": 29
+      },
+      "writes": [],
+      "outputs": [
+        "churn_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "aggregate": [
+      20
+    ],
+    "integrate": [
+      26
+    ],
+    "summarize": [
+      28
+    ],
+    "report": [
+      30
+    ]
+  }
+}

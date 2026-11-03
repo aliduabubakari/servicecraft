@@ -1,0 +1,52 @@
+{
+  "batch_id": "batch-02",
+  "case_count": 5,
+  "purpose": "Second five-case qualification batch spanning classification, aggregation, planning, ranking, and clustering.",
+  "cases": [
+    {
+      "pipeline_id": "003_credit_risk",
+      "title": "Credit-default classification with multi-source history aggregation",
+      "domain": "finance",
+      "family_id": "multisource_supervised_binary_classification",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "004_customer_churn",
+      "title": "Customer transaction aggregation and churn cohort analysis",
+      "domain": "finance",
+      "family_id": "relational_aggregation_cohort_analysis",
+      "topology": "linear",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "005_demand_forecasting",
+      "title": "Trailing-demand inventory reorder planning",
+      "domain": "manufacturing",
+      "family_id": "temporal_aggregation_inventory_optimization",
+      "topology": "linear",
+      "task_count": 3,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "006_ecommerce_recommendation",
+      "title": "Deterministic in-stock product recommendation",
+      "domain": "retail",
+      "family_id": "relational_ranking_recommendation",
+      "topology": "linear",
+      "task_count": 3,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "014_sports_clustering_integration_validation",
+      "title": "Deterministic player-style clustering with canonical labels",
+      "domain": "sports",
+      "family_id": "unsupervised_clustering_profiling",
+      "topology": "linear",
+      "task_count": 3,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

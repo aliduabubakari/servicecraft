@@ -1,0 +1,308 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "features = ['points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'play_style_score', 'efficiency_rating', 'usage_rate']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "cols = ['player_id', 'team', 'position', *features]",
+      "dependencies": {
+        "features": 1
+      },
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "check(d, cols, 'player_id')",
+      "dependencies": {
+        "cols": 2,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "clean = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 2,
+        "d": 3
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "clean.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 4
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 6,
+      "source": "prepared = clean.copy()",
+      "dependencies": {
+        "clean": 4
+      },
+      "writes": [
+        "prepared"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "prepared['production_index'] = prepared.points_per_game + prepared.assists_per_game + prepared.rebounds_per_game",
+      "dependencies": {
+        "prepared": 6
+      },
+      "writes": [
+        "prepared"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "prepared.to_csv(out / 'cluster_features.csv', index=False)",
+      "dependencies": {
+        "prepared": 7
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_features.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "f = [*features, 'production_index']",
+      "dependencies": {
+        "features": 1
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "sc = StandardScaler()",
+      "dependencies": {},
+      "writes": [
+        "sc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "x = sc.fit_transform(prepared[f])",
+      "dependencies": {
+        "f": 9,
+        "sc": 10,
+        "prepared": 7
+      },
+      "writes": [
+        "sc",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "km = KMeans(n_clusters=4, random_state=42, n_init=20, algorithm='lloyd').fit(x)",
+      "dependencies": {
+        "x": 11
+      },
+      "writes": [
+        "km"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "order = np.lexsort((np.arange(4), km.cluster_centers_[:, f.index('usage_rate')], km.cluster_centers_[:, f.index('efficiency_rating')]))",
+      "dependencies": {
+        "km": 12,
+        "f": 9
+      },
+      "writes": [
+        "order"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "mp = {int(raw): int(i) for i, raw in enumerate(order)}",
+      "dependencies": {
+        "order": 13
+      },
+      "writes": [
+        "mp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "assigned = prepared.copy()",
+      "dependencies": {
+        "prepared": 7
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "assigned['cluster'] = [mp[int(v)] for v in km.labels_]",
+      "dependencies": {
+        "assigned": 15,
+        "km": 12,
+        "mp": 14
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "assigned.to_csv(out / 'player_clusters.csv', index=False)",
+      "dependencies": {
+        "assigned": 16
+      },
+      "writes": [],
+      "outputs": [
+        "player_clusters.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "with (out / 'cluster_model.pkl').open('wb') as h:\n    pickle.dump({'scaler': sc, 'model': km, 'mapping': mp, 'features': f}, h)",
+      "dependencies": {
+        "f": 9,
+        "sc": 11,
+        "km": 12,
+        "mp": 14
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "index": 19,
+      "source": "assigned.groupby('cluster', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_efficiency=('efficiency_rating', 'mean'), mean_usage=('usage_rate', 'mean')).to_csv(out / 'cluster_profiles.csv', index=False)",
+      "dependencies": {
+        "assigned": 16
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "mix = assigned.groupby(['team', 'cluster'], as_index=False).size().rename(columns={'size': 'player_count'})",
+      "dependencies": {
+        "assigned": 16
+      },
+      "writes": [
+        "mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "mix['team_share'] = mix.player_count / mix.groupby('team').player_count.transform('sum')",
+      "dependencies": {
+        "mix": 20
+      },
+      "writes": [
+        "mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "mix.to_csv(out / 'team_cluster_mix.csv', index=False)",
+      "dependencies": {
+        "mix": 21
+      },
+      "writes": [],
+      "outputs": [
+        "team_cluster_mix.csv"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "pc = PCA(n_components=2, random_state=42).fit_transform(x)",
+      "dependencies": {
+        "x": 11
+      },
+      "writes": [
+        "pc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "pd.DataFrame({'player_id': assigned.player_id, 'cluster': assigned.cluster, 'pc1': pc[:, 0], 'pc2': pc[:, 1]}).to_csv(out / 'cluster_plot_data.csv', index=False)",
+      "dependencies": {
+        "pc": 23,
+        "assigned": 16
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_plot_data.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      5
+    ],
+    "features": [
+      8
+    ],
+    "cluster": [
+      17,
+      18
+    ],
+    "profiles": [
+      19
+    ],
+    "team_mix": [
+      22
+    ],
+    "plot_data": [
+      24
+    ]
+  }
+}

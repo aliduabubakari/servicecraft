@@ -1,0 +1,178 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "089_transportation_statistical_visualization_integration",
+  "benchmark_revision": "batch-13",
+  "review_status": "author_review_pending",
+  "title": "Independent service summaries converging into a portfolio report",
+  "domain": "transportation",
+  "family_id": "transport_service_fanin",
+  "topology": "fan_in",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "delay_minutes",
+        "weather_condition",
+        "on_time_pct",
+        "passenger_satisfaction"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "routes",
+      "name": "Summarize route service",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_service.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate route service."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Summarize vehicle service",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "vehicle_service.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate vehicle service."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "weather",
+      "name": "Summarize weather service",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "weather_service.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate weather service."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Reconcile service summaries",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "route_service.csv",
+        "vehicle_service.csv",
+        "weather_service.csv"
+      ],
+      "outputs": [
+        "service_report.json"
+      ],
+      "requirements": [
+        "Reconcile trip totals and publish leader."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "route_service.csv",
+      "path": "route_service.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_on_time"
+      ]
+    },
+    {
+      "id": "vehicle_service.csv",
+      "path": "vehicle_service.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_on_time"
+      ]
+    },
+    {
+      "id": "weather_service.csv",
+      "path": "weather_service.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "mean_on_time"
+      ]
+    },
+    {
+      "id": "service_report.json",
+      "path": "service_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "routes",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "route_service.csv"
+      ]
+    },
+    {
+      "source": "vehicles",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "vehicle_service.csv"
+      ]
+    },
+    {
+      "source": "weather",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "weather_service.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "routes": "service_fanin",
+      "vehicles": "service_fanin",
+      "weather": "service_fanin",
+      "report": "service_fanin"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

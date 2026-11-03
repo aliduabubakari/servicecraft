@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "014_sports_clustering_integration_validation",
+  "selection_reason": "The upstream clustering pipeline does not save assignments or profiles, and raw K-means labels are unsuitable for exact automated comparison.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "data.csv": "f45685abdb2152955077b08fbc78da1a44a02edb9602630bcd49c728fd8f706a"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

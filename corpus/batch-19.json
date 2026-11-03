@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-19",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "041_sports_statistical_visualization_integration",
+      "title": "Three player feature branches feeding four cohort analyses",
+      "domain": "sports",
+      "family_id": "sports_feature_cohort_fanin_fanout_v2",
+      "topology": "fan_in_fan_out",
+      "task_count": 10,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "051_sports_visualization_integration_validation",
+      "title": "Linear player features to position ranking",
+      "domain": "sports",
+      "family_id": "position_feature_ranking_linear_v2",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "075_transportation_prediction_validation_v2",
+      "title": "Parallel delay classification and cancellation-risk regression",
+      "domain": "transportation",
+      "family_id": "parallel_delay_risk_models_v5",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "093_transportation_visualization_cleaning_validation",
+      "title": "Prepared trips fanning out to route, vehicle, and period views",
+      "domain": "transportation",
+      "family_id": "trip_route_vehicle_period_fanout_v4",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "097_transportation_visualization_integration_v2",
+      "title": "Independent operational summaries converging into a report",
+      "domain": "transportation",
+      "family_id": "transport_operations_fanin_v2",
+      "topology": "fan_in",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

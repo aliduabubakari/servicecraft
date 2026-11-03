@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "082_transportation_regression_statistical_integration",
+  "selection_reason": "Topology is supported by independently meaningful computations and extends task-count diversity.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "data.csv": "851099e4411deb7a4282a5c28f846e46a53a0ac3884bb1b248f38d9e7c561ba1"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

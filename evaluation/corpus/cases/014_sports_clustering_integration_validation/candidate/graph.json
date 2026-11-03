@@ -1,0 +1,167 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "014_sports_clustering_integration_validation",
+  "benchmark_revision": "batch-02",
+  "review_status": "author_review_pending",
+  "title": "Deterministic player-style clustering with canonical labels",
+  "domain": "sports",
+  "family_id": "unsupervised_clustering_profiling",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "play_style_score",
+        "efficiency_rating",
+        "usage_rate"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "cluster",
+      "name": "Validate, standardize, and cluster player records",
+      "operation": "kmeans_clustering",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "player_clusters.csv",
+        "model.pkl"
+      ],
+      "requirements": [
+        "Use only the ordered ten numeric features after deterministic player sorting.",
+        "Fit the declared scaler/K-means procedure and canonicalize labels from centroids."
+      ],
+      "parameters": {
+        "clusters": 4,
+        "random_state": 42,
+        "n_init": 20,
+        "algorithm": "lloyd"
+      }
+    },
+    {
+      "id": "profile",
+      "name": "Profile canonical player clusters",
+      "operation": "cluster_profiling",
+      "required": true,
+      "inputs": [
+        "player_clusters.csv",
+        "model.pkl"
+      ],
+      "outputs": [
+        "cluster_profiles.csv"
+      ],
+      "requirements": [
+        "Compute the six specified size/mean fields by canonical cluster."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish clustering validity summary",
+      "operation": "clustering_report",
+      "required": true,
+      "inputs": [
+        "cluster_profiles.csv"
+      ],
+      "outputs": [
+        "clustering_report.json"
+      ],
+      "requirements": [
+        "Publish parameters, cluster sizes, feature order, and silhouette score from this execution."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "player_clusters.csv",
+      "path": "player_clusters.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "cluster"
+      ]
+    },
+    {
+      "id": "cluster_profiles.csv",
+      "path": "cluster_profiles.csv",
+      "format": "csv",
+      "required_columns": [
+        "cluster",
+        "player_count",
+        "mean_points_per_game",
+        "mean_assists_per_game",
+        "mean_rebounds_per_game",
+        "mean_efficiency_rating",
+        "mean_usage_rate"
+      ]
+    },
+    {
+      "id": "model.pkl",
+      "path": "model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "clustering_report.json",
+      "path": "clustering_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "cluster",
+      "target": "profile",
+      "kind": "data",
+      "artifacts": [
+        "player_clusters.csv",
+        "model.pkl"
+      ]
+    },
+    {
+      "source": "profile",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "cluster_profiles.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "cluster": "cluster",
+      "profile": "cluster",
+      "report": "cluster"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

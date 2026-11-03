@@ -1,0 +1,215 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "084_transportation_statistical_cleaning_integration",
+  "benchmark_revision": "batch-06",
+  "review_status": "author_review_pending",
+  "title": "Convergent route reliability and satisfaction scoring",
+  "domain": "transportation",
+  "family_id": "route_service_scoring",
+  "topology": "linear_to_fan_in",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "distance_km",
+        "passengers",
+        "delay_minutes",
+        "on_time_pct",
+        "passenger_satisfaction"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "reliability",
+      "name": "Summarize route reliability",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_reliability.csv"
+      ],
+      "requirements": [
+        "Validate trips and compute reliability measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "satisfaction",
+      "name": "Summarize route satisfaction",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_satisfaction.csv"
+      ],
+      "requirements": [
+        "Validate trips and compute satisfaction measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate route measures",
+      "operation": "one_to_one_join",
+      "required": true,
+      "inputs": [
+        "route_reliability.csv",
+        "route_satisfaction.csv"
+      ],
+      "outputs": [
+        "route_scores.csv"
+      ],
+      "requirements": [
+        "Join reconciled counts and compute normalized combined score."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rank",
+      "name": "Rank routes",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_scores.csv"
+      ],
+      "outputs": [
+        "ranked_routes.csv"
+      ],
+      "requirements": [
+        "Rank combined score descending with route tie-break."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish route report",
+      "operation": "ranking_report",
+      "required": true,
+      "inputs": [
+        "ranked_routes.csv"
+      ],
+      "outputs": [
+        "route_report.json"
+      ],
+      "requirements": [
+        "Publish counts and top route/score."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "route_reliability.csv",
+      "path": "route_reliability.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_on_time_pct",
+        "delay_std"
+      ]
+    },
+    {
+      "id": "route_satisfaction.csv",
+      "path": "route_satisfaction.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_satisfaction"
+      ]
+    },
+    {
+      "id": "route_scores.csv",
+      "path": "route_scores.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "reliability_score",
+        "satisfaction_score",
+        "combined_score"
+      ]
+    },
+    {
+      "id": "ranked_routes.csv",
+      "path": "ranked_routes.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "combined_score"
+      ]
+    },
+    {
+      "id": "route_report.json",
+      "path": "route_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "reliability",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "route_reliability.csv"
+      ]
+    },
+    {
+      "source": "satisfaction",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "route_satisfaction.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "rank",
+      "kind": "data",
+      "artifacts": [
+        "route_scores.csv"
+      ]
+    },
+    {
+      "source": "rank",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "ranked_routes.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "reliability": "reliability",
+      "satisfaction": "reliability",
+      "integrate": "reliability",
+      "rank": "reliability",
+      "report": "reliability"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

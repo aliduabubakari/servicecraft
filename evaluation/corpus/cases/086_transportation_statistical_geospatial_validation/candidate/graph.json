@@ -1,0 +1,251 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "086_transportation_statistical_geospatial_validation",
+  "benchmark_revision": "batch-10",
+  "review_status": "author_review_pending",
+  "title": "Geographic and service route summaries converging for ranking",
+  "domain": "transportation",
+  "family_id": "route_geo_service_fanin_scoring",
+  "topology": "linear_to_fan_in",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "distance_km",
+        "passengers",
+        "delay_minutes",
+        "on_time_pct",
+        "passenger_satisfaction",
+        "origin_lat",
+        "origin_lon",
+        "dest_lat",
+        "dest_lon"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "geography",
+      "name": "Summarize route geography",
+      "operation": "geospatial_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_geography.csv"
+      ],
+      "requirements": [
+        "Validate coordinates and aggregate haversine measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "service",
+      "name": "Summarize route service",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_service.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate service measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate route contexts",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "route_geography.csv",
+        "route_service.csv"
+      ],
+      "outputs": [
+        "route_context.csv"
+      ],
+      "requirements": [
+        "Join one-to-one and reconcile trip counts."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "score",
+      "name": "Score routes",
+      "operation": "composite_scoring",
+      "required": true,
+      "inputs": [
+        "route_context.csv"
+      ],
+      "outputs": [
+        "route_scores.csv"
+      ],
+      "requirements": [
+        "Compute distance alignment and fixed weighted score."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rank",
+      "name": "Rank routes",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_scores.csv"
+      ],
+      "outputs": [
+        "route_ranking.csv"
+      ],
+      "requirements": [
+        "Apply declared deterministic ordering."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish route report",
+      "operation": "ranking_report",
+      "required": true,
+      "inputs": [
+        "route_ranking.csv"
+      ],
+      "outputs": [
+        "route_report.json"
+      ],
+      "requirements": [
+        "Publish route and trip totals and leader."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "route_geography.csv",
+      "path": "route_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "geography_trip_count",
+        "mean_geodesic_km"
+      ]
+    },
+    {
+      "id": "route_service.csv",
+      "path": "route_service.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "service_trip_count",
+        "mean_on_time_pct"
+      ]
+    },
+    {
+      "id": "route_context.csv",
+      "path": "route_context.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "geography_trip_count",
+        "service_trip_count"
+      ]
+    },
+    {
+      "id": "route_scores.csv",
+      "path": "route_scores.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "distance_alignment",
+        "route_score"
+      ]
+    },
+    {
+      "id": "route_ranking.csv",
+      "path": "route_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "route_score"
+      ]
+    },
+    {
+      "id": "route_report.json",
+      "path": "route_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "geography",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "route_geography.csv"
+      ]
+    },
+    {
+      "source": "service",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "route_service.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "score",
+      "kind": "data",
+      "artifacts": [
+        "route_context.csv"
+      ]
+    },
+    {
+      "source": "score",
+      "target": "rank",
+      "kind": "data",
+      "artifacts": [
+        "route_scores.csv"
+      ]
+    },
+    {
+      "source": "rank",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "route_ranking.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "geography": "geo_service_fanin",
+      "service": "geo_service_fanin",
+      "integrate": "geo_service_fanin",
+      "score": "geo_service_fanin",
+      "rank": "geo_service_fanin",
+      "report": "geo_service_fanin"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

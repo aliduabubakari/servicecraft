@@ -1,0 +1,44 @@
+# Trailing-demand inventory reorder planning
+
+1. Objective
+
+Build a local Dagster pipeline that converts recent sales into deterministic SKU-level reorder recommendations. This is a trailing-demand inventory calculation, not a future-sales forecast or a learned model.
+
+2. Available input files
+
+- inputs/inventory.csv
+  Columns present: sku_id, product_name, category, unit_cost, unit_price, supplier, lead_time_days, reorder_point, safety_stock, current_stock, is_seasonal
+- inputs/sales_orders.csv
+  Columns present: order_id, sku_id, order_date, quantity, unit_price, total_amount, region
+- inputs/suppliers.csv
+  Columns present: supplier_name, rating, on_time_delivery_pct, avg_lead_time_days, minimum_order_qty, country, payment_terms
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Validate unique sku_id, order_id, and supplier_name keys. Every sales SKU must occur in inventory.csv and every inventory supplier must occur in suppliers.csv. Parse order_date and require finite, nonnegative quantity, current_stock, lead_time_days, and minimum_order_qty; lead times and minimum quantities must be positive integers.
+
+Let window_end be the normalized maximum order date and window_start be 89 days earlier, giving 90 inclusive calendar days. Sum quantity by SKU and calendar date within this window. Materialize all 90 dates for every inventory SKU, filling days without sales with zero. daily_demand.csv contains sku_id, date, and quantity sorted by SKU/date.
+
+For each SKU compute mean_daily_demand and population standard deviation std_daily_demand (ddof=0), plus window_quantity. Join inventory and supplier information. Compute target_stock = mean_daily_demand * lead_time_days + 1.645 * std_daily_demand * sqrt(lead_time_days). Compute raw shortage as max(0, ceil(target_stock-current_stock)). If positive, round the shortage upward to an integer multiple of minimum_order_qty; otherwise recommend zero. reorder_required is 1 exactly when the recommendation is positive.
+
+inventory_plan.csv contains the declared identifiers, source measures, demand statistics, target_stock, suggested_order_quantity, and reorder_required, sorted by sku_id. inventory_report.json contains the two window dates, window_days=90, service_z=1.645, SKU count, reorder SKU count, and total suggested units.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `daily_demand.csv`
+- `inventory_plan.csv`
+- `inventory_report.json`
+
+6. Execution and numerical requirements
+
+Execution and output contract: generate executable Dagster code using only the supplied local files. Do not use network services, outputs from earlier runs, fixed analytical results, or human intervention. Each mandatory logical operation must be visible in the design/code. A different Dagster asset/op decomposition is allowed when it preserves the specified behavior, dependencies, and observable outputs. Write every output beneath the designated run output directory. Preserve full numeric precision; comparisons use atol=1e-6 and rtol=1e-6. JSON must not contain NaN or Infinity. Missing required columns, broken identifier relationships, duplicate primary identifiers, invalid dates, and missing/non-finite required values must fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

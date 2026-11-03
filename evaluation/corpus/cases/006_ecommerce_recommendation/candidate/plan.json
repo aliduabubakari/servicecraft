@@ -1,0 +1,386 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "customers = pd.read_csv(data / 'customers.csv')",
+      "dependencies": {},
+      "writes": [
+        "customers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "products = pd.read_csv(data / 'products.csv')",
+      "dependencies": {},
+      "writes": [
+        "products"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "orders = pd.read_csv(data / 'orders.csv')",
+      "dependencies": {},
+      "writes": [
+        "orders"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "cc = ['customer_id']",
+      "dependencies": {},
+      "writes": [
+        "cc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "pc = ['product_id', 'product_name', 'category', 'rating', 'in_stock']",
+      "dependencies": {},
+      "writes": [
+        "pc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "oc = ['order_id', 'customer_id', 'product_id', 'quantity']",
+      "dependencies": {},
+      "writes": [
+        "oc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "require(customers, cc, 'customers.csv')",
+      "dependencies": {
+        "cc": 3,
+        "customers": 0
+      },
+      "writes": [
+        "customers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "require(products, pc, 'products.csv')",
+      "dependencies": {
+        "products": 1,
+        "pc": 4
+      },
+      "writes": [
+        "products"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "require(orders, oc, 'orders.csv')",
+      "dependencies": {
+        "oc": 5,
+        "orders": 2
+      },
+      "writes": [
+        "orders"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "if not customers.customer_id.is_unique or not products.product_id.is_unique or (not orders.order_id.is_unique) or customers.customer_id.astype(str).str.strip().eq('').any() or products.product_id.astype(str).str.strip().eq('').any() or orders.order_id.astype(str).str.strip().eq('').any():\n    raise ValueError('customer, product, and order identifiers must be unique')",
+      "dependencies": {
+        "orders": 8,
+        "products": 7,
+        "customers": 6
+      },
+      "writes": [
+        "customers",
+        "orders",
+        "products"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "if not set(orders.customer_id) <= set(customers.customer_id) or not set(orders.product_id) <= set(products.product_id):\n    raise ValueError('order keys do not reconcile')",
+      "dependencies": {
+        "orders": 9,
+        "products": 9,
+        "customers": 9
+      },
+      "writes": [
+        "customers",
+        "orders",
+        "products"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "finite(products, ['rating', 'in_stock'], 'products.csv')",
+      "dependencies": {
+        "products": 10
+      },
+      "writes": [
+        "products"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "finite(orders, ['quantity'], 'orders.csv')",
+      "dependencies": {
+        "orders": 10
+      },
+      "writes": [
+        "orders"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "if (orders.quantity <= 0).any() or not products.rating.between(0, 5).all() or (not set(products.in_stock.unique()) <= {0, 1}):\n    raise ValueError('quantity, rating, or stock flag violates its declared bounds')",
+      "dependencies": {
+        "products": 11,
+        "orders": 12
+      },
+      "writes": [
+        "orders",
+        "products"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "interactions = orders.merge(products[['product_id', 'category']], on='product_id', validate='many_to_one').groupby(['customer_id', 'product_id', 'category'], as_index=False).quantity.sum()",
+      "dependencies": {
+        "products": 13,
+        "orders": 13
+      },
+      "writes": [
+        "interactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "interactions = interactions.rename(columns={'quantity': 'purchased_quantity'}).sort_values(['customer_id', 'product_id'])",
+      "dependencies": {
+        "interactions": 14
+      },
+      "writes": [
+        "interactions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "interactions.to_csv(out / 'interactions.csv', index=False)",
+      "dependencies": {
+        "interactions": 15
+      },
+      "writes": [],
+      "outputs": [
+        "interactions.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "category = interactions.groupby(['customer_id', 'category'], as_index=False).purchased_quantity.sum()",
+      "dependencies": {
+        "interactions": 15
+      },
+      "writes": [
+        "category"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "totals = category.groupby('customer_id').purchased_quantity.transform('sum')",
+      "dependencies": {
+        "category": 17
+      },
+      "writes": [
+        "totals"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "category['category_affinity'] = category.purchased_quantity / totals",
+      "dependencies": {
+        "totals": 18,
+        "category": 17
+      },
+      "writes": [
+        "category"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "affinity = {(r.customer_id, r.category): r.category_affinity for r in category.itertuples()}",
+      "dependencies": {
+        "category": 19
+      },
+      "writes": [
+        "affinity"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "popularity = interactions.groupby('product_id').purchased_quantity.sum().reindex(products.product_id, fill_value=0)",
+      "dependencies": {
+        "interactions": 15,
+        "products": 13
+      },
+      "writes": [
+        "popularity"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "max_pop = float(popularity.max()) or 1.0",
+      "dependencies": {
+        "popularity": 21
+      },
+      "writes": [
+        "max_pop"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "pop = (popularity / max_pop).to_dict()",
+      "dependencies": {
+        "max_pop": 22,
+        "popularity": 21
+      },
+      "writes": [
+        "pop"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "purchased = interactions.groupby('customer_id').product_id.apply(set).to_dict()",
+      "dependencies": {
+        "interactions": 15
+      },
+      "writes": [
+        "purchased"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "available = products[products.in_stock == 1]",
+      "dependencies": {
+        "products": 13
+      },
+      "writes": [
+        "available"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "rows = []",
+      "dependencies": {},
+      "writes": [
+        "rows"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "for customer_id in sorted(customers.customer_id):\n    candidates = []\n    for p in available.itertuples():\n        if p.product_id in purchased.get(customer_id, set()):\n            continue\n        score = 0.6 * affinity.get((customer_id, p.category), 0.0) + 0.25 * pop[p.product_id] + 0.15 * (p.rating / 5.0)\n        candidates.append((score, p.product_id, p.product_name, p.category))\n    for rank, (score, product_id, product_name, cat) in enumerate(sorted(candidates, key=lambda x: (-x[0], x[1]))[:3], 1):\n        rows.append([customer_id, rank, product_id, product_name, cat, score])",
+      "dependencies": {
+        "available": 25,
+        "affinity": 20,
+        "rows": 26,
+        "purchased": 24,
+        "pop": 23,
+        "customers": 10
+      },
+      "writes": [
+        "candidates",
+        "cat",
+        "customer_id",
+        "p",
+        "product_id",
+        "product_name",
+        "purchased",
+        "rank",
+        "rows",
+        "score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "recs = pd.DataFrame(rows, columns=['customer_id', 'rank', 'product_id', 'product_name', 'category', 'score'])",
+      "dependencies": {
+        "rows": 27
+      },
+      "writes": [
+        "recs"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "recs.to_csv(out / 'recommendations.csv', index=False)",
+      "dependencies": {
+        "recs": 28
+      },
+      "writes": [],
+      "outputs": [
+        "recommendations.csv"
+      ]
+    },
+    {
+      "index": 30,
+      "source": "report = {'customers': len(customers), 'customers_with_recommendations': int(recs.customer_id.nunique()), 'recommendations': len(recs), 'top_k': 3, 'in_stock_products': int((products.in_stock == 1).sum())}",
+      "dependencies": {
+        "recs": 28,
+        "products": 13,
+        "customers": 10
+      },
+      "writes": [
+        "report"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 31,
+      "source": "write_json(out / 'recommendation_report.json', report)",
+      "dependencies": {
+        "report": 30
+      },
+      "writes": [],
+      "outputs": [
+        "recommendation_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "interactions": [
+      16
+    ],
+    "rank": [
+      29
+    ],
+    "report": [
+      31
+    ]
+  }
+}

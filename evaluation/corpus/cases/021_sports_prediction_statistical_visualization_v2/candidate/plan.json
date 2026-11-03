@@ -1,0 +1,403 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "perf = ['games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'injury_games_missed', 'contract_year']",
+      "dependencies": {},
+      "writes": [
+        "perf"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "shoot = ['field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "shoot"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "cols = ['player_id', 'team', 'position', 'all_star', *perf, *shoot]",
+      "dependencies": {
+        "shoot": 2,
+        "perf": 1
+      },
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "check(d, cols, 'player_id')",
+      "dependencies": {
+        "cols": 3,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "clean = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 3,
+        "d": 4
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 5
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "p = clean[['player_id', *perf]].copy()",
+      "dependencies": {
+        "perf": 1,
+        "clean": 5
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "p['production_index'] = p.points_per_game + p.assists_per_game + p.rebounds_per_game",
+      "dependencies": {
+        "p": 7
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "p.to_csv(out / 'performance_features.csv', index=False)",
+      "dependencies": {
+        "p": 8
+      },
+      "writes": [],
+      "outputs": [
+        "performance_features.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "s = clean[['player_id', *shoot]].copy()",
+      "dependencies": {
+        "shoot": 2,
+        "clean": 5
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "s['shooting_index'] = s[shoot].mean(axis=1)",
+      "dependencies": {
+        "s": 10,
+        "shoot": 2
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "s.to_csv(out / 'shooting_features.csv', index=False)",
+      "dependencies": {
+        "s": 11
+      },
+      "writes": [],
+      "outputs": [
+        "shooting_features.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "table = clean[['player_id', 'team', 'position', 'all_star']].merge(p, on='player_id').merge(s, on='player_id')",
+      "dependencies": {
+        "s": 11,
+        "p": 8,
+        "clean": 5
+      },
+      "writes": [
+        "table"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "table.to_csv(out / 'model_data.csv', index=False)",
+      "dependencies": {
+        "table": 13
+      },
+      "writes": [],
+      "outputs": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "features = [*perf, 'production_index', *shoot, 'shooting_index']",
+      "dependencies": {
+        "shoot": 2,
+        "perf": 1
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "tr, te = train_test_split(table, test_size=0.25, random_state=42, stratify=table.all_star)",
+      "dependencies": {
+        "table": 13
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', LogisticRegression(C=1, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "model.fit(tr[features], tr.all_star)",
+      "dependencies": {
+        "model": 17,
+        "features": 15,
+        "tr": 16
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "prob = model.predict_proba(te[features])[:, 1]",
+      "dependencies": {
+        "te": 16,
+        "model": 18,
+        "features": 15
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "yp = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 19
+      },
+      "writes": [
+        "yp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "with (out / 'model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 18
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "model.pkl"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "pred = pd.DataFrame({'player_id': te.player_id, 'position': te.position, 'actual': te.all_star, 'probability': prob, 'predicted': yp}).sort_values('player_id')",
+      "dependencies": {
+        "te": 16,
+        "yp": 20,
+        "prob": 19
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "pred.to_csv(out / 'predictions.csv', index=False)",
+      "dependencies": {
+        "pred": 22
+      },
+      "writes": [],
+      "outputs": [
+        "predictions.csv"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "metrics = {'train_rows': len(tr), 'test_rows': len(te), 'accuracy': accuracy_score(te.all_star, yp), 'precision': precision_score(te.all_star, yp, zero_division=0), 'recall': recall_score(te.all_star, yp, zero_division=0), 'f1': f1_score(te.all_star, yp, zero_division=0), 'roc_auc': roc_auc_score(te.all_star, prob)}",
+      "dependencies": {
+        "te": 16,
+        "tr": 16,
+        "prob": 19,
+        "yp": 20
+      },
+      "writes": [
+        "metrics"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "js(out / 'metrics.json', metrics)",
+      "dependencies": {
+        "metrics": 24
+      },
+      "writes": [],
+      "outputs": [
+        "metrics.json"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "pos = pred.groupby('position', as_index=False).agg(test_count=('player_id', 'size'), actual_rate=('actual', 'mean'), predicted_rate=('predicted', 'mean'), mean_probability=('probability', 'mean'))",
+      "dependencies": {
+        "pred": 22
+      },
+      "writes": [
+        "pos"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "pos.to_csv(out / 'position_model_summary.csv', index=False)",
+      "dependencies": {
+        "pos": 26
+      },
+      "writes": [],
+      "outputs": [
+        "position_model_summary.csv"
+      ]
+    },
+    {
+      "index": 28,
+      "source": "bins = pd.cut(pred.probability, bins=np.linspace(0, 1, 6), include_lowest=True, labels=False)",
+      "dependencies": {
+        "pred": 22
+      },
+      "writes": [
+        "bins"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "cal = pred.assign(probability_bin=bins).groupby('probability_bin', as_index=False).agg(count=('player_id', 'size'), mean_probability=('probability', 'mean'), actual_rate=('actual', 'mean'))",
+      "dependencies": {
+        "bins": 28,
+        "pred": 22
+      },
+      "writes": [
+        "cal"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "cal.to_csv(out / 'calibration_bins.csv', index=False)",
+      "dependencies": {
+        "cal": 29
+      },
+      "writes": [],
+      "outputs": [
+        "calibration_bins.csv"
+      ]
+    },
+    {
+      "index": 31,
+      "source": "js(out / 'allstar_report.json', {'model': metrics, 'positions': len(pos), 'calibration_bins': len(cal), 'predictions': len(pred)})",
+      "dependencies": {
+        "pred": 22,
+        "metrics": 24,
+        "pos": 26,
+        "cal": 29
+      },
+      "writes": [],
+      "outputs": [
+        "allstar_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      6
+    ],
+    "performance": [
+      9
+    ],
+    "shooting": [
+      12
+    ],
+    "integrate": [
+      14
+    ],
+    "fit": [
+      21,
+      23
+    ],
+    "evaluate": [
+      25
+    ],
+    "positions": [
+      27
+    ],
+    "calibration": [
+      30
+    ],
+    "report": [
+      31
+    ]
+  }
+}

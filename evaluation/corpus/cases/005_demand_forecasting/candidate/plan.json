@@ -1,0 +1,439 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "inventory = pd.read_csv(data / 'inventory.csv')",
+      "dependencies": {},
+      "writes": [
+        "inventory"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "sales = pd.read_csv(data / 'sales_orders.csv')",
+      "dependencies": {},
+      "writes": [
+        "sales"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "suppliers = pd.read_csv(data / 'suppliers.csv')",
+      "dependencies": {},
+      "writes": [
+        "suppliers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "ic = ['sku_id', 'product_name', 'supplier', 'lead_time_days', 'current_stock']",
+      "dependencies": {},
+      "writes": [
+        "ic"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "sc = ['order_id', 'sku_id', 'order_date', 'quantity']",
+      "dependencies": {},
+      "writes": [
+        "sc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "uc = ['supplier_name', 'minimum_order_qty']",
+      "dependencies": {},
+      "writes": [
+        "uc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "require(inventory, ic, 'inventory.csv')",
+      "dependencies": {
+        "inventory": 0,
+        "ic": 3
+      },
+      "writes": [
+        "inventory"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "require(sales, sc, 'sales_orders.csv')",
+      "dependencies": {
+        "sales": 1,
+        "sc": 4
+      },
+      "writes": [
+        "sales"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "require(suppliers, uc, 'suppliers.csv')",
+      "dependencies": {
+        "uc": 5,
+        "suppliers": 2
+      },
+      "writes": [
+        "suppliers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "if not inventory.sku_id.is_unique or not sales.order_id.is_unique or (not suppliers.supplier_name.is_unique) or inventory.sku_id.astype(str).str.strip().eq('').any() or sales.order_id.astype(str).str.strip().eq('').any():\n    raise ValueError('inventory, order, and supplier identifiers must be unique')",
+      "dependencies": {
+        "sales": 7,
+        "suppliers": 8,
+        "inventory": 6
+      },
+      "writes": [
+        "inventory",
+        "sales",
+        "suppliers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "if not set(sales.sku_id) <= set(inventory.sku_id) or not set(inventory.supplier) <= set(suppliers.supplier_name):\n    raise ValueError('sales and supplier keys do not reconcile')",
+      "dependencies": {
+        "sales": 9,
+        "suppliers": 9,
+        "inventory": 9
+      },
+      "writes": [
+        "inventory",
+        "sales",
+        "suppliers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "finite(inventory, ['lead_time_days', 'current_stock'], 'inventory.csv')",
+      "dependencies": {
+        "inventory": 10
+      },
+      "writes": [
+        "inventory"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "finite(sales, ['quantity'], 'sales_orders.csv')",
+      "dependencies": {
+        "sales": 10
+      },
+      "writes": [
+        "sales"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "finite(suppliers, ['minimum_order_qty'], 'suppliers.csv')",
+      "dependencies": {
+        "suppliers": 10
+      },
+      "writes": [
+        "suppliers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "if (inventory[['lead_time_days', 'current_stock']].to_numpy() < 0).any() or (sales.quantity < 0).any() or (suppliers.minimum_order_qty <= 0).any():\n    raise ValueError('inventory planning measures violate nonnegative/positive bounds')",
+      "dependencies": {
+        "inventory": 11,
+        "sales": 12,
+        "suppliers": 13
+      },
+      "writes": [
+        "inventory",
+        "sales",
+        "suppliers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "if not inventory.lead_time_days.map(lambda value: float(value).is_integer()).all() or not suppliers.minimum_order_qty.map(lambda value: float(value).is_integer()).all():\n    raise ValueError('lead_time_days and minimum_order_qty must be integers')",
+      "dependencies": {
+        "suppliers": 14,
+        "inventory": 14
+      },
+      "writes": [
+        "inventory",
+        "suppliers"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "sales['order_date'] = pd.to_datetime(sales.order_date, errors='raise')",
+      "dependencies": {
+        "sales": 14
+      },
+      "writes": [
+        "sales"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "end = sales.order_date.max().normalize()",
+      "dependencies": {
+        "sales": 16
+      },
+      "writes": [
+        "end"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "start = end - pd.Timedelta(days=89)",
+      "dependencies": {
+        "end": 17
+      },
+      "writes": [
+        "start"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "recent = sales[(sales.order_date.dt.normalize() >= start) & (sales.order_date.dt.normalize() <= end)].copy()",
+      "dependencies": {
+        "start": 18,
+        "end": 17,
+        "sales": 16
+      },
+      "writes": [
+        "recent"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "recent['date'] = recent.order_date.dt.normalize()",
+      "dependencies": {
+        "recent": 19
+      },
+      "writes": [
+        "recent"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "daily = recent.groupby(['sku_id', 'date'], as_index=False).quantity.sum()",
+      "dependencies": {
+        "recent": 20
+      },
+      "writes": [
+        "daily"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "grid = pd.MultiIndex.from_product([sorted(inventory.sku_id), pd.date_range(start, end)], names=['sku_id', 'date']).to_frame(index=False)",
+      "dependencies": {
+        "end": 17,
+        "inventory": 15,
+        "start": 18
+      },
+      "writes": [
+        "grid"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "daily = grid.merge(daily, on=['sku_id', 'date'], how='left').fillna({'quantity': 0}).sort_values(['sku_id', 'date'])",
+      "dependencies": {
+        "daily": 21,
+        "grid": 22
+      },
+      "writes": [
+        "daily"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "daily.to_csv(out / 'daily_demand.csv', index=False, date_format='%Y-%m-%d')",
+      "dependencies": {
+        "daily": 23
+      },
+      "writes": [],
+      "outputs": [
+        "daily_demand.csv"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "demand = daily.groupby('sku_id', as_index=False).agg(mean_daily_demand=('quantity', 'mean'), std_daily_demand=('quantity', lambda x: x.std(ddof=0)), window_quantity=('quantity', 'sum'))",
+      "dependencies": {
+        "daily": 23
+      },
+      "writes": [
+        "demand"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "plan = inventory[ic].merge(demand, on='sku_id', validate='one_to_one').merge(suppliers[uc], left_on='supplier', right_on='supplier_name', validate='many_to_one')",
+      "dependencies": {
+        "suppliers": 15,
+        "demand": 25,
+        "ic": 3,
+        "inventory": 15,
+        "uc": 5
+      },
+      "writes": [
+        "plan"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "plan['target_stock'] = plan.mean_daily_demand * plan.lead_time_days + 1.645 * plan.std_daily_demand * np.sqrt(plan.lead_time_days)",
+      "dependencies": {
+        "plan": 26
+      },
+      "writes": [
+        "plan"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "raw = np.maximum(0, np.ceil(plan.target_stock - plan.current_stock)).astype(int)",
+      "dependencies": {
+        "plan": 27
+      },
+      "writes": [
+        "raw"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "moq = plan.minimum_order_qty.astype(int)",
+      "dependencies": {
+        "plan": 27
+      },
+      "writes": [
+        "moq"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "plan['suggested_order_quantity'] = np.where(raw > 0, np.ceil(raw / moq).astype(int) * moq, 0)",
+      "dependencies": {
+        "moq": 29,
+        "raw": 28,
+        "plan": 27
+      },
+      "writes": [
+        "plan"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 31,
+      "source": "plan['reorder_required'] = (plan.suggested_order_quantity > 0).astype(int)",
+      "dependencies": {
+        "plan": 30
+      },
+      "writes": [
+        "plan"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 32,
+      "source": "columns = ['sku_id', 'product_name', 'supplier', 'lead_time_days', 'current_stock', 'minimum_order_qty', 'mean_daily_demand', 'std_daily_demand', 'window_quantity', 'target_stock', 'suggested_order_quantity', 'reorder_required']",
+      "dependencies": {},
+      "writes": [
+        "columns"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 33,
+      "source": "plan = plan[columns].sort_values('sku_id').reset_index(drop=True)",
+      "dependencies": {
+        "columns": 32,
+        "plan": 31
+      },
+      "writes": [
+        "plan"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 34,
+      "source": "plan.to_csv(out / 'inventory_plan.csv', index=False)",
+      "dependencies": {
+        "plan": 33
+      },
+      "writes": [],
+      "outputs": [
+        "inventory_plan.csv"
+      ]
+    },
+    {
+      "index": 35,
+      "source": "report = {'window_start': start.strftime('%Y-%m-%d'), 'window_end': end.strftime('%Y-%m-%d'), 'window_days': 90, 'service_z': 1.645, 'skus': len(plan), 'reorder_skus': int(plan.reorder_required.sum()), 'total_suggested_units': int(plan.suggested_order_quantity.sum())}",
+      "dependencies": {
+        "end": 17,
+        "plan": 33,
+        "start": 18
+      },
+      "writes": [
+        "report"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 36,
+      "source": "write_json(out / 'inventory_report.json', report)",
+      "dependencies": {
+        "report": 35
+      },
+      "writes": [],
+      "outputs": [
+        "inventory_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "aggregate": [
+      24
+    ],
+    "plan": [
+      34
+    ],
+    "report": [
+      36
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "001_analytics_statistical_cleaning_integration",
+  "selection_reason": "Two sources naturally support independent validation before a keyed join; the upstream prose does not make that convergence observable.",
+  "input_transformations": [
+    {
+      "source": "stocks.csv",
+      "benchmark_file": "stocks.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "market_indices.csv",
+      "benchmark_file": "market_indices.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "market_indices.csv": "f2309e852f9cbbf44cc5f01ba2ba272b6b0b086b684cb1d80ec0d370f3cbf05d",
+    "stocks.csv": "c5facb14eb7f3fc5cd8dfa89a56e2d347bed28bf415715a466d3acf37f73f848"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

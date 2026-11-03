@@ -1,0 +1,47 @@
+# Temporal maintenance features with dual-horizon failure models
+
+1. Objective
+
+Build a `fan_in_fan_out` predictive-maintenance DAG. Validate unique nonblank (machine_id,timestamp), hourly continuity within each machine, finite sensor fields, and binary targets; emit sensor_clean.csv sorted by machine/timestamp.
+
+2. Available input files
+
+- inputs/sensor_readings.csv
+  Columns present: machine_id, machine_type, timestamp, temperature_c, vibration_mm_s, pressure_bar, rpm, power_consumption_kw, noise_db, humidity_pct, is_failure, failure_within_24h, failure_within_7d
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+The clean table fans out into two past-only feature branches. Temporal branch computes lag-1 and prior-24-hour rolling means for temperature, vibration, and power. Baseline branch computes prior expanding mean and population standard deviation for temperature and vibration with minimum 24 observations. Both use shift(1), so the current/future row is excluded. Their outputs join one-to-one with clean sensors; drop rows missing any derived field and sort maintenance_features.csv by timestamp/machine.
+
+The integrated table fans out to: (1) a 24-hour failure classifier, (2) a 7-day classifier, and (3) machine risk summary. Models share the ordered current/derived numeric predictors, earliest floor(0.8*N) rows for training, remaining rows for testing, train-only StandardScaler, LogisticRegression(C=1, liblinear, max_iter=1000, seed 42), and threshold 0.5. Each emits model, predictions, and accuracy/precision/recall/F1/ROC-AUC metrics. Risk summary reports observation/failure counts, target rates, and mean temperature/vibration by machine.
+
+maintenance_report.json reconverges both metric artifacts and machine_risk_summary.csv, publishing integrated rows, machine count, nested metrics, and the highest seven-day-risk machine with machine_id ascending tie-breaker.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `sensor_clean.csv`
+- `temporal_features.csv`
+- `expanding_baselines.csv`
+- `maintenance_features.csv`
+- `failure24h_model.pkl`
+- `failure24h_predictions.csv`
+- `failure24h_metrics.json`
+- `failure7d_model.pkl`
+- `failure7d_predictions.csv`
+- `failure7d_metrics.json`
+- `machine_risk_summary.csv`
+- `maintenance_report.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without network services, prior-run outputs, fixed analytical answers, or human intervention. The declared topology is a scored semantic property: preserve independent branches and every artifact-backed join. Alternative Dagster decomposition is allowed only when logical requirements, dependencies, topology, and observable checkpoints remain equivalent. Write outputs beneath the run output directory. Preserve numeric precision; comparisons use atol=1e-6 and rtol=1e-6. JSON must be finite. Missing columns, invalid identifiers/dates, broken relationships, and non-finite required values must fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

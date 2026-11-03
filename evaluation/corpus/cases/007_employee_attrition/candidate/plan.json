@@ -1,0 +1,426 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "employees = pd.read_csv(data / 'employees.csv')",
+      "dependencies": {},
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "engagement = pd.read_csv(data / 'engagement_surveys.csv')",
+      "dependencies": {},
+      "writes": [
+        "engagement"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "performance = pd.read_csv(data / 'performance_reviews.csv')",
+      "dependencies": {},
+      "writes": [
+        "performance"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "ec = ['employee_id', 'department', 'monthly_salary', 'overtime', 'job_satisfaction', 'is_attrited']",
+      "dependencies": {},
+      "writes": [
+        "ec"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "gc = ['employee_id', 'survey_date', 'engagement_score', 'satisfaction_score', 'manager_score', 'career_growth_score', 'work_env_score']",
+      "dependencies": {},
+      "writes": [
+        "gc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "pc = ['employee_id', 'review_year', 'performance_score', 'goal_achievement_pct', 'peer_feedback_score', 'manager_rating', 'promotion_recommended']",
+      "dependencies": {},
+      "writes": [
+        "pc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "require(employees, ec, 'employees.csv')",
+      "dependencies": {
+        "employees": 0,
+        "ec": 3
+      },
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "require(engagement, gc, 'engagement_surveys.csv')",
+      "dependencies": {
+        "gc": 4,
+        "engagement": 1
+      },
+      "writes": [
+        "engagement"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "require(performance, pc, 'performance_reviews.csv')",
+      "dependencies": {
+        "performance": 2,
+        "pc": 5
+      },
+      "writes": [
+        "performance"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "nonblank_unique(employees, ['employee_id'], 'employees.csv')",
+      "dependencies": {
+        "employees": 6
+      },
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "numeric(employees, ['monthly_salary', 'job_satisfaction', 'is_attrited'], 'employees.csv')",
+      "dependencies": {
+        "employees": 9
+      },
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "if not set(employees.is_attrited.unique()) <= {0, 1}:\n    raise ValueError('is_attrited must be binary')",
+      "dependencies": {
+        "employees": 10
+      },
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "workforce = employees[ec].sort_values('employee_id')",
+      "dependencies": {
+        "employees": 11,
+        "ec": 3
+      },
+      "writes": [
+        "workforce"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "workforce.to_csv(out / 'workforce.csv', index=False)",
+      "dependencies": {
+        "workforce": 12
+      },
+      "writes": [],
+      "outputs": [
+        "workforce.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "by_department = workforce.groupby('department', as_index=False).agg(employee_count=('employee_id', 'size'), attrition_count=('is_attrited', 'sum'), attrition_rate=('is_attrited', 'mean'), mean_salary=('monthly_salary', 'mean'), mean_job_satisfaction=('job_satisfaction', 'mean')).sort_values('department')",
+      "dependencies": {
+        "workforce": 12
+      },
+      "writes": [
+        "by_department"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "by_department.to_csv(out / 'attrition_by_department.csv', index=False)",
+      "dependencies": {
+        "by_department": 14
+      },
+      "writes": [],
+      "outputs": [
+        "attrition_by_department.csv"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "write_json(out / 'attrition_report.json', {'employees': len(workforce), 'attrited': int(workforce.is_attrited.sum()), 'attrition_rate': workforce.is_attrited.mean(), 'departments': len(by_department)})",
+      "dependencies": {
+        "by_department": 14,
+        "workforce": 12
+      },
+      "writes": [],
+      "outputs": [
+        "attrition_report.json"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "if not set(engagement.employee_id) <= set(employees.employee_id):\n    raise ValueError('unknown engagement employee')",
+      "dependencies": {
+        "engagement": 7,
+        "employees": 11
+      },
+      "writes": [
+        "employees",
+        "engagement"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "numeric(engagement, gc[2:], 'engagement_surveys.csv')",
+      "dependencies": {
+        "gc": 4,
+        "engagement": 17
+      },
+      "writes": [
+        "engagement"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "engagement['survey_date'] = pd.to_datetime(engagement.survey_date, errors='raise')",
+      "dependencies": {
+        "engagement": 18
+      },
+      "writes": [
+        "engagement"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "engagement['engagement_composite'] = engagement[gc[2:]].mean(axis=1)",
+      "dependencies": {
+        "gc": 4,
+        "engagement": 19
+      },
+      "writes": [
+        "engagement"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "engagement_employee = engagement.groupby('employee_id', as_index=False).agg(survey_count=('survey_date', 'size'), mean_engagement_composite=('engagement_composite', 'mean'), latest_survey_date=('survey_date', 'max')).sort_values('employee_id')",
+      "dependencies": {
+        "engagement": 20
+      },
+      "writes": [
+        "engagement_employee"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "engagement_employee.latest_survey_date = engagement_employee.latest_survey_date.dt.strftime('%Y-%m-%d')",
+      "dependencies": {
+        "engagement_employee": 21
+      },
+      "writes": [
+        "engagement_employee"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "engagement_employee.to_csv(out / 'engagement_by_employee.csv', index=False)",
+      "dependencies": {
+        "engagement_employee": 22
+      },
+      "writes": [],
+      "outputs": [
+        "engagement_by_employee.csv"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "engagement['month'] = engagement.survey_date.dt.to_period('M').astype(str)",
+      "dependencies": {
+        "engagement": 20
+      },
+      "writes": [
+        "engagement"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "monthly = engagement.groupby('month', as_index=False).agg(survey_count=('employee_id', 'size'), mean_engagement_composite=('engagement_composite', 'mean')).sort_values('month')",
+      "dependencies": {
+        "engagement": 24
+      },
+      "writes": [
+        "monthly"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "monthly.to_csv(out / 'engagement_by_month.csv', index=False)",
+      "dependencies": {
+        "monthly": 25
+      },
+      "writes": [],
+      "outputs": [
+        "engagement_by_month.csv"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "write_json(out / 'engagement_report.json', {'survey_rows': len(engagement), 'surveyed_employees': engagement.employee_id.nunique(), 'months': len(monthly), 'overall_mean_composite': engagement.engagement_composite.mean()})",
+      "dependencies": {
+        "monthly": 25,
+        "engagement": 24
+      },
+      "writes": [],
+      "outputs": [
+        "engagement_report.json"
+      ]
+    },
+    {
+      "index": 28,
+      "source": "if not set(performance.employee_id) <= set(employees.employee_id):\n    raise ValueError('unknown performance employee')",
+      "dependencies": {
+        "performance": 8,
+        "employees": 17
+      },
+      "writes": [
+        "employees",
+        "performance"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "numeric(performance, pc[1:], 'performance_reviews.csv')",
+      "dependencies": {
+        "performance": 28,
+        "pc": 5
+      },
+      "writes": [
+        "performance"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "performance_employee = performance.groupby('employee_id', as_index=False).agg(review_count=('review_year', 'size'), mean_performance_score=('performance_score', 'mean'), mean_goal_achievement_pct=('goal_achievement_pct', 'mean'), promotion_recommendations=('promotion_recommended', 'sum')).sort_values('employee_id')",
+      "dependencies": {
+        "performance": 29
+      },
+      "writes": [
+        "performance_employee"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 31,
+      "source": "performance_employee.to_csv(out / 'performance_by_employee.csv', index=False)",
+      "dependencies": {
+        "performance_employee": 30
+      },
+      "writes": [],
+      "outputs": [
+        "performance_by_employee.csv"
+      ]
+    },
+    {
+      "index": 32,
+      "source": "perf_join = performance_employee.merge(employees[['employee_id', 'department']], on='employee_id', validate='one_to_one')",
+      "dependencies": {
+        "employees": 28,
+        "performance_employee": 30
+      },
+      "writes": [
+        "perf_join"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 33,
+      "source": "perf_department = perf_join.groupby('department', as_index=False).agg(reviewed_employees=('employee_id', 'size'), mean_performance_score=('mean_performance_score', 'mean'), mean_goal_achievement_pct=('mean_goal_achievement_pct', 'mean'), promotion_recommendations=('promotion_recommendations', 'sum')).sort_values('department')",
+      "dependencies": {
+        "perf_join": 32
+      },
+      "writes": [
+        "perf_department"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 34,
+      "source": "perf_department.to_csv(out / 'performance_by_department.csv', index=False)",
+      "dependencies": {
+        "perf_department": 33
+      },
+      "writes": [],
+      "outputs": [
+        "performance_by_department.csv"
+      ]
+    },
+    {
+      "index": 35,
+      "source": "write_json(out / 'performance_report.json', {'review_rows': len(performance), 'reviewed_employees': performance.employee_id.nunique(), 'departments': len(perf_department), 'mean_performance_score': performance.performance_score.mean()})",
+      "dependencies": {
+        "performance": 29,
+        "perf_department": 33
+      },
+      "writes": [],
+      "outputs": [
+        "performance_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare_workforce": [
+      13
+    ],
+    "summarize_attrition": [
+      15,
+      16
+    ],
+    "aggregate_engagement": [
+      23
+    ],
+    "summarize_engagement": [
+      26,
+      27
+    ],
+    "aggregate_performance": [
+      31
+    ],
+    "summarize_performance": [
+      34,
+      35
+    ]
+  }
+}

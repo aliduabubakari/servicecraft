@@ -1,0 +1,40 @@
+{
+  "batch_id": "batch-01",
+  "revision": "pilot-01",
+  "created_date": "2026-10-30",
+  "status": "author_review_pending",
+  "case_count": 3,
+  "cases": [
+    {
+      "pipeline_id": "042_sports_validation_recovery",
+      "title": "Sports roster validation and deterministic recovery",
+      "domain": "sports",
+      "family_id": "validation_groupwise_recovery",
+      "topology": "linear",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "058_transportation_cleaning_integration_geospatial",
+      "title": "Transportation spatial enrichment and route aggregation",
+      "domain": "transportation",
+      "family_id": "spatial_etl_grouped_aggregation",
+      "topology": "linear",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "008_energy_forecasting",
+      "title": "Energy demand regression with lagged weather and chronological evaluation",
+      "domain": "energy",
+      "family_id": "temporal_multisource_supervised_regression",
+      "topology": "linear",
+      "task_count": 7,
+      "review_status": "author_review_pending"
+    }
+  ],
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "changes": "Explicitly revised behavioral variants; not just annotations of original scripts.",
+  "dagster_runtime_qualification": "not_run",
+  "reference_runtime": "Python 3.12; see qualification-report.json"
+}

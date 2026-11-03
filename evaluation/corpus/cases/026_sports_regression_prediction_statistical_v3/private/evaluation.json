@@ -1,0 +1,275 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "026_sports_regression_prediction_statistical_v3",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "validate",
+    "performance",
+    "availability",
+    "integrate",
+    "market_fit",
+    "allstar_fit",
+    "market_evaluate",
+    "allstar_evaluate",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "validate",
+      "performance"
+    ],
+    [
+      "validate",
+      "availability"
+    ],
+    [
+      "availability",
+      "integrate"
+    ],
+    [
+      "performance",
+      "integrate"
+    ],
+    [
+      "integrate",
+      "market_fit"
+    ],
+    [
+      "integrate",
+      "allstar_fit"
+    ],
+    [
+      "market_fit",
+      "market_evaluate"
+    ],
+    [
+      "allstar_fit",
+      "allstar_evaluate"
+    ],
+    [
+      "allstar_evaluate",
+      "report"
+    ],
+    [
+      "market_evaluate",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "all_star",
+        "market_value"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "performance_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "shooting_index"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "availability_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "availability_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "availability_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_market_value",
+        "predicted_market_value"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "allstar_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "allstar_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_all_star",
+        "probability",
+        "predicted_all_star"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "allstar_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "dual_model_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "players_clean.csv",
+      "artifact": "players_clean.csv",
+      "kind": "csv_equals",
+      "reference": "expected/players_clean.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "performance_features.csv",
+      "artifact": "performance_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/performance_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "availability_features.csv",
+      "artifact": "availability_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/availability_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "model_data.csv",
+      "artifact": "model_data.csv",
+      "kind": "csv_equals",
+      "reference": "expected/model_data.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "market_predictions.csv",
+      "artifact": "market_predictions.csv",
+      "kind": "csv_equals",
+      "reference": "expected/market_predictions.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "market_metrics.json",
+      "artifact": "market_metrics.json",
+      "kind": "json_equals",
+      "reference": "expected/market_metrics.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "allstar_predictions.csv",
+      "artifact": "allstar_predictions.csv",
+      "kind": "csv_equals",
+      "reference": "expected/allstar_predictions.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "allstar_metrics.json",
+      "artifact": "allstar_metrics.json",
+      "kind": "json_equals",
+      "reference": "expected/allstar_metrics.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "dual_model_report.json",
+      "artifact": "dual_model_report.json",
+      "kind": "json_equals",
+      "reference": "expected/dual_model_report.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

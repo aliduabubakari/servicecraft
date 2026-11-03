@@ -1,0 +1,202 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "019_sports_prediction_cleaning_integration",
+  "benchmark_revision": "batch-05",
+  "review_status": "author_review_pending",
+  "title": "Prepared player data with three independent analytical leaves",
+  "domain": "sports",
+  "family_id": "player_prediction_availability_compensation",
+  "topology": "fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "all_star",
+        "injury_games_missed",
+        "contract_year"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "prepare",
+      "name": "Validate and enrich players",
+      "operation": "source_validation_features",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_clean.csv"
+      ],
+      "requirements": [
+        "Validate players and derive availability/compensation features."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "predict",
+      "name": "Fit and evaluate All-Star model",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "all_star_model.pkl",
+        "all_star_predictions.csv",
+        "all_star_metrics.json"
+      ],
+      "requirements": [
+        "Apply the fixed split, scaling, classifier, threshold, and metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "availability",
+      "name": "Summarize availability by team",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "team_availability.csv"
+      ],
+      "requirements": [
+        "Compute declared team availability measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "compensation",
+      "name": "Summarize compensation by position",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "position_compensation.csv"
+      ],
+      "requirements": [
+        "Compute declared position compensation measures."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_clean.csv",
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "availability_rate",
+        "salary_per_point"
+      ]
+    },
+    {
+      "id": "all_star_model.pkl",
+      "path": "all_star_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "all_star_predictions.csv",
+      "path": "all_star_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_all_star",
+        "probability",
+        "predicted_all_star"
+      ]
+    },
+    {
+      "id": "all_star_metrics.json",
+      "path": "all_star_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "team_availability.csv",
+      "path": "team_availability.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "mean_availability_rate"
+      ]
+    },
+    {
+      "id": "position_compensation.csv",
+      "path": "position_compensation.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "player_count",
+        "mean_salary_per_point"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "prepare",
+      "target": "predict",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "availability",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "compensation",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "prepare": "sports_fanout",
+      "predict": "sports_fanout",
+      "availability": "sports_fanout",
+      "compensation": "sports_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

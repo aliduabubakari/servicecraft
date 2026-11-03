@@ -1,0 +1,16 @@
+{
+  "train_rows": 240,
+  "test_rows": 60,
+  "features": [
+    "year",
+    "age",
+    "study_hours_per_week",
+    "attendance_pct",
+    "previous_gpa",
+    "assignments_completed",
+    "extracurricular_hours",
+    "study_attendance_interaction"
+  ],
+  "mae": 0.5075444737838699,
+  "rmse": 0.6414982267004536
+}

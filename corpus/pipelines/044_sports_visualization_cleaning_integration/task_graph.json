@@ -1,0 +1,215 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "044_sports_visualization_cleaning_integration",
+  "benchmark_revision": "batch-15",
+  "review_status": "author_review_pending",
+  "title": "Linear team performance ranking and chart preparation",
+  "domain": "sports",
+  "family_id": "team_performance_chart_linear_v2",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "prepare",
+      "name": "Validate and prepare players",
+      "operation": "source_validation_features",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_prepared.csv"
+      ],
+      "requirements": [
+        "Validate and derive production features."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "summarize",
+      "name": "Summarize teams",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "players_prepared.csv"
+      ],
+      "outputs": [
+        "team_summary.csv"
+      ],
+      "requirements": [
+        "Aggregate team performance."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rank",
+      "name": "Rank teams",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "team_summary.csv"
+      ],
+      "outputs": [
+        "team_ranking.csv"
+      ],
+      "requirements": [
+        "Apply declared ordering."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "chart",
+      "name": "Prepare chart data",
+      "operation": "visualization_data",
+      "required": true,
+      "inputs": [
+        "team_ranking.csv"
+      ],
+      "outputs": [
+        "team_chart_data.csv"
+      ],
+      "requirements": [
+        "Select ordered values and labels."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish team report",
+      "operation": "ranking_report",
+      "required": true,
+      "inputs": [
+        "team_chart_data.csv"
+      ],
+      "outputs": [
+        "team_report.json"
+      ],
+      "requirements": [
+        "Publish totals and leader."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_prepared.csv",
+      "path": "players_prepared.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "production_index"
+      ]
+    },
+    {
+      "id": "team_summary.csv",
+      "path": "team_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "mean_production"
+      ]
+    },
+    {
+      "id": "team_ranking.csv",
+      "path": "team_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "rank",
+        "mean_production"
+      ]
+    },
+    {
+      "id": "team_chart_data.csv",
+      "path": "team_chart_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "rank",
+        "production_label"
+      ]
+    },
+    {
+      "id": "team_report.json",
+      "path": "team_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "prepare",
+      "target": "summarize",
+      "kind": "data",
+      "artifacts": [
+        "players_prepared.csv"
+      ]
+    },
+    {
+      "source": "summarize",
+      "target": "rank",
+      "kind": "data",
+      "artifacts": [
+        "team_summary.csv"
+      ]
+    },
+    {
+      "source": "rank",
+      "target": "chart",
+      "kind": "data",
+      "artifacts": [
+        "team_ranking.csv"
+      ]
+    },
+    {
+      "source": "chart",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "team_chart_data.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "prepare": "team_linear",
+      "summarize": "team_linear",
+      "rank": "team_linear",
+      "chart": "team_linear",
+      "report": "team_linear"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

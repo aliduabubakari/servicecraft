@@ -1,0 +1,244 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "048_sports_visualization_integration_geospatial",
+  "benchmark_revision": "batch-12",
+  "review_status": "author_review_pending",
+  "title": "Parallel team-performance and regional home-location analysis",
+  "domain": "sports",
+  "family_id": "parallel_team_region_analysis",
+  "topology": "parallel",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "home_lat",
+        "home_lon",
+        "region"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "performance_prepare",
+      "name": "Derive player performance",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "player_performance.csv"
+      ],
+      "requirements": [
+        "Validate IDs and performance fields and derive indices."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "performance_aggregate",
+      "name": "Aggregate team performance",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "player_performance.csv"
+      ],
+      "outputs": [
+        "team_performance.csv"
+      ],
+      "requirements": [
+        "Compute team-level measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "performance_report",
+      "name": "Report team performance",
+      "operation": "descriptive_report",
+      "required": true,
+      "inputs": [
+        "team_performance.csv"
+      ],
+      "outputs": [
+        "performance_report.json"
+      ],
+      "requirements": [
+        "Publish counts and highest-production team."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "geography_prepare",
+      "name": "Validate player geography",
+      "operation": "geospatial_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "player_geography.csv"
+      ],
+      "requirements": [
+        "Validate IDs, regions, and coordinate bounds."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "geography_aggregate",
+      "name": "Aggregate regional geography",
+      "operation": "geospatial_aggregation",
+      "required": true,
+      "inputs": [
+        "player_geography.csv"
+      ],
+      "outputs": [
+        "region_summary.csv"
+      ],
+      "requirements": [
+        "Compute counts, centroids, and spans."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "geography_report",
+      "name": "Report regional geography",
+      "operation": "geospatial_report",
+      "required": true,
+      "inputs": [
+        "region_summary.csv"
+      ],
+      "outputs": [
+        "geography_report.json"
+      ],
+      "requirements": [
+        "Publish counts and largest region."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "player_performance.csv",
+      "path": "player_performance.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "production_index",
+        "production_per_minute"
+      ]
+    },
+    {
+      "id": "team_performance.csv",
+      "path": "team_performance.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "mean_production"
+      ]
+    },
+    {
+      "id": "performance_report.json",
+      "path": "performance_report.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "player_geography.csv",
+      "path": "player_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "region",
+        "home_lat",
+        "home_lon"
+      ]
+    },
+    {
+      "id": "region_summary.csv",
+      "path": "region_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "region",
+        "player_count",
+        "centroid_lat",
+        "centroid_lon"
+      ]
+    },
+    {
+      "id": "geography_report.json",
+      "path": "geography_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "performance_prepare",
+      "target": "performance_aggregate",
+      "kind": "data",
+      "artifacts": [
+        "player_performance.csv"
+      ]
+    },
+    {
+      "source": "performance_aggregate",
+      "target": "performance_report",
+      "kind": "data",
+      "artifacts": [
+        "team_performance.csv"
+      ]
+    },
+    {
+      "source": "geography_prepare",
+      "target": "geography_aggregate",
+      "kind": "data",
+      "artifacts": [
+        "player_geography.csv"
+      ]
+    },
+    {
+      "source": "geography_aggregate",
+      "target": "geography_report",
+      "kind": "data",
+      "artifacts": [
+        "region_summary.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "performance_prepare": "performance_geo_parallel",
+      "performance_aggregate": "performance_geo_parallel",
+      "performance_report": "performance_geo_parallel",
+      "geography_prepare": "performance_geo_parallel",
+      "geography_aggregate": "performance_geo_parallel",
+      "geography_report": "performance_geo_parallel"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

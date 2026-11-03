@@ -1,0 +1,252 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "076_transportation_prediction_visualization_geospatial",
+  "benchmark_revision": "batch-10",
+  "review_status": "author_review_pending",
+  "title": "Parallel delay classification and geospatial route analysis",
+  "domain": "transportation",
+  "family_id": "parallel_delay_geospatial_analysis",
+  "topology": "parallel",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition",
+        "is_delayed",
+        "cancellation_risk",
+        "origin_lat",
+        "origin_lon",
+        "dest_lat",
+        "dest_lon"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "delay_prepare",
+      "name": "Prepare delay model data",
+      "operation": "model_data_preparation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "delay_model_data.csv"
+      ],
+      "requirements": [
+        "Validate target and model fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "delay_fit",
+      "name": "Fit delay classifier",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "delay_model_data.csv"
+      ],
+      "outputs": [
+        "delay_model.pkl",
+        "delay_predictions.csv"
+      ],
+      "requirements": [
+        "Use the fixed split, preprocessing, model, and threshold."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "delay_evaluate",
+      "name": "Evaluate delay classifier",
+      "operation": "classification_evaluation",
+      "required": true,
+      "inputs": [
+        "delay_predictions.csv"
+      ],
+      "outputs": [
+        "delay_metrics.json"
+      ],
+      "requirements": [
+        "Compute five held-out metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "geo_prepare",
+      "name": "Validate and derive trip geography",
+      "operation": "geospatial_transformation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trip_geography.csv"
+      ],
+      "requirements": [
+        "Validate coordinates and compute two distance measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "geo_aggregate",
+      "name": "Aggregate route geography",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_geography.csv"
+      ],
+      "outputs": [
+        "route_geography.csv"
+      ],
+      "requirements": [
+        "Compute route counts and distances."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "geo_report",
+      "name": "Report geographic totals",
+      "operation": "geospatial_report",
+      "required": true,
+      "inputs": [
+        "route_geography.csv"
+      ],
+      "outputs": [
+        "geography_report.json"
+      ],
+      "requirements": [
+        "Publish reconciled trip/route totals."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "delay_model_data.csv",
+      "path": "delay_model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "is_delayed"
+      ]
+    },
+    {
+      "id": "delay_model.pkl",
+      "path": "delay_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "delay_predictions.csv",
+      "path": "delay_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "actual_is_delayed",
+        "probability",
+        "predicted_is_delayed"
+      ]
+    },
+    {
+      "id": "delay_metrics.json",
+      "path": "delay_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "trip_geography.csv",
+      "path": "trip_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "geodesic_km",
+        "passenger_geodesic_km"
+      ]
+    },
+    {
+      "id": "route_geography.csv",
+      "path": "route_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_geodesic_km",
+        "total_passenger_geodesic_km"
+      ]
+    },
+    {
+      "id": "geography_report.json",
+      "path": "geography_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "delay_prepare",
+      "target": "delay_fit",
+      "kind": "data",
+      "artifacts": [
+        "delay_model_data.csv"
+      ]
+    },
+    {
+      "source": "delay_fit",
+      "target": "delay_evaluate",
+      "kind": "data",
+      "artifacts": [
+        "delay_predictions.csv"
+      ]
+    },
+    {
+      "source": "geo_prepare",
+      "target": "geo_aggregate",
+      "kind": "data",
+      "artifacts": [
+        "trip_geography.csv"
+      ]
+    },
+    {
+      "source": "geo_aggregate",
+      "target": "geo_report",
+      "kind": "data",
+      "artifacts": [
+        "route_geography.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "delay_prepare": "prediction_geo_parallel",
+      "delay_fit": "prediction_geo_parallel",
+      "delay_evaluate": "prediction_geo_parallel",
+      "geo_prepare": "prediction_geo_parallel",
+      "geo_aggregate": "prediction_geo_parallel",
+      "geo_report": "prediction_geo_parallel"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

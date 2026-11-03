@@ -1,0 +1,293 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "009_healthcare_readmission",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "prepare_patients",
+    "aggregate_admissions",
+    "aggregate_labs",
+    "aggregate_medications",
+    "integrate",
+    "model",
+    "utilization",
+    "clinical",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "aggregate_admissions",
+      "integrate"
+    ],
+    [
+      "aggregate_labs",
+      "integrate"
+    ],
+    [
+      "aggregate_medications",
+      "integrate"
+    ],
+    [
+      "prepare_patients",
+      "integrate"
+    ],
+    [
+      "integrate",
+      "model"
+    ],
+    [
+      "integrate",
+      "utilization"
+    ],
+    [
+      "integrate",
+      "clinical"
+    ],
+    [
+      "clinical",
+      "report"
+    ],
+    [
+      "model",
+      "report"
+    ],
+    [
+      "utilization",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "patients_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "patient_id",
+        "readmitted_30d"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "admissions_by_patient.csv",
+      "format": "csv",
+      "required_columns": [
+        "patient_id",
+        "admission_count",
+        "total_length_of_stay"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "labs_by_patient.csv",
+      "format": "csv",
+      "required_columns": [
+        "patient_id",
+        "lab_count",
+        "abnormal_lab_count"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "medications_by_patient.csv",
+      "format": "csv",
+      "required_columns": [
+        "patient_id",
+        "medication_record_count",
+        "unique_medications"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "patient_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "patient_id",
+        "readmitted_30d",
+        "admission_count",
+        "lab_count",
+        "medication_record_count"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "patient_id",
+        "actual_readmitted",
+        "readmission_probability",
+        "predicted_readmitted"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "readmission_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "utilization_by_readmission.csv",
+      "format": "csv",
+      "required_columns": [
+        "readmitted_30d",
+        "patient_count",
+        "mean_admission_count"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "clinical_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "insurance_type",
+        "patient_count",
+        "readmission_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "readmission_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "patients_clean.csv",
+      "artifact": "patients_clean.csv",
+      "kind": "csv_equals",
+      "reference": "expected/patients_clean.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "admissions_by_patient.csv",
+      "artifact": "admissions_by_patient.csv",
+      "kind": "csv_equals",
+      "reference": "expected/admissions_by_patient.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "labs_by_patient.csv",
+      "artifact": "labs_by_patient.csv",
+      "kind": "csv_equals",
+      "reference": "expected/labs_by_patient.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "medications_by_patient.csv",
+      "artifact": "medications_by_patient.csv",
+      "kind": "csv_equals",
+      "reference": "expected/medications_by_patient.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "patient_features.csv",
+      "artifact": "patient_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/patient_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "predictions.csv",
+      "artifact": "predictions.csv",
+      "kind": "csv_equals",
+      "reference": "expected/predictions.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "readmission_metrics.json",
+      "artifact": "readmission_metrics.json",
+      "kind": "json_equals",
+      "reference": "expected/readmission_metrics.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "utilization_by_readmission.csv",
+      "artifact": "utilization_by_readmission.csv",
+      "kind": "csv_equals",
+      "reference": "expected/utilization_by_readmission.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "clinical_summary.csv",
+      "artifact": "clinical_summary.csv",
+      "kind": "csv_equals",
+      "reference": "expected/clinical_summary.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "readmission_report.json",
+      "artifact": "readmission_report.json",
+      "kind": "json_equals",
+      "reference": "expected/readmission_report.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

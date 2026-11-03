@@ -1,0 +1,2 @@
+# Keep fixtures, serialized models and recorded hashes byte-exact on every OS.
+* -text

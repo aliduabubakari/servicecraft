@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "041_sports_statistical_visualization_integration",
+  "selection_reason": "Topology is supported by independently meaningful computations and extends task-count diversity.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "data.csv": "50024f0c9f172b19cf9e7302efce153df1a5fa4bb8d4b3e351f5c83ff6cb3af2"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

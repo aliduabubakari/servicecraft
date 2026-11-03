@@ -1,0 +1,396 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "013_predictive_maintenance",
+  "benchmark_revision": "batch-04",
+  "review_status": "author_review_pending",
+  "title": "Temporal maintenance features with dual-horizon failure models",
+  "domain": "manufacturing",
+  "family_id": "temporal_maintenance_multioutput",
+  "topology": "fan_in_fan_out",
+  "inputs": [
+    {
+      "id": "input:sensor_readings.csv",
+      "path": "inputs/sensor_readings.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "machine_type",
+        "timestamp",
+        "temperature_c",
+        "vibration_mm_s",
+        "pressure_bar",
+        "rpm",
+        "power_consumption_kw",
+        "noise_db",
+        "humidity_pct",
+        "is_failure",
+        "failure_within_24h",
+        "failure_within_7d"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate ordered machine series",
+      "operation": "temporal_validation",
+      "required": true,
+      "inputs": [
+        "input:sensor_readings.csv"
+      ],
+      "outputs": [
+        "sensor_clean.csv"
+      ],
+      "requirements": [
+        "Validate keys, continuity, sensors, and binary targets."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "temporal",
+      "name": "Derive lag and rolling features",
+      "operation": "temporal_features",
+      "required": true,
+      "inputs": [
+        "sensor_clean.csv"
+      ],
+      "outputs": [
+        "temporal_features.csv"
+      ],
+      "requirements": [
+        "Use shift(1) and prior 24-hour windows for three sensors."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "baselines",
+      "name": "Derive expanding machine baselines",
+      "operation": "expanding_features",
+      "required": true,
+      "inputs": [
+        "sensor_clean.csv"
+      ],
+      "outputs": [
+        "expanding_baselines.csv"
+      ],
+      "requirements": [
+        "Use shifted expanding mean/population standard deviation with 24-row minimum."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Join past-only feature branches",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "sensor_clean.csv",
+        "temporal_features.csv",
+        "expanding_baselines.csv"
+      ],
+      "outputs": [
+        "maintenance_features.csv"
+      ],
+      "requirements": [
+        "Join one-to-one, remove incomplete derived rows, and sort chronologically."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "model24h",
+      "name": "Fit 24-hour failure model",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "maintenance_features.csv"
+      ],
+      "outputs": [
+        "failure24h_model.pkl",
+        "failure24h_predictions.csv",
+        "failure24h_metrics.json"
+      ],
+      "requirements": [
+        "Apply chronological split, train-only scaling, fixed classifier, and held-out metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "model7d",
+      "name": "Fit seven-day failure model",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "maintenance_features.csv"
+      ],
+      "outputs": [
+        "failure7d_model.pkl",
+        "failure7d_predictions.csv",
+        "failure7d_metrics.json"
+      ],
+      "requirements": [
+        "Apply chronological split, train-only scaling, fixed classifier, and held-out metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "risk",
+      "name": "Summarize risk by machine",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "maintenance_features.csv"
+      ],
+      "outputs": [
+        "machine_risk_summary.csv"
+      ],
+      "requirements": [
+        "Compute declared counts, rates, and sensor means."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Synthesize maintenance outputs",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "failure24h_metrics.json",
+        "failure7d_metrics.json",
+        "machine_risk_summary.csv"
+      ],
+      "outputs": [
+        "maintenance_report.json"
+      ],
+      "requirements": [
+        "Consume all analytical branches and publish nested results."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "sensor_clean.csv",
+      "path": "sensor_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "timestamp",
+        "failure_within_24h",
+        "failure_within_7d"
+      ]
+    },
+    {
+      "id": "temporal_features.csv",
+      "path": "temporal_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "timestamp",
+        "temperature_c_lag1",
+        "temperature_c_rolling24_mean"
+      ]
+    },
+    {
+      "id": "expanding_baselines.csv",
+      "path": "expanding_baselines.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "timestamp",
+        "temperature_c_prior_mean",
+        "temperature_c_prior_std"
+      ]
+    },
+    {
+      "id": "maintenance_features.csv",
+      "path": "maintenance_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "timestamp",
+        "temperature_c_lag1",
+        "temperature_c_prior_mean"
+      ]
+    },
+    {
+      "id": "failure24h_model.pkl",
+      "path": "failure24h_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "failure24h_predictions.csv",
+      "path": "failure24h_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "timestamp",
+        "actual",
+        "probability",
+        "predicted"
+      ]
+    },
+    {
+      "id": "failure24h_metrics.json",
+      "path": "failure24h_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "failure7d_model.pkl",
+      "path": "failure7d_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "failure7d_predictions.csv",
+      "path": "failure7d_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "timestamp",
+        "actual",
+        "probability",
+        "predicted"
+      ]
+    },
+    {
+      "id": "failure7d_metrics.json",
+      "path": "failure7d_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "machine_risk_summary.csv",
+      "path": "machine_risk_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "machine_id",
+        "observations",
+        "failure_count",
+        "failure24h_rate",
+        "failure7d_rate"
+      ]
+    },
+    {
+      "id": "maintenance_report.json",
+      "path": "maintenance_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "temporal",
+      "kind": "data",
+      "artifacts": [
+        "sensor_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "baselines",
+      "kind": "data",
+      "artifacts": [
+        "sensor_clean.csv"
+      ]
+    },
+    {
+      "source": "baselines",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "expanding_baselines.csv"
+      ]
+    },
+    {
+      "source": "temporal",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "temporal_features.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "sensor_clean.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "model24h",
+      "kind": "data",
+      "artifacts": [
+        "maintenance_features.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "model7d",
+      "kind": "data",
+      "artifacts": [
+        "maintenance_features.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "risk",
+      "kind": "data",
+      "artifacts": [
+        "maintenance_features.csv"
+      ]
+    },
+    {
+      "source": "model24h",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "failure24h_metrics.json"
+      ]
+    },
+    {
+      "source": "model7d",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "failure7d_metrics.json"
+      ]
+    },
+    {
+      "source": "risk",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "machine_risk_summary.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "maintenance",
+      "temporal": "maintenance",
+      "baselines": "maintenance",
+      "integrate": "maintenance",
+      "model24h": "maintenance",
+      "model7d": "maintenance",
+      "risk": "maintenance",
+      "report": "maintenance"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

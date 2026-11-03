@@ -1,0 +1,30 @@
+{
+  "train_rows": 375,
+  "test_rows": 125,
+  "features": [
+    "annual_income",
+    "loan_amount",
+    "dti_ratio",
+    "age",
+    "months_at_address",
+    "fico_score",
+    "total_accounts",
+    "delinquencies_2yrs",
+    "inquiries_6mo",
+    "public_records",
+    "revolving_utilization",
+    "credit_age_months",
+    "history_record_count",
+    "history_mean_utilization_pct",
+    "history_max_balance",
+    "history_current_account_count"
+  ],
+  "test_fraction": 0.25,
+  "random_state": 42,
+  "threshold": 0.5,
+  "accuracy": 0.728,
+  "precision": 0.6428571428571429,
+  "recall": 0.42857142857142855,
+  "f1": 0.5142857142857142,
+  "roc_auc": 0.7469879518072289
+}

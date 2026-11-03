@@ -1,0 +1,305 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "077_transportation_prediction_visualization_integration",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "validate",
+    "operations",
+    "context_features",
+    "integrate",
+    "fit",
+    "evaluate",
+    "routes",
+    "weather",
+    "vehicles",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "validate",
+      "operations"
+    ],
+    [
+      "validate",
+      "context_features"
+    ],
+    [
+      "context_features",
+      "integrate"
+    ],
+    [
+      "operations",
+      "integrate"
+    ],
+    [
+      "integrate",
+      "fit"
+    ],
+    [
+      "fit",
+      "evaluate"
+    ],
+    [
+      "integrate",
+      "routes"
+    ],
+    [
+      "integrate",
+      "weather"
+    ],
+    [
+      "integrate",
+      "vehicles"
+    ],
+    [
+      "evaluate",
+      "report"
+    ],
+    [
+      "routes",
+      "report"
+    ],
+    [
+      "vehicles",
+      "report"
+    ],
+    [
+      "weather",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "is_delayed"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "operational_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "fare_per_passenger"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "context_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "is_delayed"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "is_delayed"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "delay_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "delay_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "actual_is_delayed",
+        "probability",
+        "predicted_is_delayed"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "delay_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "delay_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "weather_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "delay_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "vehicle_risk_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_cancellation_risk"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "delay_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "trips_clean.csv",
+      "artifact": "trips_clean.csv",
+      "kind": "csv_equals",
+      "reference": "expected/trips_clean.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "operational_features.csv",
+      "artifact": "operational_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/operational_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "context_features.csv",
+      "artifact": "context_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/context_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "model_data.csv",
+      "artifact": "model_data.csv",
+      "kind": "csv_equals",
+      "reference": "expected/model_data.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "delay_predictions.csv",
+      "artifact": "delay_predictions.csv",
+      "kind": "csv_equals",
+      "reference": "expected/delay_predictions.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "delay_metrics.json",
+      "artifact": "delay_metrics.json",
+      "kind": "json_equals",
+      "reference": "expected/delay_metrics.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_diagnostics.csv",
+      "artifact": "route_diagnostics.csv",
+      "kind": "csv_equals",
+      "reference": "expected/route_diagnostics.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "weather_diagnostics.csv",
+      "artifact": "weather_diagnostics.csv",
+      "kind": "csv_equals",
+      "reference": "expected/weather_diagnostics.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "vehicle_risk_diagnostics.csv",
+      "artifact": "vehicle_risk_diagnostics.csv",
+      "kind": "csv_equals",
+      "reference": "expected/vehicle_risk_diagnostics.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "delay_report.json",
+      "artifact": "delay_report.json",
+      "kind": "json_equals",
+      "reference": "expected/delay_report.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

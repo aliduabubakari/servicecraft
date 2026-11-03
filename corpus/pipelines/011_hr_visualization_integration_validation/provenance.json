@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "011_hr_visualization_integration_validation",
+  "selection_reason": "One validated workforce table is legitimately reused by independent compensation, performance, and composition summaries.",
+  "input_transformations": [
+    {
+      "source": "hr_data.csv",
+      "benchmark_file": "hr_data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "hr_data.csv": "5ab6471d6bce1a43e8a0b831fa383d1a390f339c1424ed174e63ed7367f61ebb"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

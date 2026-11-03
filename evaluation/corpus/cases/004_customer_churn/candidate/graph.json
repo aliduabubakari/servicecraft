@@ -1,0 +1,204 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "004_customer_churn",
+  "benchmark_revision": "batch-02",
+  "review_status": "author_review_pending",
+  "title": "Customer transaction aggregation and churn cohort analysis",
+  "domain": "finance",
+  "family_id": "relational_aggregation_cohort_analysis",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:customers.csv",
+      "path": "inputs/customers.csv",
+      "format": "csv",
+      "required_columns": [
+        "customer_id",
+        "segment",
+        "monthly_fee",
+        "support_contacts",
+        "is_churned"
+      ]
+    },
+    {
+      "id": "input:transactions.csv",
+      "path": "inputs/transactions.csv",
+      "format": "csv",
+      "required_columns": [
+        "transaction_id",
+        "customer_id",
+        "transaction_date",
+        "amount",
+        "items_count",
+        "is_return",
+        "discount_applied"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "aggregate",
+      "name": "Validate and aggregate customer transactions",
+      "operation": "relational_aggregation",
+      "required": true,
+      "inputs": [
+        "input:customers.csv",
+        "input:transactions.csv"
+      ],
+      "outputs": [
+        "customer_metrics.csv"
+      ],
+      "requirements": [
+        "Validate identifier relationships, binary flags, dates, and numeric values.",
+        "Compute the specified customer measures relative to the data-derived cutoff date."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate customer attributes and behavioral measures",
+      "operation": "left_join",
+      "required": true,
+      "inputs": [
+        "customer_metrics.csv",
+        "input:customers.csv"
+      ],
+      "outputs": [
+        "customer_analysis.csv"
+      ],
+      "requirements": [
+        "Left-join metrics to all supplied customers and apply the stated no-transaction defaults."
+      ],
+      "parameters": {
+        "cardinality": "one_to_one"
+      }
+    },
+    {
+      "id": "summarize",
+      "name": "Summarize churn cohorts by segment",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "customer_analysis.csv"
+      ],
+      "outputs": [
+        "segment_summary.csv"
+      ],
+      "requirements": [
+        "Compute the five specified segment measures and sort deterministically."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish churn cohort report",
+      "operation": "aggregate_report",
+      "required": true,
+      "inputs": [
+        "segment_summary.csv",
+        "input:customers.csv",
+        "input:transactions.csv"
+      ],
+      "outputs": [
+        "churn_report.json"
+      ],
+      "requirements": [
+        "Publish input-derived global counts, cutoff, churn rate, spend, and segment count."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "customer_metrics.csv",
+      "path": "customer_metrics.csv",
+      "format": "csv",
+      "required_columns": [
+        "customer_id",
+        "transaction_count",
+        "total_spend",
+        "discounted_transaction_count",
+        "total_discount",
+        "return_rate",
+        "days_since_last_transaction"
+      ]
+    },
+    {
+      "id": "customer_analysis.csv",
+      "path": "customer_analysis.csv",
+      "format": "csv",
+      "required_columns": [
+        "customer_id",
+        "segment",
+        "is_churned",
+        "transaction_count",
+        "total_discount"
+      ]
+    },
+    {
+      "id": "segment_summary.csv",
+      "path": "segment_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "segment",
+        "customer_count",
+        "churn_rate",
+        "mean_total_spend",
+        "mean_transaction_count",
+        "mean_days_since_last_transaction"
+      ]
+    },
+    {
+      "id": "churn_report.json",
+      "path": "churn_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "aggregate",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "customer_metrics.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "summarize",
+      "kind": "data",
+      "artifacts": [
+        "customer_analysis.csv"
+      ]
+    },
+    {
+      "source": "summarize",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "segment_summary.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "aggregate": "churn",
+      "integrate": "churn",
+      "summarize": "churn",
+      "report": "churn"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

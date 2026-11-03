@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "063_transportation_clustering_validation",
+  "selection_reason": "Validation and common feature preparation precede clustering, after which profiles, route mix, and validation are independent consumers.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "data.csv": "6e0eb59d4257025dadf4ded6bbd5e461f246d03f24bcd5428090e42e01b94843"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

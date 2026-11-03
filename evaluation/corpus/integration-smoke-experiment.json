@@ -1,0 +1,62 @@
+{
+  "schema_version": "servicecraft.experiment@1",
+  "profiles": {
+    "scientific-v1": {
+      "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+      "required_packages": {
+        "dagster": "1.13.12",
+        "numpy": "2.0.1",
+        "pandas": "2.2.2",
+        "scikit-learn": "1.5.1",
+        "scipy": "1.14.1",
+        "openpyxl": "3.1.5"
+      },
+      "required_imports": [
+        "dagster",
+        "numpy",
+        "pandas",
+        "sklearn",
+        "scipy",
+        "openpyxl"
+      ]
+    }
+  },
+  "controls": {
+    "016_sports_clustering_prediction_visualization": {
+      "candidate": "cases/016_sports_clustering_prediction_visualization/candidate",
+      "inputs": "cases/016_sports_clustering_prediction_visualization/inputs",
+      "spec": "cases/016_sports_clustering_prediction_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "068_transportation_prediction_cleaning": {
+      "candidate": "cases/068_transportation_prediction_cleaning/candidate",
+      "inputs": "cases/068_transportation_prediction_cleaning/inputs",
+      "spec": "cases/068_transportation_prediction_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    }
+  },
+  "entries": [
+    {
+      "candidate": "cases/016_sports_clustering_prediction_visualization/candidate",
+      "inputs": "cases/016_sports_clustering_prediction_visualization/inputs",
+      "spec": "cases/016_sports_clustering_prediction_visualization/evaluation.json",
+      "id": "control_016",
+      "control": "016_sports_clustering_prediction_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/068_transportation_prediction_cleaning/candidate",
+      "inputs": "cases/068_transportation_prediction_cleaning/inputs",
+      "spec": "cases/068_transportation_prediction_cleaning/evaluation.json",
+      "id": "control_068",
+      "control": "068_transportation_prediction_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    }
+  ]
+}

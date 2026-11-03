@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-17",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "045_sports_visualization_cleaning_recovery",
+      "title": "Linear audited recovery and team summary",
+      "domain": "sports",
+      "family_id": "audited_numeric_categorical_recovery",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "070_transportation_prediction_cleaning_validation",
+      "title": "Parallel delay classification and cancellation-risk regression",
+      "domain": "transportation",
+      "family_id": "parallel_delay_risk_models_v3",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "077_transportation_prediction_visualization_integration",
+      "title": "Delay modeling with convergent features and multiview diagnostics",
+      "domain": "transportation",
+      "family_id": "delay_model_multiview_fanin_fanout",
+      "topology": "fan_in_fan_out",
+      "task_count": 10,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "091_transportation_visualization",
+      "title": "Prepared trips fanning out to route, vehicle, and period views",
+      "domain": "transportation",
+      "family_id": "trip_route_vehicle_period_fanout_v2",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "096_transportation_visualization_integration",
+      "title": "Independent operational summaries converging into a report",
+      "domain": "transportation",
+      "family_id": "transport_operations_fanin",
+      "topology": "fan_in",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

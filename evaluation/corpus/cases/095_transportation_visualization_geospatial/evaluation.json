@@ -1,0 +1,193 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "095_transportation_visualization_geospatial",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "validate",
+    "features",
+    "routes",
+    "rank",
+    "vehicles",
+    "periods"
+  ],
+  "expected_edges": [
+    [
+      "validate",
+      "features"
+    ],
+    [
+      "features",
+      "routes"
+    ],
+    [
+      "routes",
+      "rank"
+    ],
+    [
+      "features",
+      "vehicles"
+    ],
+    [
+      "features",
+      "periods"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "trip_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "geodesic_km",
+        "passenger_geodesic_km",
+        "time_period"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_geodesic_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_geography_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "total_passenger_geodesic_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "vehicle_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_geodesic_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "period_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "time_period",
+        "trip_count",
+        "mean_geodesic_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "trips_clean.csv",
+      "artifact": "trips_clean.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/trips_clean.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "trip_geography.csv",
+      "artifact": "trip_geography.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/trip_geography.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "route_geography.csv",
+      "artifact": "route_geography.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/route_geography.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "route_geography_ranking.csv",
+      "artifact": "route_geography_ranking.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/route_geography_ranking.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "vehicle_geography.csv",
+      "artifact": "vehicle_geography.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/vehicle_geography.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "period_geography.csv",
+      "artifact": "period_geography.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/period_geography.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

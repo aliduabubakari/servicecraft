@@ -1,0 +1,38 @@
+# Player clustering with three post-cluster views
+
+1. Objective
+
+Build `linear_to_fan_out`: validate players, derive production_index, fit standardized KMeans(k=4, seed 42, n_init=20, lloyd), then fan out to cluster profiles, team/cluster mix, and PCA plot data. Canonicalize labels by ascending standardized efficiency, usage, raw ID. Profiles contain counts and production/efficiency/usage means; team mix contains counts and within-team shares; plot data contains player, canonical cluster, PC1/PC2. No final join.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: player_id, team, position, games_played, points_per_game, assists_per_game, rebounds_per_game, minutes_per_game, age, experience_years, salary_millions, play_style_score, efficiency_rating, usage_rate
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Apply all processing requirements in the objective above. Retain its specified transformations, parameters, validation policies and ordering.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `players_clean.csv`
+- `cluster_features.csv`
+- `player_clusters.csv`
+- `cluster_model.pkl`
+- `cluster_profiles.csv`
+- `team_cluster_mix.csv`
+- `cluster_plot_data.csv`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without networks, prior outputs, fixed answers, or human intervention. Preserve the declared topology and artifact-backed dependencies. Alternative decomposition is acceptable only when logical tasks, checkpoints, and dependency semantics remain equivalent. Write beneath the run output directory. Numeric comparisons use atol=1e-6 and rtol=1e-6; JSON must be finite. Invalid identifiers, missing columns, and non-finite required values fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

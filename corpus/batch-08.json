@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-08",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "022_sports_prediction_visualization_cleaning",
+      "title": "All-Star modeling with convergent feature and diagnostic branches",
+      "domain": "sports",
+      "family_id": "allstar_availability_diagnostics",
+      "topology": "fan_in_fan_out",
+      "task_count": 8,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "032_sports_statistical_cleaning_integration_v2",
+      "title": "Linear shooting-efficiency ranking",
+      "domain": "sports",
+      "family_id": "shooting_efficiency_ranking",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "038_sports_statistical_integration_v2",
+      "title": "Three sports summaries converging into a report",
+      "domain": "sports",
+      "family_id": "sports_summary_fanin_v2",
+      "topology": "fan_in",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "056_transportation_cleaning",
+      "title": "Prepared trips with three operational views",
+      "domain": "transportation",
+      "family_id": "trip_operations_fanout",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "087_transportation_statistical_integration",
+      "title": "Route service metrics with three independent outputs",
+      "domain": "transportation",
+      "family_id": "route_service_fanout",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

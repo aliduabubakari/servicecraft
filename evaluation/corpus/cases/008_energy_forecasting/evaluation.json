@@ -1,0 +1,276 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "008_energy_forecasting",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "ingest",
+    "align",
+    "features",
+    "split",
+    "fit_predict",
+    "evaluate",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "ingest",
+      "align"
+    ],
+    [
+      "align",
+      "features"
+    ],
+    [
+      "features",
+      "split"
+    ],
+    [
+      "split",
+      "fit_predict"
+    ],
+    [
+      "fit_predict",
+      "evaluate"
+    ],
+    [
+      "evaluate",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "hourly.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh",
+        "is_holiday"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "daily_weather.csv",
+      "format": "csv",
+      "required_columns": [
+        "date",
+        "temp_avg",
+        "humidity_avg",
+        "cloud_cover_avg",
+        "wind_avg"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "aligned.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "previous_temp_avg"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "features.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh",
+        "lag_24h_kwh",
+        "hour",
+        "day_of_week",
+        "month",
+        "is_holiday",
+        "previous_temp_avg",
+        "previous_humidity_avg",
+        "previous_cloud_cover_avg",
+        "previous_wind_avg"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "train.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "test.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "actual_kwh",
+        "predicted_kwh"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "fit_metadata.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "energy_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "hourly.csv",
+      "artifact": "hourly.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/hourly.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "daily_weather.csv",
+      "artifact": "daily_weather.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/daily_weather.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "aligned.csv",
+      "artifact": "aligned.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/aligned.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "features.csv",
+      "artifact": "features.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/features.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "train.csv",
+      "artifact": "train.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/train.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "test.csv",
+      "artifact": "test.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/test.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "predictions.csv",
+      "artifact": "predictions.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/predictions.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "fit_metadata.json",
+      "artifact": "fit_metadata.json",
+      "kind": "json_equals",
+      "reference": "private/expected/fit_metadata.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "metrics.json",
+      "artifact": "metrics.json",
+      "kind": "json_equals",
+      "reference": "private/expected/metrics.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "energy_report.json",
+      "artifact": "energy_report.json",
+      "kind": "json_equals",
+      "reference": "private/expected/energy_report.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

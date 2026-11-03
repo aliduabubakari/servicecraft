@@ -1,0 +1,29 @@
+{
+  "target": "failure_within_24h",
+  "train_rows": 17088,
+  "test_rows": 4272,
+  "features": [
+    "temperature_c",
+    "vibration_mm_s",
+    "pressure_bar",
+    "rpm",
+    "power_consumption_kw",
+    "noise_db",
+    "humidity_pct",
+    "temperature_c_lag1",
+    "temperature_c_rolling24_mean",
+    "vibration_mm_s_lag1",
+    "vibration_mm_s_rolling24_mean",
+    "power_consumption_kw_lag1",
+    "power_consumption_kw_rolling24_mean",
+    "temperature_c_prior_mean",
+    "temperature_c_prior_std",
+    "vibration_mm_s_prior_mean",
+    "vibration_mm_s_prior_std"
+  ],
+  "accuracy": 0.9885299625468165,
+  "precision": 0.9302325581395349,
+  "recall": 0.6504065040650406,
+  "f1": 0.7655502392344498,
+  "roc_auc": 0.9980502697290169
+}

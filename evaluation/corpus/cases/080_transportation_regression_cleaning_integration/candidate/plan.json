@@ -1,0 +1,254 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'distance_km', 'passengers', 'fare_amount', 'revenue', 'operational_cost']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'trip_id', ['route', 'vehicle_type'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "rev = d[['trip_id', 'route', 'vehicle_type', 'passengers', 'fare_amount', 'revenue']].copy()",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "rev"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "rev['fare_revenue_proxy'] = rev.passengers * rev.fare_amount",
+      "dependencies": {
+        "rev": 3
+      },
+      "writes": [
+        "rev"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "rev['revenue_per_passenger'] = np.where(rev.passengers > 0, rev.revenue / rev.passengers, 0)",
+      "dependencies": {
+        "rev": 4
+      },
+      "writes": [
+        "rev"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "rev.to_csv(out / 'revenue_features.csv', index=False)",
+      "dependencies": {
+        "rev": 5
+      },
+      "writes": [],
+      "outputs": [
+        "revenue_features.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "cost = d[['trip_id', 'distance_km', 'passengers', 'operational_cost']].copy()",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "cost"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "cost['cost_per_km'] = np.where(cost.distance_km > 0, cost.operational_cost / cost.distance_km, 0)",
+      "dependencies": {
+        "cost": 7
+      },
+      "writes": [
+        "cost"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "cost['cost_per_passenger'] = np.where(cost.passengers > 0, cost.operational_cost / cost.passengers, 0)",
+      "dependencies": {
+        "cost": 8
+      },
+      "writes": [
+        "cost"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "cost.to_csv(out / 'cost_features.csv', index=False)",
+      "dependencies": {
+        "cost": 9
+      },
+      "writes": [],
+      "outputs": [
+        "cost_features.csv"
+      ]
+    },
+    {
+      "index": 11,
+      "source": "m = rev.merge(cost, on=['trip_id', 'passengers'], validate='one_to_one')",
+      "dependencies": {
+        "cost": 9,
+        "rev": 5
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "m['profit'] = m.revenue - m.operational_cost",
+      "dependencies": {
+        "m": 11
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "m['profit_margin'] = np.where(m.revenue != 0, m.profit / m.revenue, 0)",
+      "dependencies": {
+        "m": 12
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "m.to_csv(out / 'trip_economics.csv', index=False)",
+      "dependencies": {
+        "m": 13
+      },
+      "writes": [],
+      "outputs": [
+        "trip_economics.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "routes = m.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), total_revenue=('revenue', 'sum'), total_cost=('operational_cost', 'sum'), total_profit=('profit', 'sum'), mean_margin=('profit_margin', 'mean'), mean_revenue_per_passenger=('revenue_per_passenger', 'mean'), mean_cost_per_km=('cost_per_km', 'mean')).sort_values('route')",
+      "dependencies": {
+        "m": 13
+      },
+      "writes": [
+        "routes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "routes.to_csv(out / 'route_economics.csv', index=False)",
+      "dependencies": {
+        "routes": 15
+      },
+      "writes": [],
+      "outputs": [
+        "route_economics.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "rank = routes.sort_values(['total_profit', 'mean_margin', 'route'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "routes": 15
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "rank.insert(1, 'rank', np.arange(1, len(rank) + 1))",
+      "dependencies": {
+        "rank": 17
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "rank.to_csv(out / 'route_ranking.csv', index=False)",
+      "dependencies": {
+        "rank": 18
+      },
+      "writes": [],
+      "outputs": [
+        "route_ranking.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "js(out / 'economics_report.json', {'trips': int(routes.trip_count.sum()), 'routes': len(routes), 'top_route': rank.iloc[0].route, 'total_revenue': routes.total_revenue.sum(), 'total_cost': routes.total_cost.sum(), 'total_profit': routes.total_profit.sum()})",
+      "dependencies": {
+        "rank": 18,
+        "routes": 15
+      },
+      "writes": [],
+      "outputs": [
+        "economics_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "revenue": [
+      6
+    ],
+    "cost": [
+      10
+    ],
+    "integrate": [
+      14
+    ],
+    "aggregate": [
+      16
+    ],
+    "rank": [
+      19
+    ],
+    "report": [
+      20
+    ]
+  }
+}

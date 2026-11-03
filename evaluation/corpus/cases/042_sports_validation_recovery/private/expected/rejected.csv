@@ -1,0 +1,4 @@
+source_row,player_id,team,position,games_played,points_per_game,minutes_per_game,reason
+3,P0003,Team_E,Center,-1,15.4,12.9,invalid_games_played
+4,,Team_L,Defender,38,18.9,34.4,missing_player_id
+508,P0006,Team_H,Defender,59,24.1,14.6,duplicate_player_id

@@ -1,0 +1,607 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "patients = pd.read_csv(data / 'patients.csv')",
+      "dependencies": {},
+      "writes": [
+        "patients"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "admissions = pd.read_csv(data / 'admissions.csv')",
+      "dependencies": {},
+      "writes": [
+        "admissions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "labs = pd.read_csv(data / 'lab_results.csv')",
+      "dependencies": {},
+      "writes": [
+        "labs"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "meds = pd.read_csv(data / 'medications.csv')",
+      "dependencies": {},
+      "writes": [
+        "meds"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "pc = ['patient_id', 'age', 'gender', 'race', 'conditions', 'has_diabetes', 'has_heart_condition', 'bmi', 'smoker', 'insurance_type', 'n_conditions', 'readmitted_30d']",
+      "dependencies": {},
+      "writes": [
+        "pc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "ac = ['admission_id', 'patient_id', 'length_of_stay', 'icu_stay', 'n_procedures', 'er_admission']",
+      "dependencies": {},
+      "writes": [
+        "ac"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "lc = ['admission_id', 'patient_id', 'test_name', 'test_value', 'abnormal_flag']",
+      "dependencies": {},
+      "writes": [
+        "lc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "mc = ['admission_id', 'patient_id', 'medication']",
+      "dependencies": {},
+      "writes": [
+        "mc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "require(patients, pc, 'patients.csv')",
+      "dependencies": {
+        "pc": 4,
+        "patients": 0
+      },
+      "writes": [
+        "patients"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "require(admissions, ac, 'admissions.csv')",
+      "dependencies": {
+        "admissions": 1,
+        "ac": 5
+      },
+      "writes": [
+        "admissions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "require(labs, lc, 'lab_results.csv')",
+      "dependencies": {
+        "labs": 2,
+        "lc": 6
+      },
+      "writes": [
+        "labs"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "require(meds, mc, 'medications.csv')",
+      "dependencies": {
+        "mc": 7,
+        "meds": 3
+      },
+      "writes": [
+        "meds"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "nonblank_unique(patients, ['patient_id'], 'patients.csv')",
+      "dependencies": {
+        "patients": 8
+      },
+      "writes": [
+        "patients"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "nonblank_unique(admissions, ['admission_id'], 'admissions.csv')",
+      "dependencies": {
+        "admissions": 9
+      },
+      "writes": [
+        "admissions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "for frame, name in [(admissions, 'admissions'), (labs, 'labs'), (meds, 'medications')]:\n    if not set(frame.patient_id) <= set(patients.patient_id):\n        raise ValueError(f'unknown {name} patient')",
+      "dependencies": {
+        "patients": 12,
+        "labs": 10,
+        "meds": 11,
+        "admissions": 13
+      },
+      "writes": [
+        "frame",
+        "name",
+        "patients"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "if not set(labs.admission_id) <= set(admissions.admission_id) or not set(meds.admission_id) <= set(admissions.admission_id):\n    raise ValueError('unknown lab/medication admission')",
+      "dependencies": {
+        "admissions": 13,
+        "meds": 11,
+        "labs": 10
+      },
+      "writes": [
+        "admissions",
+        "labs",
+        "meds"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "numeric(patients, ['age', 'has_diabetes', 'has_heart_condition', 'bmi', 'smoker', 'n_conditions', 'readmitted_30d'], 'patients.csv')",
+      "dependencies": {
+        "patients": 14
+      },
+      "writes": [
+        "patients"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "numeric(admissions, ac[2:], 'admissions.csv')",
+      "dependencies": {
+        "admissions": 15,
+        "ac": 5
+      },
+      "writes": [
+        "admissions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "numeric(labs, ['test_value', 'abnormal_flag'], 'lab_results.csv')",
+      "dependencies": {
+        "labs": 15
+      },
+      "writes": [
+        "labs"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "if not set(patients.readmitted_30d.unique()) <= {0, 1}:\n    raise ValueError('readmitted_30d must be binary')",
+      "dependencies": {
+        "patients": 16
+      },
+      "writes": [
+        "patients"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "clean = patients[pc].sort_values('patient_id')",
+      "dependencies": {
+        "pc": 4,
+        "patients": 19
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "clean.to_csv(out / 'patients_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 20
+      },
+      "writes": [],
+      "outputs": [
+        "patients_clean.csv"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "adm = admissions.groupby('patient_id', as_index=False).agg(admission_count=('admission_id', 'size'), total_length_of_stay=('length_of_stay', 'sum'), mean_length_of_stay=('length_of_stay', 'mean'), icu_admission_count=('icu_stay', 'sum'), total_procedures=('n_procedures', 'sum'), er_admission_count=('er_admission', 'sum')).sort_values('patient_id')",
+      "dependencies": {
+        "admissions": 17
+      },
+      "writes": [
+        "adm"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "adm.to_csv(out / 'admissions_by_patient.csv', index=False)",
+      "dependencies": {
+        "adm": 22
+      },
+      "writes": [],
+      "outputs": [
+        "admissions_by_patient.csv"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "lab = labs.groupby('patient_id', as_index=False).agg(lab_count=('test_name', 'size'), abnormal_lab_count=('abnormal_flag', 'sum'), mean_test_value=('test_value', 'mean')).sort_values('patient_id')",
+      "dependencies": {
+        "labs": 18
+      },
+      "writes": [
+        "lab"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "lab.to_csv(out / 'labs_by_patient.csv', index=False)",
+      "dependencies": {
+        "lab": 24
+      },
+      "writes": [],
+      "outputs": [
+        "labs_by_patient.csv"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "med = meds.groupby('patient_id', as_index=False).agg(medication_record_count=('medication', 'size'), unique_medications=('medication', 'nunique')).sort_values('patient_id')",
+      "dependencies": {
+        "meds": 15
+      },
+      "writes": [
+        "med"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "med.to_csv(out / 'medications_by_patient.csv', index=False)",
+      "dependencies": {
+        "med": 26
+      },
+      "writes": [],
+      "outputs": [
+        "medications_by_patient.csv"
+      ]
+    },
+    {
+      "index": 28,
+      "source": "features = clean.merge(adm, on='patient_id', how='left', validate='one_to_one').merge(lab, on='patient_id', how='left', validate='one_to_one').merge(med, on='patient_id', how='left', validate='one_to_one')",
+      "dependencies": {
+        "lab": 24,
+        "med": 26,
+        "clean": 20,
+        "adm": 22
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "derived = [*adm.columns[1:], *lab.columns[1:], *med.columns[1:]]",
+      "dependencies": {
+        "lab": 24,
+        "adm": 22,
+        "med": 26
+      },
+      "writes": [
+        "derived"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "features[derived] = features[derived].fillna(0)",
+      "dependencies": {
+        "features": 28,
+        "derived": 29
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 31,
+      "source": "features = features.sort_values('patient_id')",
+      "dependencies": {
+        "features": 30
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 32,
+      "source": "features.to_csv(out / 'patient_features.csv', index=False)",
+      "dependencies": {
+        "features": 31
+      },
+      "writes": [],
+      "outputs": [
+        "patient_features.csv"
+      ]
+    },
+    {
+      "index": 33,
+      "source": "model_features = ['age', 'has_diabetes', 'has_heart_condition', 'bmi', 'smoker', 'n_conditions', *derived]",
+      "dependencies": {
+        "derived": 29
+      },
+      "writes": [
+        "model_features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 34,
+      "source": "train, test = train_test_split(features, test_size=0.25, random_state=42, stratify=features.readmitted_30d)",
+      "dependencies": {
+        "features": 31
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 35,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', LogisticRegression(C=1.0, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 36,
+      "source": "model.fit(train[model_features], train.readmitted_30d)",
+      "dependencies": {
+        "model": 35,
+        "train": 34,
+        "model_features": 33
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 37,
+      "source": "prob = model.predict_proba(test[model_features])[:, 1]",
+      "dependencies": {
+        "model": 36,
+        "test": 34,
+        "model_features": 33
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 38,
+      "source": "pred = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 37
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 39,
+      "source": "predictions = pd.DataFrame({'patient_id': test.patient_id, 'actual_readmitted': test.readmitted_30d, 'readmission_probability': prob, 'predicted_readmitted': pred}).sort_values('patient_id')",
+      "dependencies": {
+        "test": 34,
+        "pred": 38,
+        "prob": 37
+      },
+      "writes": [
+        "predictions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 40,
+      "source": "predictions.to_csv(out / 'predictions.csv', index=False)",
+      "dependencies": {
+        "predictions": 39
+      },
+      "writes": [],
+      "outputs": [
+        "predictions.csv"
+      ]
+    },
+    {
+      "index": 41,
+      "source": "with (out / 'model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 36
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "model.pkl"
+      ]
+    },
+    {
+      "index": 42,
+      "source": "metrics = {'train_rows': len(train), 'test_rows': len(test), 'features': model_features, 'accuracy': accuracy_score(test.readmitted_30d, pred), 'precision': precision_score(test.readmitted_30d, pred, zero_division=0), 'recall': recall_score(test.readmitted_30d, pred, zero_division=0), 'f1': f1_score(test.readmitted_30d, pred, zero_division=0), 'roc_auc': roc_auc_score(test.readmitted_30d, prob)}",
+      "dependencies": {
+        "model_features": 33,
+        "train": 34,
+        "prob": 37,
+        "test": 34,
+        "pred": 38
+      },
+      "writes": [
+        "metrics"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 43,
+      "source": "write_json(out / 'readmission_metrics.json', metrics)",
+      "dependencies": {
+        "metrics": 42
+      },
+      "writes": [],
+      "outputs": [
+        "readmission_metrics.json"
+      ]
+    },
+    {
+      "index": 44,
+      "source": "utilization = features.groupby('readmitted_30d', as_index=False).agg(patient_count=('patient_id', 'size'), mean_admission_count=('admission_count', 'mean'), mean_total_length_of_stay=('total_length_of_stay', 'mean'), mean_er_admission_count=('er_admission_count', 'mean')).sort_values('readmitted_30d')",
+      "dependencies": {
+        "features": 31
+      },
+      "writes": [
+        "utilization"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 45,
+      "source": "utilization.to_csv(out / 'utilization_by_readmission.csv', index=False)",
+      "dependencies": {
+        "utilization": 44
+      },
+      "writes": [],
+      "outputs": [
+        "utilization_by_readmission.csv"
+      ]
+    },
+    {
+      "index": 46,
+      "source": "clinical = features.groupby('insurance_type', as_index=False).agg(patient_count=('patient_id', 'size'), readmission_rate=('readmitted_30d', 'mean'), mean_abnormal_lab_count=('abnormal_lab_count', 'mean'), mean_unique_medications=('unique_medications', 'mean')).sort_values('insurance_type')",
+      "dependencies": {
+        "features": 31
+      },
+      "writes": [
+        "clinical"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 47,
+      "source": "clinical.to_csv(out / 'clinical_summary.csv', index=False)",
+      "dependencies": {
+        "clinical": 46
+      },
+      "writes": [],
+      "outputs": [
+        "clinical_summary.csv"
+      ]
+    },
+    {
+      "index": 48,
+      "source": "report = {'patients': len(features), 'admissions': len(admissions), 'labs': len(labs), 'medication_records': len(meds), 'model': metrics, 'readmission_groups': len(utilization), 'insurance_groups': len(clinical)}",
+      "dependencies": {
+        "metrics": 42,
+        "clinical": 46,
+        "features": 31,
+        "utilization": 44,
+        "labs": 18,
+        "meds": 15,
+        "admissions": 17
+      },
+      "writes": [
+        "report"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 49,
+      "source": "write_json(out / 'readmission_report.json', report)",
+      "dependencies": {
+        "report": 48
+      },
+      "writes": [],
+      "outputs": [
+        "readmission_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare_patients": [
+      21
+    ],
+    "aggregate_admissions": [
+      23
+    ],
+    "aggregate_labs": [
+      25
+    ],
+    "aggregate_medications": [
+      27
+    ],
+    "integrate": [
+      32
+    ],
+    "model": [
+      40,
+      41,
+      43
+    ],
+    "utilization": [
+      45
+    ],
+    "clinical": [
+      47
+    ],
+    "report": [
+      49
+    ]
+  }
+}

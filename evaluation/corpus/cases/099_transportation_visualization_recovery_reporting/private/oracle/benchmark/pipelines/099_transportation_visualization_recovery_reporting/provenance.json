@@ -1,0 +1,25 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "099_transportation_visualization_recovery_reporting",
+  "selection_reason": "One explicit recovery task supplies three independent descriptive leaves; visible injected defects ensure recovery is exercised.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy_then_documented_fixture_mutation"
+    }
+  ],
+  "input_modifications": [
+    "row1 delay missing",
+    "row2 passengers missing",
+    "row3 fare missing",
+    "row4 weather blank",
+    "row5 vehicle blank"
+  ],
+  "pilot_input_sha256": {
+    "data.csv": "9af1c52c7f10e31f209b38ddd6d1cf6e8c139b226fedb623fcd364edeaf706d1"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

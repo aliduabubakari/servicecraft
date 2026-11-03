@@ -1,0 +1,121 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "006_ecommerce_recommendation",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "interactions",
+    "rank",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "interactions",
+      "rank"
+    ],
+    [
+      "rank",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "interactions.csv",
+      "format": "csv",
+      "required_columns": [
+        "customer_id",
+        "product_id",
+        "category",
+        "purchased_quantity"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "recommendations.csv",
+      "format": "csv",
+      "required_columns": [
+        "customer_id",
+        "rank",
+        "product_id",
+        "product_name",
+        "category",
+        "score"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "recommendation_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "interactions.csv",
+      "artifact": "interactions.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/interactions.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "recommendations.csv",
+      "artifact": "recommendations.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/recommendations.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "recommendation_report.json",
+      "artifact": "recommendation_report.json",
+      "kind": "json_equals",
+      "reference": "private/expected/recommendation_report.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

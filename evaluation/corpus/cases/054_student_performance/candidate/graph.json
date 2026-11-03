@@ -1,0 +1,269 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "054_student_performance",
+  "benchmark_revision": "batch-03",
+  "review_status": "author_review_pending",
+  "title": "Student GPA regression with explicit feature and evaluation stages",
+  "domain": "education",
+  "family_id": "student_supervised_regression",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "student_id",
+        "major",
+        "year",
+        "age",
+        "study_hours_per_week",
+        "attendance_pct",
+        "previous_gpa",
+        "current_gpa",
+        "assignments_completed",
+        "extracurricular_hours"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate student records",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "students_clean.csv"
+      ],
+      "requirements": [
+        "Validate keys, numeric fields, attendance, and GPA bounds."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive student predictors",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "students_clean.csv"
+      ],
+      "outputs": [
+        "student_features.csv"
+      ],
+      "requirements": [
+        "Compute the two declared features without target leakage."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "split",
+      "name": "Create reproducible train/test partitions",
+      "operation": "random_split",
+      "required": true,
+      "inputs": [
+        "student_features.csv"
+      ],
+      "outputs": [
+        "train.csv",
+        "test.csv"
+      ],
+      "requirements": [
+        "Use an 80/20 split with seed 42 and preserve all rows."
+      ],
+      "parameters": {
+        "test_fraction": 0.2,
+        "random_state": 42
+      }
+    },
+    {
+      "id": "fit_predict",
+      "name": "Fit training-only Ridge pipeline",
+      "operation": "supervised_regression",
+      "required": true,
+      "inputs": [
+        "train.csv",
+        "test.csv"
+      ],
+      "outputs": [
+        "model.pkl",
+        "predictions.csv"
+      ],
+      "requirements": [
+        "Fit scaler/model on training rows only and predict each test row."
+      ],
+      "parameters": {
+        "estimator": "Ridge",
+        "alpha": 1.0,
+        "solver": "svd"
+      }
+    },
+    {
+      "id": "evaluate",
+      "name": "Measure held-out GPA errors",
+      "operation": "regression_evaluation",
+      "required": true,
+      "inputs": [
+        "predictions.csv"
+      ],
+      "outputs": [
+        "metrics.json"
+      ],
+      "requirements": [
+        "Compute MAE/RMSE and retain split/feature metadata."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish student model report",
+      "operation": "model_report",
+      "required": true,
+      "inputs": [
+        "metrics.json"
+      ],
+      "outputs": [
+        "student_report.json"
+      ],
+      "requirements": [
+        "Publish exactly the computed evaluation values."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "students_clean.csv",
+      "path": "students_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "student_id",
+        "current_gpa"
+      ]
+    },
+    {
+      "id": "student_features.csv",
+      "path": "student_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "student_id",
+        "study_attendance_interaction",
+        "gpa_change"
+      ]
+    },
+    {
+      "id": "train.csv",
+      "path": "train.csv",
+      "format": "csv",
+      "required_columns": [
+        "student_id",
+        "current_gpa"
+      ]
+    },
+    {
+      "id": "test.csv",
+      "path": "test.csv",
+      "format": "csv",
+      "required_columns": [
+        "student_id",
+        "current_gpa"
+      ]
+    },
+    {
+      "id": "model.pkl",
+      "path": "model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "predictions.csv",
+      "path": "predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "student_id",
+        "actual_gpa",
+        "predicted_gpa"
+      ]
+    },
+    {
+      "id": "metrics.json",
+      "path": "metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "student_report.json",
+      "path": "student_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "students_clean.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "split",
+      "kind": "data",
+      "artifacts": [
+        "student_features.csv"
+      ]
+    },
+    {
+      "source": "split",
+      "target": "fit_predict",
+      "kind": "data",
+      "artifacts": [
+        "train.csv",
+        "test.csv"
+      ]
+    },
+    {
+      "source": "fit_predict",
+      "target": "evaluate",
+      "kind": "data",
+      "artifacts": [
+        "predictions.csv"
+      ]
+    },
+    {
+      "source": "evaluate",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "metrics.json"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "students",
+      "features": "students",
+      "split": "students",
+      "fit_predict": "students",
+      "evaluate": "students",
+      "report": "students"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

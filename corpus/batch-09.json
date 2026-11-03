@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-09",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "024_sports_regression_prediction_statistical",
+      "title": "Parallel market-value regression and All-Star classification",
+      "domain": "sports",
+      "family_id": "dual_market_allstar_parallel",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "033_sports_statistical_cleaning_integration_v3",
+      "title": "Linear player shooting and value ranking",
+      "domain": "sports",
+      "family_id": "shooting_value_ranking_v3",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "039_sports_statistical_visualization_cleaning",
+      "title": "Independent sports summaries converging into one report",
+      "domain": "sports",
+      "family_id": "sports_summary_fanin_v3",
+      "topology": "fan_in",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "059_transportation_cleaning_integration_recovery",
+      "title": "Prepared trips fanning out to three operational views",
+      "domain": "transportation",
+      "family_id": "trip_operations_fanout_v2",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "088_transportation_statistical_integration_v2",
+      "title": "Route service metrics fanning out to three analyses",
+      "domain": "transportation",
+      "family_id": "route_service_fanout_v2",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

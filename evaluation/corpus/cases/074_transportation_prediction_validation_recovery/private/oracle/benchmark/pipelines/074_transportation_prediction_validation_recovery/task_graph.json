@@ -1,0 +1,488 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "074_transportation_prediction_validation_recovery",
+  "benchmark_revision": "batch-20",
+  "review_status": "author_review_pending",
+  "title": "Recovered delay modeling with multiview diagnostics",
+  "domain": "transportation",
+  "family_id": "recovered_delay_model_fanin_fanout",
+  "topology": "fan_in_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition",
+        "is_delayed",
+        "cancellation_risk"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "audit",
+      "name": "Audit prediction fixture",
+      "operation": "data_quality_audit",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "audited_trips.csv"
+      ],
+      "requirements": [
+        "Validate IDs and append four missing flags."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "recover",
+      "name": "Recover prediction fixture",
+      "operation": "mixed_recovery",
+      "required": true,
+      "inputs": [
+        "audited_trips.csv"
+      ],
+      "outputs": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ],
+      "requirements": [
+        "Recover numeric by route/global median and categories by deterministic mode."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "operations",
+      "name": "Derive operational features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "trips_recovered.csv"
+      ],
+      "outputs": [
+        "operational_features.csv"
+      ],
+      "requirements": [
+        "Compute passenger-km and fare per passenger."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "context",
+      "name": "Prepare model context",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "trips_recovered.csv"
+      ],
+      "outputs": [
+        "context_features.csv"
+      ],
+      "requirements": [
+        "Retain categories and targets."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate model data",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "operational_features.csv",
+        "context_features.csv"
+      ],
+      "outputs": [
+        "model_data.csv"
+      ],
+      "requirements": [
+        "Join one-to-one by trip."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "fit",
+      "name": "Fit delay classifier",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "delay_model.pkl",
+        "delay_predictions.csv"
+      ],
+      "requirements": [
+        "Use fixed split, preprocessing, model, threshold."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "evaluate",
+      "name": "Evaluate classifier",
+      "operation": "classification_evaluation",
+      "required": true,
+      "inputs": [
+        "delay_predictions.csv"
+      ],
+      "outputs": [
+        "delay_metrics.json"
+      ],
+      "requirements": [
+        "Compute five metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Compute route diagnostics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "route_diagnostics.csv"
+      ],
+      "requirements": [
+        "Aggregate route delay/risk."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "weather",
+      "name": "Compute weather diagnostics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "weather_diagnostics.csv"
+      ],
+      "requirements": [
+        "Aggregate weather delay."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Compute vehicle diagnostics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "vehicle_diagnostics.csv"
+      ],
+      "requirements": [
+        "Aggregate vehicle delay/risk."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Reconcile recovered outputs",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "recovery_audit.json",
+        "delay_metrics.json",
+        "route_diagnostics.csv",
+        "weather_diagnostics.csv",
+        "vehicle_diagnostics.csv"
+      ],
+      "outputs": [
+        "delay_report.json"
+      ],
+      "requirements": [
+        "Reconcile recovery and trip totals."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "audited_trips.csv",
+      "path": "audited_trips.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "missing_distance_input",
+        "missing_fare_input",
+        "missing_vehicle_input",
+        "missing_weather_input"
+      ]
+    },
+    {
+      "id": "trips_recovered.csv",
+      "path": "trips_recovered.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "distance_km",
+        "fare_amount",
+        "vehicle_type",
+        "weather_condition"
+      ]
+    },
+    {
+      "id": "recovery_audit.json",
+      "path": "recovery_audit.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "operational_features.csv",
+      "path": "operational_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "fare_per_passenger"
+      ]
+    },
+    {
+      "id": "context_features.csv",
+      "path": "context_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "is_delayed"
+      ]
+    },
+    {
+      "id": "model_data.csv",
+      "path": "model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "is_delayed"
+      ]
+    },
+    {
+      "id": "delay_model.pkl",
+      "path": "delay_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "delay_predictions.csv",
+      "path": "delay_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "actual_is_delayed",
+        "probability",
+        "predicted_is_delayed"
+      ]
+    },
+    {
+      "id": "delay_metrics.json",
+      "path": "delay_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "route_diagnostics.csv",
+      "path": "route_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "delay_rate"
+      ]
+    },
+    {
+      "id": "weather_diagnostics.csv",
+      "path": "weather_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "delay_rate"
+      ]
+    },
+    {
+      "id": "vehicle_diagnostics.csv",
+      "path": "vehicle_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_cancellation_risk"
+      ]
+    },
+    {
+      "id": "delay_report.json",
+      "path": "delay_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "audit",
+      "target": "recover",
+      "kind": "data",
+      "artifacts": [
+        "audited_trips.csv"
+      ]
+    },
+    {
+      "source": "recover",
+      "target": "operations",
+      "kind": "data",
+      "artifacts": [
+        "trips_recovered.csv"
+      ]
+    },
+    {
+      "source": "recover",
+      "target": "context",
+      "kind": "data",
+      "artifacts": [
+        "trips_recovered.csv"
+      ]
+    },
+    {
+      "source": "context",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "context_features.csv"
+      ]
+    },
+    {
+      "source": "operations",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "operational_features.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "fit",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "fit",
+      "target": "evaluate",
+      "kind": "data",
+      "artifacts": [
+        "delay_predictions.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "weather",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "vehicles",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "evaluate",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "delay_metrics.json"
+      ]
+    },
+    {
+      "source": "recover",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "recovery_audit.json"
+      ]
+    },
+    {
+      "source": "routes",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "route_diagnostics.csv"
+      ]
+    },
+    {
+      "source": "vehicles",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "vehicle_diagnostics.csv"
+      ]
+    },
+    {
+      "source": "weather",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "weather_diagnostics.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "audit": "prediction_recovery_multiview",
+      "recover": "prediction_recovery_multiview",
+      "operations": "prediction_recovery_multiview",
+      "context": "prediction_recovery_multiview",
+      "integrate": "prediction_recovery_multiview",
+      "fit": "prediction_recovery_multiview",
+      "evaluate": "prediction_recovery_multiview",
+      "routes": "prediction_recovery_multiview",
+      "weather": "prediction_recovery_multiview",
+      "vehicles": "prediction_recovery_multiview",
+      "report": "prediction_recovery_multiview"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

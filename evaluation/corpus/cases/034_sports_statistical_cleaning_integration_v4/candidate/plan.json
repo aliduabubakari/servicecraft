@@ -1,0 +1,196 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'salary_millions', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prep(d, cols, 'player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "clean = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "clean.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "f = clean.copy()",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "f['shooting_index'] = f[['field_goal_pct', 'three_point_pct', 'free_throw_pct']].mean(axis=1)",
+      "dependencies": {
+        "f": 5
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "f['production_index'] = f.points_per_game + f.assists_per_game + f.rebounds_per_game",
+      "dependencies": {
+        "f": 6
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "f['value_index'] = f.production_index / (f.salary_millions + 1)",
+      "dependencies": {
+        "f": 7
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "f.to_csv(out / 'player_scores.csv', index=False)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [],
+      "outputs": [
+        "player_scores.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "rank = f.sort_values(['shooting_index', 'production_index', 'player_id'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "rank['rank'] = np.arange(1, len(rank) + 1)",
+      "dependencies": {
+        "rank": 10
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "rank.to_csv(out / 'ranked_players.csv', index=False)",
+      "dependencies": {
+        "rank": 11
+      },
+      "writes": [],
+      "outputs": [
+        "ranked_players.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "top = rank.groupby('position', group_keys=False).head(3).sort_values(['position', 'rank'])",
+      "dependencies": {
+        "rank": 11
+      },
+      "writes": [
+        "top"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "top.to_csv(out / 'position_leaders.csv', index=False)",
+      "dependencies": {
+        "top": 13
+      },
+      "writes": [],
+      "outputs": [
+        "position_leaders.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "js(out / 'ranking_report.json', {'players': len(rank), 'positions': top.position.nunique(), 'leader_rows': len(top), 'overall_leader': rank.iloc[0].player_id})",
+      "dependencies": {
+        "rank": 11,
+        "top": 13
+      },
+      "writes": [],
+      "outputs": [
+        "ranking_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      4
+    ],
+    "score": [
+      9
+    ],
+    "rank": [
+      12
+    ],
+    "select": [
+      14
+    ],
+    "report": [
+      15
+    ]
+  }
+}

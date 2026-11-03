@@ -1,0 +1,281 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'distance_km', 'passengers', 'delay_minutes', 'revenue', 'operational_cost', 'on_time_pct', 'passenger_satisfaction']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'trip_id', ['route'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "e = d.assign(profit=d.revenue - d.operational_cost).groupby('route', as_index=False).agg(economic_trip_count=('trip_id', 'size'), total_revenue=('revenue', 'sum'), total_cost=('operational_cost', 'sum'), total_profit=('profit', 'sum'), total_passenger_km=('distance_km', lambda x: 0)).sort_values('route')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "e"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "pk = (d.distance_km * d.passengers).groupby(d.route).sum()",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "pk"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "e['total_passenger_km'] = e.route.map(pk)",
+      "dependencies": {
+        "e": 3,
+        "pk": 4
+      },
+      "writes": [
+        "e"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "e['profit_margin'] = np.where(e.total_revenue != 0, e.total_profit / e.total_revenue, 0)",
+      "dependencies": {
+        "e": 5
+      },
+      "writes": [
+        "e"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "e.to_csv(out / 'route_economics.csv', index=False)",
+      "dependencies": {
+        "e": 6
+      },
+      "writes": [],
+      "outputs": [
+        "route_economics.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "s = d.groupby('route', as_index=False).agg(service_trip_count=('trip_id', 'size'), mean_delay=('delay_minutes', 'mean'), mean_on_time=('on_time_pct', 'mean'), mean_satisfaction=('passenger_satisfaction', 'mean')).sort_values('route')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "s.to_csv(out / 'route_service.csv', index=False)",
+      "dependencies": {
+        "s": 8
+      },
+      "writes": [],
+      "outputs": [
+        "route_service.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "c = e.merge(s, on='route', validate='one_to_one')",
+      "dependencies": {
+        "e": 6,
+        "s": 8
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "assert (c.economic_trip_count == c.service_trip_count).all()",
+      "dependencies": {
+        "c": 10
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "c.to_csv(out / 'route_context.csv', index=False)",
+      "dependencies": {
+        "c": 11
+      },
+      "writes": [],
+      "outputs": [
+        "route_context.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "profit_span = c.total_profit.max() - c.total_profit.min()",
+      "dependencies": {
+        "c": 11
+      },
+      "writes": [
+        "profit_span"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "profit_score = (c.total_profit - c.total_profit.min()) / (profit_span if profit_span else 1)",
+      "dependencies": {
+        "profit_span": 13,
+        "c": 11
+      },
+      "writes": [
+        "profit_score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "delay_span = c.mean_delay.max() - c.mean_delay.min()",
+      "dependencies": {
+        "c": 11
+      },
+      "writes": [
+        "delay_span"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "delay_score = 1 - (c.mean_delay - c.mean_delay.min()) / (delay_span if delay_span else 1)",
+      "dependencies": {
+        "delay_span": 15,
+        "c": 11
+      },
+      "writes": [
+        "delay_score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "c['route_score'] = 0.35 * profit_score + 0.3 * c.mean_on_time + 0.2 * (c.mean_satisfaction / 5) + 0.15 * delay_score",
+      "dependencies": {
+        "delay_score": 16,
+        "profit_score": 14,
+        "c": 11
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "c.to_csv(out / 'route_scores.csv', index=False)",
+      "dependencies": {
+        "c": 17
+      },
+      "writes": [],
+      "outputs": [
+        "route_scores.csv"
+      ]
+    },
+    {
+      "index": 19,
+      "source": "rank = c.sort_values(['route_score', 'total_profit', 'route'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "c": 17
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "rank.insert(1, 'rank', np.arange(1, len(rank) + 1))",
+      "dependencies": {
+        "rank": 19
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "rank.to_csv(out / 'route_ranking.csv', index=False)",
+      "dependencies": {
+        "rank": 20
+      },
+      "writes": [],
+      "outputs": [
+        "route_ranking.csv"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "js(out / 'route_report.json', {'routes': len(rank), 'trips': int(c.service_trip_count.sum()), 'top_route': rank.iloc[0].route, 'top_score': rank.iloc[0].route_score, 'total_profit': c.total_profit.sum()})",
+      "dependencies": {
+        "rank": 20,
+        "c": 17
+      },
+      "writes": [],
+      "outputs": [
+        "route_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "economics": [
+      7
+    ],
+    "service": [
+      9
+    ],
+    "integrate": [
+      12
+    ],
+    "score": [
+      18
+    ],
+    "rank": [
+      21
+    ],
+    "report": [
+      22
+    ]
+  }
+}

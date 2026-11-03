@@ -1,0 +1,214 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "023_sports_regression_clustering_visualization",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "reg_prepare",
+    "reg_fit",
+    "reg_evaluate",
+    "cluster_prepare",
+    "cluster_fit",
+    "cluster_profile"
+  ],
+  "expected_edges": [
+    [
+      "reg_prepare",
+      "reg_fit"
+    ],
+    [
+      "reg_fit",
+      "reg_evaluate"
+    ],
+    [
+      "cluster_prepare",
+      "cluster_fit"
+    ],
+    [
+      "cluster_fit",
+      "cluster_profile"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "regression_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "market_value",
+        "win_shares"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_value_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_value_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_market_value",
+        "predicted_market_value"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_value_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "clustering_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "efficiency_rating",
+        "usage_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "player_clusters.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "cluster"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_profiles.csv",
+      "format": "csv",
+      "required_columns": [
+        "cluster",
+        "player_count",
+        "mean_efficiency",
+        "mean_usage"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "regression_features.csv",
+      "artifact": "regression_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/regression_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "market_value_predictions.csv",
+      "artifact": "market_value_predictions.csv",
+      "kind": "csv_equals",
+      "reference": "expected/market_value_predictions.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "market_value_metrics.json",
+      "artifact": "market_value_metrics.json",
+      "kind": "json_equals",
+      "reference": "expected/market_value_metrics.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "clustering_features.csv",
+      "artifact": "clustering_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/clustering_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "player_clusters.csv",
+      "artifact": "player_clusters.csv",
+      "kind": "csv_equals",
+      "reference": "expected/player_clusters.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "cluster_profiles.csv",
+      "artifact": "cluster_profiles.csv",
+      "kind": "csv_equals",
+      "reference": "expected/cluster_profiles.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "cluster_report.json",
+      "artifact": "cluster_report.json",
+      "kind": "json_equals",
+      "reference": "expected/cluster_report.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

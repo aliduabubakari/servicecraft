@@ -1,0 +1,79 @@
+{
+  "status": "passed",
+  "scope": "Final partial Batch-21 references, recovery behavior, invariants, invalid-ID rejection, topology classification, graph consistency, and export allowlists; not Dagster execution",
+  "partial_final_batch": true,
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "053_sports_visualization_validation_recovery",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_out",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "numeric_recovered.csv": "0c07fa125a1300facba266cd9530fe12abec443d1cf3ac0fdb2f005720cf2b8e",
+        "audited_players.csv": "efd06a90f267c96d89ac4d8af45e0db0870ad3dd388fc590f0b7f413a7fb5b17",
+        "age_summary.csv": "8bad6564500661498325731f9e1e36a24b24ed0dc756b5b4838063b3680b930a",
+        "team_summary.csv": "719f1267ef6cdc60656737e789357f69d3681d820c8b5cf3443599f4d47a5d70",
+        "position_summary.csv": "058d667a27ecdffb599caec784594e41e3d0d976b391b13aa6142361b98415bc",
+        "players_recovered.csv": "b021e9545731adb5cd89ec0c26846897d1dbb18697945776f00d3a992b82ea25"
+      }
+    },
+    {
+      "case": "053_sports_visualization_validation_recovery",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "100_transportation_visualization_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "trips_prepared.csv": "d122e2a130f40414ce6e082856300b2b65decb5b210edeabbbf3e599c91c2abb",
+        "route_ranking.csv": "456dc12900bbeca67fb8bb60f746a92cb8e4e37204446915241de903f9d8afd2",
+        "route_chart_data.csv": "f8fb475fd08290104d1201e68b479ee29faa593b2c4a28b453d36295d3d476f8",
+        "route_report.json": "03f5c04a12359ca12a54a35307785bf11de61194c0174ef5b34c3bec4feb7b37",
+        "route_summary.csv": "54c8a63a77c4c4d2423a19adc8b0263a98eb80cefb051a19c3365380a21d89f3"
+      }
+    },
+    {
+      "case": "100_transportation_visualization_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-21",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-21",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

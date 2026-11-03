@@ -1,0 +1,146 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "093_transportation_visualization_cleaning_validation",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "prepare",
+    "routes",
+    "vehicles",
+    "periods"
+  ],
+  "expected_edges": [
+    [
+      "prepare",
+      "routes"
+    ],
+    [
+      "prepare",
+      "vehicles"
+    ],
+    [
+      "prepare",
+      "periods"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "trips_prepared.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "on_time",
+        "time_period"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "vehicle_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_passengers"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "period_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "time_period",
+        "trip_count",
+        "on_time_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "trips_prepared.csv",
+      "artifact": "trips_prepared.csv",
+      "kind": "csv_equals",
+      "reference": "expected/trips_prepared.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_operations.csv",
+      "artifact": "route_operations.csv",
+      "kind": "csv_equals",
+      "reference": "expected/route_operations.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "vehicle_operations.csv",
+      "artifact": "vehicle_operations.csv",
+      "kind": "csv_equals",
+      "reference": "expected/vehicle_operations.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "period_operations.csv",
+      "artifact": "period_operations.csv",
+      "kind": "csv_equals",
+      "reference": "expected/period_operations.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

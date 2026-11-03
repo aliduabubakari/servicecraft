@@ -1,0 +1,129 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "014_sports_clustering_integration_validation",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "cluster",
+    "profile",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "cluster",
+      "profile"
+    ],
+    [
+      "profile",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "player_clusters.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "cluster"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_profiles.csv",
+      "format": "csv",
+      "required_columns": [
+        "cluster",
+        "player_count",
+        "mean_points_per_game",
+        "mean_assists_per_game",
+        "mean_rebounds_per_game",
+        "mean_efficiency_rating",
+        "mean_usage_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "clustering_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "player_clusters.csv",
+      "artifact": "player_clusters.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/player_clusters.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "cluster_profiles.csv",
+      "artifact": "cluster_profiles.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/cluster_profiles.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "clustering_report.json",
+      "artifact": "clustering_report.json",
+      "kind": "json_equals",
+      "reference": "private/expected/clustering_report.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

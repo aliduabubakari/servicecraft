@@ -1,0 +1,9 @@
+{
+  "window_start": "2024-10-03",
+  "window_end": "2024-12-31",
+  "window_days": 90,
+  "service_z": 1.645,
+  "skus": 50,
+  "reorder_skus": 37,
+  "total_suggested_units": 50610
+}

@@ -1,0 +1,14 @@
+{
+  "train_rows": 320,
+  "test_rows": 80,
+  "features": [
+    "experience_years",
+    "performance_score",
+    "age",
+    "headcount",
+    "budget_millions"
+  ],
+  "mae": 26681.6383752991,
+  "rmse": 31670.38287733341,
+  "r2": 0.27828748498275746
+}

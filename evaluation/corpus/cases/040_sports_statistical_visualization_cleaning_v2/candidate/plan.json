@@ -1,0 +1,348 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'player_id', ['team', 'position'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "d = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "d.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "p = d[['player_id', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "p['production_index'] = p.points_per_game + p.assists_per_game + p.rebounds_per_game",
+      "dependencies": {
+        "p": 5
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "p['production_per_minute'] = np.where(p.minutes_per_game > 0, p.production_index / p.minutes_per_game, 0)",
+      "dependencies": {
+        "p": 6
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "p.to_csv(out / 'performance_features.csv', index=False)",
+      "dependencies": {
+        "p": 7
+      },
+      "writes": [],
+      "outputs": [
+        "performance_features.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "s = d[['player_id', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "s['shooting_index'] = s[['field_goal_pct', 'three_point_pct', 'free_throw_pct']].mean(axis=1)",
+      "dependencies": {
+        "s": 9
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "s['weighted_shooting_index'] = 0.5 * s.field_goal_pct + 0.3 * s.three_point_pct + 0.2 * s.free_throw_pct",
+      "dependencies": {
+        "s": 10
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "s.to_csv(out / 'shooting_features.csv', index=False)",
+      "dependencies": {
+        "s": 11
+      },
+      "writes": [],
+      "outputs": [
+        "shooting_features.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "c = d[['player_id', 'team', 'position', 'games_played', 'age', 'experience_years', 'salary_millions']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "c['age_band'] = pd.cut(c.age, [0, 24, 29, 34, np.inf], labels=['<=24', '25-29', '30-34', '35+']).astype(str)",
+      "dependencies": {
+        "c": 13
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "c['salary_band'] = pd.cut(c.salary_millions, [-np.inf, 5, 10, 20, np.inf], labels=['<=5', '5-10', '10-20', '20+']).astype(str)",
+      "dependencies": {
+        "c": 14
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "c.to_csv(out / 'context_features.csv', index=False)",
+      "dependencies": {
+        "c": 15
+      },
+      "writes": [],
+      "outputs": [
+        "context_features.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "m = p.merge(s, on='player_id', validate='one_to_one').merge(c, on='player_id', validate='one_to_one')",
+      "dependencies": {
+        "c": 15,
+        "p": 7,
+        "s": 11
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "m.to_csv(out / 'analysis_table.csv', index=False)",
+      "dependencies": {
+        "m": 17
+      },
+      "writes": [],
+      "outputs": [
+        "analysis_table.csv"
+      ]
+    },
+    {
+      "index": 19,
+      "source": "team = m.groupby('team', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_shooting=('shooting_index', 'mean'), mean_salary=('salary_millions', 'mean')).sort_values('team')",
+      "dependencies": {
+        "m": 17
+      },
+      "writes": [
+        "team"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "team.to_csv(out / 'team_summary.csv', index=False)",
+      "dependencies": {
+        "team": 19
+      },
+      "writes": [],
+      "outputs": [
+        "team_summary.csv"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "pos = m.groupby('position', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_shooting=('shooting_index', 'mean'), mean_minutes=('minutes_per_game', 'mean')).sort_values('position')",
+      "dependencies": {
+        "m": 17
+      },
+      "writes": [
+        "pos"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "pos.to_csv(out / 'position_summary.csv', index=False)",
+      "dependencies": {
+        "pos": 21
+      },
+      "writes": [],
+      "outputs": [
+        "position_summary.csv"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "age = m.groupby('age_band', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_shooting=('shooting_index', 'mean'), mean_salary=('salary_millions', 'mean')).sort_values('age_band')",
+      "dependencies": {
+        "m": 17
+      },
+      "writes": [
+        "age"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "age.to_csv(out / 'age_summary.csv', index=False)",
+      "dependencies": {
+        "age": 23
+      },
+      "writes": [],
+      "outputs": [
+        "age_summary.csv"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "salary = m.groupby('salary_band', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_shooting=('shooting_index', 'mean'), mean_experience=('experience_years', 'mean')).sort_values('salary_band')",
+      "dependencies": {
+        "m": 17
+      },
+      "writes": [
+        "salary"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "salary.to_csv(out / 'salary_summary.csv', index=False)",
+      "dependencies": {
+        "salary": 25
+      },
+      "writes": [],
+      "outputs": [
+        "salary_summary.csv"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "js(out / 'sports_report.json', {'players': len(m), 'team_players': int(team.player_count.sum()), 'position_players': int(pos.player_count.sum()), 'age_players': int(age.player_count.sum()), 'salary_players': int(salary.player_count.sum()), 'teams': len(team), 'positions': len(pos), 'age_bands': len(age), 'salary_bands': len(salary)})",
+      "dependencies": {
+        "team": 19,
+        "pos": 21,
+        "salary": 25,
+        "age": 23,
+        "m": 17
+      },
+      "writes": [],
+      "outputs": [
+        "sports_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      4
+    ],
+    "performance": [
+      8
+    ],
+    "shooting": [
+      12
+    ],
+    "context": [
+      16
+    ],
+    "integrate": [
+      18
+    ],
+    "teams": [
+      20
+    ],
+    "positions": [
+      22
+    ],
+    "ages": [
+      24
+    ],
+    "salaries": [
+      26
+    ],
+    "report": [
+      27
+    ]
+  }
+}

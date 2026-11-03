@@ -1,0 +1,167 @@
+{
+  "status": "passed",
+  "scope": "Batch-04 Python references, independent invariants, invalid-input rejection, topology classification, graph consistency, and export allowlists; not Dagster execution or generated-code evaluation",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "011_hr_visualization_integration_validation",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_out",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "workforce_clean.csv": "bcec24107e21425e86307e3276df50af720726edae3553e78b4611838a09da2f",
+        "compensation_by_department.csv": "a5964c79e7fafc381530f0453265dfae13826e802dbd3d37f4f0936ad8c06e0d",
+        "workforce_composition.csv": "3b502914aade2526e826553ed7d14f1df448c2ef87684dd47dfa430a58318c01",
+        "performance_by_department.csv": "c34bc53202f1845115079c1223d5fb01bd9a5135bae644b7fe21be0a1b699acc"
+      }
+    },
+    {
+      "case": "011_hr_visualization_integration_validation",
+      "probe": "invalid_input_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "012_insurance_claims",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 3,
+        "sinks": 1,
+        "joins": 1,
+        "splits": 0
+      },
+      "output_sha256": {
+        "claims_report.json": "5a68e7f4a0edca479978407873f0a9e2d0beda2e25be31a237438a2817526989",
+        "fraud_by_policy_type.csv": "3d9c731ea497a9065ecd835f88d02e3a7e17928e69541da2f6db1a157dcf7555",
+        "financial_by_claim_type.csv": "3c8e4310540601de96a2c1df9b555ea4049854fab314fb91af5083cb6f1dd9fe",
+        "processing_by_status.csv": "829062d5a4e9344f5df3dcd3666dffa589ddcd60843f00d4213d488fa5fd0da8"
+      }
+    },
+    {
+      "case": "012_insurance_claims",
+      "probe": "invalid_input_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "013_predictive_maintenance",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in_fan_out",
+      "tasks": 8,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 2,
+        "splits": 2
+      },
+      "output_sha256": {
+        "failure7d_model.pkl": "4d70dde47007b417477cf247ff766e374aaa8995c8c387eac5cbb3d640a1c722",
+        "maintenance_report.json": "4be2d8d5135f6e8800ef7ac2f916c5b1a5f617dc5fdb8d0a5ab1eb2e51cd86fa",
+        "failure24h_predictions.csv": "b5c021795c1045274dfb7b029bf762e9f9188ed5d720316530f1e8e00c1a18e0",
+        "temporal_features.csv": "78a5b16abe60354105a65590cdc619945ca054862a6934e7b73bef988bd65518",
+        "failure24h_model.pkl": "b56ed9556f74be2ee8a6f8588aa00fbb915da9da629c13d203d7d546d94bb616",
+        "sensor_clean.csv": "c0a1220f61e7a4527002d18ddc51debe09c12fb809e14aa6d8e6db87c0f8a8cf",
+        "machine_risk_summary.csv": "f83a8f6be47ea1a9128a2669c2047f70def90fb98e7f34709f07588efa3b6cd3",
+        "expanding_baselines.csv": "83ff104f355a09c637042f4c5ce710505b79ea3d656476b26c2f05d4fc51a84e",
+        "failure24h_metrics.json": "da82452fe567a60fbf4fdf19257d26e2cdb61c988705015d25c02f6cf0f232b4",
+        "maintenance_features.csv": "51b94620295c5586c43aada3eabdf8e0926b3750a2fd3ae36850442638b501e2",
+        "failure7d_metrics.json": "3081c65d70cd82b2df7aafabb3d46b2660f95c0abbe7a419ccae30de6b5fd031",
+        "failure7d_predictions.csv": "f1320624050d2ee9c4de6ea5a84f433f4d5a5dab1f42d363447d65c9e9787db6"
+      }
+    },
+    {
+      "case": "013_predictive_maintenance",
+      "probe": "invalid_input_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "015_sports_clustering_prediction_statistical",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "parallel",
+      "tasks": 6,
+      "structure": {
+        "components": 2,
+        "roots": 2,
+        "sinks": 2,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "prediction_features.csv": "f795193195fa821f8f2cd66a5ce2d358d8242c4ec9d501bff88c73d3ef1e2f71",
+        "cluster_profiles.csv": "7493d120bd06463d5437b1f7e54f495bca0fc888fdac01dc03de0d584894b208",
+        "all_star_predictions.csv": "9ce717d9560aff433c53e482c4e178864266902e093aee12a11c9fe81c1d5492",
+        "cluster_model.pkl": "71adfb35a855fef21f3603a61b228003ffe81a38c0160a54b8f769f198ad36ad",
+        "cluster_report.json": "608e08b3ea2e81ac2ff8eeda5be0c31532b5b95410683204594bf32cae3b3f55",
+        "player_clusters.csv": "e22b898e18646d5806f6bd28f94d56e611e4bfaca000a52fa1887bcd19580d2d",
+        "all_star_metrics.json": "259e528c296148e3c23ee38443dabfb28b7ae4e2cc5ce211084b74a9b4f3c606",
+        "clustering_features.csv": "c6e17d3424e37f44745de31bf333e0e68057ddb4d9ecc2cfaa1a74d36341a976",
+        "all_star_model.pkl": "466803ac0f00d267a136d20ac47c4af7ec8dfb5aa466b3f4c99366cf2f8cbd89"
+      }
+    },
+    {
+      "case": "015_sports_clustering_prediction_statistical",
+      "probe": "invalid_input_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "055_transportation_analysis",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "metrics.json": "79a7da7a8e5d1c366a0adc80efc5c26bc6c1b9ab6bec4f714c06ec6ceeb36a20",
+        "trips_clean.csv": "6fc380fe4f094655a4ea11bf9cd7897001eb9e11d63b07c48564ed20be99acee",
+        "test.csv": "08d5692b251cf0167c9c4d2ef7b1ac9ae80a0d63d47adf3353dabb7385cb387b",
+        "predictions.csv": "69f8e08231a2270b729cbd6ba629f799c9be3072ac53b7e6cd77baff46ab2a33",
+        "model.pkl": "590e8aee1e5cdfeb7c877b5da1a33ad2d8b77f30be5374dc286bd7284ca9c7a8",
+        "trip_features.csv": "7643d11810a877d567f1c95d5e68543bbb79e2be73a2792e6147e830990b7f08",
+        "delay_report.json": "79a7da7a8e5d1c366a0adc80efc5c26bc6c1b9ab6bec4f714c06ec6ceeb36a20",
+        "train.csv": "e6253d4976f379ec44a54c712b3f06471ab122772be0378f39a8f0b488107128"
+      }
+    },
+    {
+      "case": "055_transportation_analysis",
+      "probe": "invalid_input_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-04",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-04",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

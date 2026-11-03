@@ -1,0 +1,164 @@
+{
+  "status": "passed",
+  "scope": "Batch-11 references, invariants, invalid-ID rejection, topology classification, graph consistency, and export allowlists; not Dagster execution",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "025_sports_regression_prediction_statistical_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in_fan_out",
+      "tasks": 9,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 2,
+        "splits": 2
+      },
+      "output_sha256": {
+        "dual_model_report.json": "872b4ba9a03af5ba5b3faf4ab8f7a4eff024306f1582d70554295386fd5b7add",
+        "market_model.pkl": "8a15604c8d0255638866e8ea740938ddf639ee4b92f7db2d1bdf223e1a5515a8",
+        "allstar_metrics.json": "1fd6b9d8a0255bf1aae17984d7e7f36a77fa2828107b40ee0265d68fb5f760a4",
+        "market_metrics.json": "47851f646c1cbaa4f6367e87bab9240f64ce2fd1beb7f38c7bc15c63e9cd42a9",
+        "players_clean.csv": "3897159339dcff4df345b3ccafd8673000d2faf5edfa75a3c5ed836fd238edd9",
+        "allstar_model.pkl": "64d399d75e2e7acfc034b5eff5389f9646dc787b657313504557e23d9f43abda",
+        "allstar_predictions.csv": "3744ffb1b1547ba9e5f229d72ff8cf981af35650ae7ebd38919dff95b37d5856",
+        "performance_features.csv": "2df94faf18a6d90b74174a44d5ba9310f8f6608944e18c076588eed3c96bbf61",
+        "model_data.csv": "9fc3fce94ed9fcb86d554596bbdb2edf34c069e2e201fce2faa4c36848371182",
+        "market_predictions.csv": "99411afa2390c06ed56a0094b11d168d05a890a642940db16d2bf491ba31a8ee",
+        "availability_features.csv": "3b63c661acfbd101455c65882b25951179bf26107ba54cfa342eb62733770b21"
+      }
+    },
+    {
+      "case": "025_sports_regression_prediction_statistical_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "035_sports_statistical_cleaning_integration_v5",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "position_leaders.csv": "d4c38c80dd71d2f3652f508ff5f006737fa61cbb985212019ee6b5f75d41a805",
+        "player_scores.csv": "f258a6a3187ef28bdf795c31e383f7a978949d43fc9c188fe1aefec417c66991",
+        "ranking_report.json": "fa5288fe56f7182bbdf1845daead848ab9e55c2c17186b3287ea46cef8620877",
+        "players_clean.csv": "6790a2743616e37c3687f3dd54c76ce63661c18db870d0d967126e68540d0fe8",
+        "ranked_players.csv": "f3860beab78e4707f852aef42c49e5068b55789f530c91658190cc18ce310f68"
+      }
+    },
+    {
+      "case": "035_sports_statistical_cleaning_integration_v5",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "061_transportation_cleaning_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_out",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "weather_operations.csv": "2e793ec3193b82ace7b41b65788cb47e790077cdd2f45e17481995dd0d6105e5",
+        "trips_clean.csv": "5dfa9c8c2b28fbdd4317bf11e32a0dc6b5009a0d3af21bc45309ce058f83cd25",
+        "route_operations.csv": "4f450b073c1944a9470652511cf4c00e325338335b2c231958dafddfc3505d9e",
+        "vehicle_operations.csv": "69aebc4dd0d0677845ccc36b954a4b8e1beffd0ef809f556ec85d6566334d238"
+      }
+    },
+    {
+      "case": "061_transportation_cleaning_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "068_transportation_prediction_cleaning",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "parallel",
+      "tasks": 6,
+      "structure": {
+        "components": 2,
+        "roots": 2,
+        "sinks": 2,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "delay_model.pkl": "e0559384a2155c44a33b42c51fcc7f675459e432a93fbd073df4321e1b9d3d38",
+        "risk_model.pkl": "91f176c0ee76648b5903101328e99f35a6eea692c11ab89d249eddb3aeb709f1",
+        "delay_metrics.json": "f49dd331557c5a7f732fa05d20c3b083f17bc76f202fb6d825f10f46e1a958bb",
+        "risk_model_data.csv": "9540f4c55ff51e82b61eca475971b0182938a51816ed4881c404daf1291bf54a",
+        "delay_predictions.csv": "ce09075811eff38f6f394b94253faa74f320569df1ee96219f35840d17649bc7",
+        "risk_metrics.json": "d8b5b3d834073901cc26780262f22ca1a54054a31d81f6d9973eb99d93303c96",
+        "delay_model_data.csv": "70137d35d5caf2714313a592f3977199a4f1f66a68cc60456a65fa430c85b3ed",
+        "risk_predictions.csv": "2df67ca16f4e311060a04b9ecb9ff6074f161cc8ded49b61f0ab96345d6da581"
+      }
+    },
+    {
+      "case": "068_transportation_prediction_cleaning",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "081_transportation_regression_statistical_cleaning",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_out",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "route_tradeoffs.json": "2057ae72f27ab734ed4094be8de95f06bada0bffe921c2d217cb41b5d380a2dc",
+        "trips_clean.csv": "1f76a0d55523da1bba6b552cf4aff0ddadde9ac25cd82316a9fe6fdd870db169",
+        "route_metrics.csv": "d1990ed182d6861aa6999ac7096b0627acd23e3a1d54cae439eb6f699fabecbd",
+        "trip_economics.csv": "5019162ec068580536406d04c1cbebfb4d0cd86bd25e36930764fa3ffde79a3c",
+        "profitability_ranking.csv": "e1f98fc855e368bdb65b9d681764a08b522e63e8010a3229b0050d2934377a11",
+        "service_ranking.csv": "4510b03331d2f7fd3cab07d829618e627d5201eac55daac6bbd76e55b44c7cf3"
+      }
+    },
+    {
+      "case": "081_transportation_regression_statistical_cleaning",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-11",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-11",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

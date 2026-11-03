@@ -1,0 +1,12 @@
+.git
+.venv
+__pycache__
+qualification-runs
+.pytest_cache
+.ruff_cache
+corpus
+pilots
+examples
+docs
+tests
+*.egg-info

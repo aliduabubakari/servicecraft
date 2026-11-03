@@ -1,0 +1,137 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'trip_id', ['route', 'vehicle_type', 'day_of_week', 'weather_condition'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "clean = d[cols].sort_values('trip_id').copy()",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "clean['passenger_km'] = clean.distance_km * clean.passengers",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "clean['on_time'] = (clean.delay_minutes <= 5).astype(int)",
+      "dependencies": {
+        "clean": 4
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean['time_period'] = pd.cut(clean.departure_hour, [-1, 5, 11, 17, 23], labels=['night', 'morning', 'afternoon', 'evening']).astype(str)",
+      "dependencies": {
+        "clean": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean.to_csv(out / 'trips_prepared.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "trips_prepared.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "clean.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), total_passenger_km=('passenger_km', 'sum'), mean_delay=('delay_minutes', 'mean'), on_time_rate=('on_time', 'mean')).sort_values('route').to_csv(out / 'route_operations.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "route_operations.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "clean.groupby('vehicle_type', as_index=False).agg(trip_count=('trip_id', 'size'), mean_passengers=('passengers', 'mean'), mean_fare=('fare_amount', 'mean'), mean_delay=('delay_minutes', 'mean')).sort_values('vehicle_type').to_csv(out / 'vehicle_operations.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "vehicle_operations.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "clean.groupby('time_period', as_index=False).agg(trip_count=('trip_id', 'size'), total_passenger_km=('passenger_km', 'sum'), mean_delay=('delay_minutes', 'mean'), on_time_rate=('on_time', 'mean')).sort_values('time_period').to_csv(out / 'period_operations.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "period_operations.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare": [
+      7
+    ],
+    "routes": [
+      8
+    ],
+    "vehicles": [
+      9
+    ],
+    "periods": [
+      10
+    ]
+  }
+}

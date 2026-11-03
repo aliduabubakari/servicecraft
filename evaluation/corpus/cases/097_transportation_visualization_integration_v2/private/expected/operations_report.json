@@ -1,0 +1,9 @@
+{
+  "trips": 592,
+  "route_trips": 592,
+  "vehicle_trips": 592,
+  "weather_trips": 592,
+  "routes": 20,
+  "vehicle_types": 5,
+  "weather_conditions": 4
+}

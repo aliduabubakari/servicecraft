@@ -1,0 +1,95 @@
+{
+  "status": "pass",
+  "scope": "Visible-data smoke controls; no LLM generations or full benchmark certification",
+  "cases": [
+    {
+      "case": "100_transportation_visualization_v2",
+      "environment": {
+        "status": "pass",
+        "checks": [
+          {
+            "package": "dagster",
+            "expected": "1.13.12",
+            "actual": "1.13.12",
+            "passed": true
+          },
+          {
+            "package": "numpy",
+            "expected": "2.0.1",
+            "actual": "2.0.1",
+            "passed": true
+          },
+          {
+            "package": "pandas",
+            "expected": "2.2.2",
+            "actual": "2.2.2",
+            "passed": true
+          },
+          {
+            "import": "dagster",
+            "passed": true
+          },
+          {
+            "import": "numpy",
+            "passed": true
+          },
+          {
+            "import": "pandas",
+            "passed": true
+          }
+        ]
+      },
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      }
+    },
+    {
+      "case": "053_sports_visualization_validation_recovery",
+      "environment": {
+        "status": "pass",
+        "checks": [
+          {
+            "package": "dagster",
+            "expected": "1.13.12",
+            "actual": "1.13.12",
+            "passed": true
+          },
+          {
+            "package": "numpy",
+            "expected": "2.0.1",
+            "actual": "2.0.1",
+            "passed": true
+          },
+          {
+            "package": "pandas",
+            "expected": "2.2.2",
+            "actual": "2.2.2",
+            "passed": true
+          },
+          {
+            "import": "dagster",
+            "passed": true
+          },
+          {
+            "import": "numpy",
+            "passed": true
+          },
+          {
+            "import": "pandas",
+            "passed": true
+          }
+        ]
+      },
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      }
+    }
+  ],
+  "broken_environment_correctly_unscored": true
+}

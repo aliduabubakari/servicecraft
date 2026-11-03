@@ -1,0 +1,195 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'player_id', ['team', 'position'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "clean = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "clean['production_index'] = clean.points_per_game + clean.assists_per_game + clean.rebounds_per_game",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "clean['production_per_minute'] = np.where(clean.minutes_per_game > 0, clean.production_index / clean.minutes_per_game, 0)",
+      "dependencies": {
+        "clean": 4
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean.to_csv(out / 'players_prepared.csv', index=False)",
+      "dependencies": {
+        "clean": 5
+      },
+      "writes": [],
+      "outputs": [
+        "players_prepared.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "team = clean.groupby('team', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_per_minute=('production_per_minute', 'mean'), mean_salary=('salary_millions', 'mean'), mean_experience=('experience_years', 'mean')).sort_values('team')",
+      "dependencies": {
+        "clean": 5
+      },
+      "writes": [
+        "team"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "team.to_csv(out / 'team_summary.csv', index=False)",
+      "dependencies": {
+        "team": 7
+      },
+      "writes": [],
+      "outputs": [
+        "team_summary.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "rank = team.sort_values(['mean_production', 'mean_per_minute', 'team'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "team": 7
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "rank.insert(1, 'rank', np.arange(1, len(rank) + 1))",
+      "dependencies": {
+        "rank": 9
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "rank.to_csv(out / 'team_ranking.csv', index=False)",
+      "dependencies": {
+        "rank": 10
+      },
+      "writes": [],
+      "outputs": [
+        "team_ranking.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "chart = rank[['team', 'rank', 'player_count', 'mean_production', 'mean_per_minute', 'mean_salary']].copy()",
+      "dependencies": {
+        "rank": 10
+      },
+      "writes": [
+        "chart"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "chart['production_label'] = chart.mean_production.round(2).astype(str)",
+      "dependencies": {
+        "chart": 12
+      },
+      "writes": [
+        "chart"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "chart.to_csv(out / 'team_chart_data.csv', index=False)",
+      "dependencies": {
+        "chart": 13
+      },
+      "writes": [],
+      "outputs": [
+        "team_chart_data.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "js(out / 'team_report.json', {'players': int(rank.player_count.sum()), 'teams': len(rank), 'top_team': rank.iloc[0].team, 'top_mean_production': rank.iloc[0].mean_production})",
+      "dependencies": {
+        "rank": 10
+      },
+      "writes": [],
+      "outputs": [
+        "team_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare": [
+      6
+    ],
+    "summarize": [
+      8
+    ],
+    "rank": [
+      11
+    ],
+    "chart": [
+      14
+    ],
+    "report": [
+      15
+    ]
+  }
+}

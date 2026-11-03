@@ -1,0 +1,240 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "085_transportation_statistical_geospatial",
+  "benchmark_revision": "batch-07",
+  "review_status": "author_review_pending",
+  "title": "Parallel spatial and service-quality transportation analyses",
+  "domain": "transportation",
+  "family_id": "parallel_spatial_service_analysis",
+  "topology": "parallel",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "distance_km",
+        "passengers",
+        "delay_minutes",
+        "weather_condition",
+        "on_time_pct",
+        "passenger_satisfaction",
+        "origin_lat",
+        "origin_lon",
+        "dest_lat",
+        "dest_lon"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "spatial",
+      "name": "Compute spatial trip metrics",
+      "operation": "spatial_enrichment",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trip_spatial_metrics.csv"
+      ],
+      "requirements": [
+        "Validate IDs/coordinates and compute haversine/ratio."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "spatial_routes",
+      "name": "Summarize route geometry",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_spatial_metrics.csv"
+      ],
+      "outputs": [
+        "route_spatial_summary.csv"
+      ],
+      "requirements": [
+        "Compute route counts and means."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "spatial_report",
+      "name": "Report spatial coverage",
+      "operation": "aggregate_report",
+      "required": true,
+      "inputs": [
+        "route_spatial_summary.csv"
+      ],
+      "outputs": [
+        "spatial_report.json"
+      ],
+      "requirements": [
+        "Publish trip/route/distance metadata carried forward."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "service",
+      "name": "Compute service scores",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trip_service_metrics.csv"
+      ],
+      "requirements": [
+        "Validate trips and compute normalized service score."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "service_groups",
+      "name": "Summarize service groups",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_service_metrics.csv"
+      ],
+      "outputs": [
+        "service_group_summary.csv"
+      ],
+      "requirements": [
+        "Compute vehicle/weather measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "service_report",
+      "name": "Report service quality",
+      "operation": "aggregate_report",
+      "required": true,
+      "inputs": [
+        "service_group_summary.csv"
+      ],
+      "outputs": [
+        "service_report.json"
+      ],
+      "requirements": [
+        "Publish trip/group/score metadata carried forward."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trip_spatial_metrics.csv",
+      "path": "trip_spatial_metrics.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "great_circle_km",
+        "distance_ratio"
+      ]
+    },
+    {
+      "id": "route_spatial_summary.csv",
+      "path": "route_spatial_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_great_circle_km"
+      ]
+    },
+    {
+      "id": "spatial_report.json",
+      "path": "spatial_report.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "trip_service_metrics.csv",
+      "path": "trip_service_metrics.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "service_score"
+      ]
+    },
+    {
+      "id": "service_group_summary.csv",
+      "path": "service_group_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "weather_condition",
+        "trip_count",
+        "mean_service_score"
+      ]
+    },
+    {
+      "id": "service_report.json",
+      "path": "service_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "spatial",
+      "target": "spatial_routes",
+      "kind": "data",
+      "artifacts": [
+        "trip_spatial_metrics.csv"
+      ]
+    },
+    {
+      "source": "spatial_routes",
+      "target": "spatial_report",
+      "kind": "data",
+      "artifacts": [
+        "route_spatial_summary.csv"
+      ]
+    },
+    {
+      "source": "service",
+      "target": "service_groups",
+      "kind": "data",
+      "artifacts": [
+        "trip_service_metrics.csv"
+      ]
+    },
+    {
+      "source": "service_groups",
+      "target": "service_report",
+      "kind": "data",
+      "artifacts": [
+        "service_group_summary.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "spatial": "geo_parallel",
+      "spatial_routes": "geo_parallel",
+      "spatial_report": "geo_parallel",
+      "service": "geo_parallel",
+      "service_groups": "geo_parallel",
+      "service_report": "geo_parallel"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

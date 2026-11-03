@@ -1,0 +1,158 @@
+{
+  "status": "passed",
+  "scope": "Batch-08 references, invariants, invalid-ID rejection, topology classification, graph consistency, and export allowlists; not Dagster execution",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "022_sports_prediction_visualization_cleaning",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in_fan_out",
+      "tasks": 8,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 2,
+        "splits": 2
+      },
+      "output_sha256": {
+        "metrics.json": "87999724c80246e8139ee6705318efb05dfb168fa4b6b46d7a1ac1d1420e9607",
+        "predictions.csv": "ebe968e956d65819fdaa9f7e1d539fe7ba3f39dbf1361709ad6bea9c33a32ce1",
+        "model.pkl": "f316e351756c09458f43669359e80bfb5c2340b86527cc30a979fc5a34c37d1c",
+        "players_clean.csv": "828dc83919fd24df8cc4c1c4b9cf6dcd3660f11bb313a35c539544dbfef4631e",
+        "model_report.json": "318b2c35c4d9ce16a221f99c5f5531e463c5d86317e4b11d361585b5b7fb15e2",
+        "performance_features.csv": "dfa4c35d08a1ab7eb03c7647774f4620b200f8a6eecd44af7c71ab6bab6caaf5",
+        "team_diagnostics.csv": "ce335da07c63bb5832b33232bb0250b1cad3859be285c9782c893a0e47c99a18",
+        "model_data.csv": "1b77d99b506eb12bc260d191510637a81de4ddb325e23fab094dfd058e716326",
+        "availability_features.csv": "d8e63b2012f3facabece6767c8f16345e269622c9e722892e2864240c1f7b3b3"
+      }
+    },
+    {
+      "case": "022_sports_prediction_visualization_cleaning",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "032_sports_statistical_cleaning_integration_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "position_leaders.csv": "5435c48d2c017da3223049fb351c8bd8bc68f06895f36c8934eb37f3e8a6872b",
+        "player_scores.csv": "b8050c044e6d8d0cf4a824c5a5ad7ec1a2b20ab20bca2231c23acf9ef9647b5d",
+        "ranking_report.json": "d4276f515577affd38c02f2de82bbe0ed37ed856b05e2e04506c8bacc7d14f60",
+        "players_clean.csv": "258a41211b6b9ac36dcdb840b0611df87e95f24b4cce16aecd9e56be85bb66e7",
+        "ranked_players.csv": "1fefd91a6236e3905ede3932a0239d5475d069923c09292b52b22d8e2c80eb3c"
+      }
+    },
+    {
+      "case": "032_sports_statistical_cleaning_integration_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "038_sports_statistical_integration_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 3,
+        "sinks": 1,
+        "joins": 1,
+        "splits": 0
+      },
+      "output_sha256": {
+        "sports_report.json": "6897f96d87986d8051e1188ea2994ba29a97a798d684c04641b063c2903a1dce",
+        "age_summary.csv": "22cbb89de7814f817aebd29a1371cae91809de65a819f4facf5782cb09675ecf",
+        "team_summary.csv": "240f66ef3277152a5d3dc9c79ba240625e611666dbe659982b81429e97d80fdb",
+        "position_summary.csv": "11b678abd84e5d963990f00b91f392f5b41329450f0e2c66f42821cf791fedc6"
+      }
+    },
+    {
+      "case": "038_sports_statistical_integration_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "056_transportation_cleaning",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_out",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "weather_operations.csv": "8060f4f804e075abad233a7dff1c0e07059c64dea28b0f2a11070c9ae6ecc2c9",
+        "trips_clean.csv": "38fa34859f190755645bf1d0cea373e661af967899739a4b8385d2058f04464a",
+        "route_operations.csv": "28b0aaab66e389bbf84567dea37e975c3376154afa4faa1b659bc962f63cd5b7",
+        "vehicle_operations.csv": "c89ed0eac8bbb3948d789f848dc6b09e16ba6239d46692839b02a9b6c2b5f2e9"
+      }
+    },
+    {
+      "case": "056_transportation_cleaning",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "087_transportation_statistical_integration",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_out",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "trips_clean.csv": "e0ab2d37d0c021715c083b12af8b4084c9580da11e8c436a2c3ef445449e7eec",
+        "satisfaction_ranking.csv": "ebaa5c92cb4b1f2247c371c25902ee4c731cb56f0b18b2d514233e36e315f0a4",
+        "service_associations.json": "5f19d2026e5e925286b6f1bceaaaaf94677008c2ef1d4190301abb2b091147ce",
+        "reliability_ranking.csv": "78e7bc3516790e87f83ca3ed886687c5676835b0066a6e117db51a651b5406fd",
+        "route_service_metrics.csv": "c1f9fd9841b8919ef2ada15d005f260d37c38827cf04825d05750af2be6ab981",
+        "trip_service_features.csv": "942b7cce8c057d2852b2018317e52a55fbbf1d28c5b02692389ccc0008e3a5d6"
+      }
+    },
+    {
+      "case": "087_transportation_statistical_integration",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-08",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-08",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

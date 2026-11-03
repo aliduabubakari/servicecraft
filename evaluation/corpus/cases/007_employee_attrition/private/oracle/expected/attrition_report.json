@@ -1,0 +1,6 @@
+{
+  "employees": 500,
+  "attrited": 112,
+  "attrition_rate": 0.224,
+  "departments": 8
+}

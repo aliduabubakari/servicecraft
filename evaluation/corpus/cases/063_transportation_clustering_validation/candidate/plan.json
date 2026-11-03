@@ -1,0 +1,320 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition', 'peak_hour', 'avg_load_factor']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, cols, 'data.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'trip_id', 'data.csv')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums(d, ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'is_holiday', 'peak_hour', 'avg_load_factor'], 'data.csv')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if not set(d.is_holiday.unique()) <= {0, 1} or not set(d.peak_hour.unique()) <= {0, 1}:\n    raise ValueError('flags binary')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean = d[cols].sort_values('trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean.to_csv(out / 'trips_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "features = ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'is_holiday', 'peak_hour', 'avg_load_factor']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "prepared = clean[['trip_id', 'route', 'vehicle_type', *features]]",
+      "dependencies": {
+        "features": 8,
+        "clean": 6
+      },
+      "writes": [
+        "prepared"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "prepared.to_csv(out / 'clustering_features.csv', index=False)",
+      "dependencies": {
+        "prepared": 9
+      },
+      "writes": [],
+      "outputs": [
+        "clustering_features.csv"
+      ]
+    },
+    {
+      "index": 11,
+      "source": "scaler = StandardScaler()",
+      "dependencies": {},
+      "writes": [
+        "scaler"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "x = scaler.fit_transform(prepared[features])",
+      "dependencies": {
+        "scaler": 11,
+        "features": 8,
+        "prepared": 9
+      },
+      "writes": [
+        "scaler",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "km = KMeans(n_clusters=5, random_state=42, n_init=20, algorithm='lloyd').fit(x)",
+      "dependencies": {
+        "x": 12
+      },
+      "writes": [
+        "km"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "order = np.lexsort((np.arange(5), km.cluster_centers_[:, features.index('delay_minutes')], km.cluster_centers_[:, features.index('avg_load_factor')]))",
+      "dependencies": {
+        "km": 13,
+        "features": 8
+      },
+      "writes": [
+        "order"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "mapping = {int(raw): int(label) for label, raw in enumerate(order)}",
+      "dependencies": {
+        "order": 14
+      },
+      "writes": [
+        "mapping"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "assigned = prepared.copy()",
+      "dependencies": {
+        "prepared": 9
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "assigned['cluster'] = [mapping[int(v)] for v in km.labels_]",
+      "dependencies": {
+        "mapping": 15,
+        "assigned": 16,
+        "km": 13
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "assigned.to_csv(out / 'trip_clusters.csv', index=False)",
+      "dependencies": {
+        "assigned": 17
+      },
+      "writes": [],
+      "outputs": [
+        "trip_clusters.csv"
+      ]
+    },
+    {
+      "index": 19,
+      "source": "with (out / 'cluster_model.pkl').open('wb') as h:\n    pickle.dump({'scaler': scaler, 'model': km, 'mapping': mapping, 'features': features}, h)",
+      "dependencies": {
+        "mapping": 15,
+        "scaler": 12,
+        "features": 8,
+        "km": 13
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "assigned.groupby('cluster', as_index=False).agg(trip_count=('trip_id', 'size'), mean_distance_km=('distance_km', 'mean'), mean_passengers=('passengers', 'mean'), mean_delay_minutes=('delay_minutes', 'mean'), mean_load_factor=('avg_load_factor', 'mean')).sort_values('cluster').to_csv(out / 'cluster_profiles.csv', index=False)",
+      "dependencies": {
+        "assigned": 17
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "route_mix = assigned.groupby(['route', 'cluster'], as_index=False).size().rename(columns={'size': 'trip_count'})",
+      "dependencies": {
+        "assigned": 17
+      },
+      "writes": [
+        "route_mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "route_total = route_mix.groupby('route').trip_count.transform('sum')",
+      "dependencies": {
+        "route_mix": 21
+      },
+      "writes": [
+        "route_total"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "route_mix['route_share'] = route_mix.trip_count / route_total",
+      "dependencies": {
+        "route_mix": 21,
+        "route_total": 22
+      },
+      "writes": [
+        "route_mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "route_mix.sort_values(['route', 'cluster']).to_csv(out / 'route_cluster_mix.csv', index=False)",
+      "dependencies": {
+        "route_mix": 23
+      },
+      "writes": [],
+      "outputs": [
+        "route_cluster_mix.csv"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "js(out / 'cluster_validation.json', {'trips': len(assigned), 'clusters': 5, 'silhouette_score': silhouette_score(x, km.labels_), 'inertia': km.inertia_, 'cluster_sizes': {str(k): int(v) for k, v in assigned.cluster.value_counts().sort_index().items()}})",
+      "dependencies": {
+        "assigned": 17,
+        "x": 12,
+        "km": 13
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_validation.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      7
+    ],
+    "features": [
+      10
+    ],
+    "cluster": [
+      18,
+      19
+    ],
+    "profile": [
+      20
+    ],
+    "route_mix": [
+      24
+    ],
+    "validate_clusters": [
+      25
+    ]
+  }
+}

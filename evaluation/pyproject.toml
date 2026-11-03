@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicecraft-evaluation"
+version = "0.6.0"
+description = "Standalone empirical evaluation of generated Dagster pipelines for the ServiceCraft study."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2,<3"]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30,<1"]
+test = ["pytest>=8,<9", "httpx>=0.27,<1", "fastapi>=0.115,<1"]
+analysis = ["flake8==7.3.0", "pylint==3.3.7", "radon==6.0.1", "bandit==1.8.5"]
+corpus = ["jsonschema==4.24.0"]
+
+[project.scripts]
+service-craft = "app.service_craft:main"
+
+[tool.setuptools]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100

@@ -1,0 +1,30 @@
+{
+  "input_rows": 508,
+  "eligible_rows": 505,
+  "rejected_rows": 3,
+  "rejection_counts": {
+    "invalid_games_played": 1,
+    "missing_player_id": 1,
+    "duplicate_player_id": 1
+  },
+  "imputed_cells": {
+    "points_per_game": 1,
+    "minutes_per_game": 1
+  },
+  "players": 505,
+  "total_points": 276406.6,
+  "players_per_team": {
+    "Team_A": 37,
+    "Team_B": 54,
+    "Team_C": 35,
+    "Team_D": 43,
+    "Team_E": 44,
+    "Team_F": 49,
+    "Team_G": 28,
+    "Team_H": 47,
+    "Team_I": 40,
+    "Team_J": 41,
+    "Team_K": 39,
+    "Team_L": 48
+  }
+}

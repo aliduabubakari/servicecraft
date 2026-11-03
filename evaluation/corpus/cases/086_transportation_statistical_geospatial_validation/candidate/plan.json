@@ -1,0 +1,290 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'distance_km', 'passengers', 'delay_minutes', 'on_time_pct', 'passenger_satisfaction', 'origin_lat', 'origin_lon', 'dest_lat', 'dest_lon']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prep(d, cols, 'trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "assert d.origin_lat.between(-90, 90).all() and d.dest_lat.between(-90, 90).all() and d.origin_lon.between(-180, 180).all() and d.dest_lon.between(-180, 180).all()",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "g = d[['trip_id', 'route', 'passengers', 'origin_lat', 'origin_lon', 'dest_lat', 'dest_lon']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "g['geodesic_km'] = haversine(g.origin_lat, g.origin_lon, g.dest_lat, g.dest_lon)",
+      "dependencies": {
+        "g": 4
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "g['passenger_geodesic_km'] = g.geodesic_km * g.passengers",
+      "dependencies": {
+        "g": 5
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "rg = g.groupby('route', as_index=False).agg(geography_trip_count=('trip_id', 'size'), mean_geodesic_km=('geodesic_km', 'mean'), total_passenger_geodesic_km=('passenger_geodesic_km', 'sum')).sort_values('route')",
+      "dependencies": {
+        "g": 6
+      },
+      "writes": [
+        "rg"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "rg.to_csv(out / 'route_geography.csv', index=False)",
+      "dependencies": {
+        "rg": 7
+      },
+      "writes": [],
+      "outputs": [
+        "route_geography.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "rs = d.groupby('route', as_index=False).agg(service_trip_count=('trip_id', 'size'), mean_reported_distance_km=('distance_km', 'mean'), mean_delay_minutes=('delay_minutes', 'mean'), mean_on_time_pct=('on_time_pct', 'mean'), mean_satisfaction=('passenger_satisfaction', 'mean')).sort_values('route')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "rs"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "rs.to_csv(out / 'route_service.csv', index=False)",
+      "dependencies": {
+        "rs": 9
+      },
+      "writes": [],
+      "outputs": [
+        "route_service.csv"
+      ]
+    },
+    {
+      "index": 11,
+      "source": "c = rg.merge(rs, on='route', validate='one_to_one')",
+      "dependencies": {
+        "rs": 9,
+        "rg": 7
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "assert (c.geography_trip_count == c.service_trip_count).all()",
+      "dependencies": {
+        "c": 11
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "c.to_csv(out / 'route_context.csv', index=False)",
+      "dependencies": {
+        "c": 12
+      },
+      "writes": [],
+      "outputs": [
+        "route_context.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "den = np.maximum(c.mean_reported_distance_km, c.mean_geodesic_km).replace(0, 1)",
+      "dependencies": {
+        "c": 12
+      },
+      "writes": [
+        "den"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "c['distance_alignment'] = (1 - (c.mean_reported_distance_km - c.mean_geodesic_km).abs() / den).clip(0, 1)",
+      "dependencies": {
+        "den": 14,
+        "c": 12
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "delay_span = c.mean_delay_minutes.max() - c.mean_delay_minutes.min()",
+      "dependencies": {
+        "c": 15
+      },
+      "writes": [
+        "delay_span"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "delay_score = 1 - (c.mean_delay_minutes - c.mean_delay_minutes.min()) / (delay_span if delay_span else 1)",
+      "dependencies": {
+        "delay_span": 16,
+        "c": 15
+      },
+      "writes": [
+        "delay_score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "c['route_score'] = 0.4 * c.mean_on_time_pct + 0.3 * (c.mean_satisfaction / 5) + 0.2 * delay_score + 0.1 * c.distance_alignment",
+      "dependencies": {
+        "delay_score": 17,
+        "c": 15
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "c.to_csv(out / 'route_scores.csv', index=False)",
+      "dependencies": {
+        "c": 18
+      },
+      "writes": [],
+      "outputs": [
+        "route_scores.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "ranked = c.sort_values(['route_score', 'mean_on_time_pct', 'route'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "c": 18
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "ranked.insert(1, 'rank', np.arange(1, len(ranked) + 1))",
+      "dependencies": {
+        "ranked": 20
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "ranked.to_csv(out / 'route_ranking.csv', index=False)",
+      "dependencies": {
+        "ranked": 21
+      },
+      "writes": [],
+      "outputs": [
+        "route_ranking.csv"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "js(out / 'route_report.json', {'trips': int(c.service_trip_count.sum()), 'routes': len(c), 'top_route': ranked.iloc[0].route, 'top_score': ranked.iloc[0].route_score, 'geography_trips': int(c.geography_trip_count.sum())})",
+      "dependencies": {
+        "c": 18,
+        "ranked": 21
+      },
+      "writes": [],
+      "outputs": [
+        "route_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "geography": [
+      8
+    ],
+    "service": [
+      10
+    ],
+    "integrate": [
+      13
+    ],
+    "score": [
+      19
+    ],
+    "rank": [
+      22
+    ],
+    "report": [
+      23
+    ]
+  }
+}

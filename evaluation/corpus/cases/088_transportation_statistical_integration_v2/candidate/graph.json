@@ -1,0 +1,244 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "088_transportation_statistical_integration_v2",
+  "benchmark_revision": "batch-09",
+  "review_status": "author_review_pending",
+  "title": "Route service metrics fanning out to three analyses",
+  "domain": "transportation",
+  "family_id": "route_service_fanout_v2",
+  "topology": "linear_to_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "distance_km",
+        "passengers",
+        "delay_minutes",
+        "on_time_pct",
+        "passenger_satisfaction"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate trips",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_clean.csv"
+      ],
+      "requirements": [
+        "Validate identifiers and measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive service features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "trip_service_features.csv"
+      ],
+      "requirements": [
+        "Compute service score and passenger-km."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "aggregate",
+      "name": "Aggregate route service",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_service_features.csv"
+      ],
+      "outputs": [
+        "route_service_metrics.csv"
+      ],
+      "requirements": [
+        "Compute route-level service metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "reliability",
+      "name": "Rank route reliability",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_service_metrics.csv"
+      ],
+      "outputs": [
+        "reliability_ranking.csv"
+      ],
+      "requirements": [
+        "Rank on-time performance."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "satisfaction",
+      "name": "Rank route satisfaction",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_service_metrics.csv"
+      ],
+      "outputs": [
+        "satisfaction_ranking.csv"
+      ],
+      "requirements": [
+        "Rank passenger satisfaction."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "associations",
+      "name": "Measure service associations",
+      "operation": "correlation_analysis",
+      "required": true,
+      "inputs": [
+        "route_service_metrics.csv"
+      ],
+      "outputs": [
+        "service_associations.json"
+      ],
+      "requirements": [
+        "Compute finite route-level correlations and counts."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_clean.csv",
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route"
+      ]
+    },
+    {
+      "id": "trip_service_features.csv",
+      "path": "trip_service_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "service_score",
+        "passenger_km"
+      ]
+    },
+    {
+      "id": "route_service_metrics.csv",
+      "path": "route_service_metrics.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_service_score"
+      ]
+    },
+    {
+      "id": "reliability_ranking.csv",
+      "path": "reliability_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "reliability_rank"
+      ]
+    },
+    {
+      "id": "satisfaction_ranking.csv",
+      "path": "satisfaction_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "satisfaction_rank"
+      ]
+    },
+    {
+      "id": "service_associations.json",
+      "path": "service_associations.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "aggregate",
+      "kind": "data",
+      "artifacts": [
+        "trip_service_features.csv"
+      ]
+    },
+    {
+      "source": "aggregate",
+      "target": "reliability",
+      "kind": "data",
+      "artifacts": [
+        "route_service_metrics.csv"
+      ]
+    },
+    {
+      "source": "aggregate",
+      "target": "satisfaction",
+      "kind": "data",
+      "artifacts": [
+        "route_service_metrics.csv"
+      ]
+    },
+    {
+      "source": "aggregate",
+      "target": "associations",
+      "kind": "data",
+      "artifacts": [
+        "route_service_metrics.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "route_fanout",
+      "features": "route_fanout",
+      "aggregate": "route_fanout",
+      "reliability": "route_fanout",
+      "satisfaction": "route_fanout",
+      "associations": "route_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

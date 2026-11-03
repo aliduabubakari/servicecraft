@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-05",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "002_analytics_statistical_integration",
+      "title": "Linear treatment-score change analysis",
+      "domain": "experimental_analytics",
+      "family_id": "treatment_change_contrasts",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "019_sports_prediction_cleaning_integration",
+      "title": "Prepared player data with three independent analytical leaves",
+      "domain": "sports",
+      "family_id": "player_prediction_availability_compensation",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "023_sports_regression_clustering_visualization",
+      "title": "Independent market-value regression and player clustering",
+      "domain": "sports",
+      "family_id": "parallel_regression_clustering",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "063_transportation_clustering_validation",
+      "title": "Trip clustering with independent post-cluster validation views",
+      "domain": "transportation",
+      "family_id": "trip_clustering_multiview",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "079_transportation_regression",
+      "title": "Transportation economics with convergent feature branches",
+      "domain": "transportation",
+      "family_id": "trip_economics_modeling",
+      "topology": "fan_in_fan_out",
+      "task_count": 7,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

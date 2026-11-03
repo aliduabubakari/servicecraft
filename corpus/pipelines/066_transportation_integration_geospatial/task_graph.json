@@ -1,0 +1,189 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "066_transportation_integration_geospatial",
+  "benchmark_revision": "batch-12",
+  "review_status": "author_review_pending",
+  "title": "Geographic trips fanning out to route, vehicle, and period views",
+  "domain": "transportation",
+  "family_id": "trip_geography_fanout",
+  "topology": "fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition",
+        "origin_lat",
+        "origin_lon",
+        "dest_lat",
+        "dest_lon"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "prepare",
+      "name": "Validate and derive trip geography",
+      "operation": "geospatial_transformation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_geographic.csv"
+      ],
+      "requirements": [
+        "Validate and derive distances and periods."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Summarize route geography",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_geographic.csv"
+      ],
+      "outputs": [
+        "route_geography.csv"
+      ],
+      "requirements": [
+        "Compute route distance and delay."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Summarize vehicle geography",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_geographic.csv"
+      ],
+      "outputs": [
+        "vehicle_geography.csv"
+      ],
+      "requirements": [
+        "Compute vehicle distance, passenger, and fare measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "periods",
+      "name": "Summarize period geography",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_geographic.csv"
+      ],
+      "outputs": [
+        "period_geography.csv"
+      ],
+      "requirements": [
+        "Compute period distance, delay, and passenger measures."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_geographic.csv",
+      "path": "trips_geographic.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "geodesic_km",
+        "passenger_geodesic_km",
+        "time_period"
+      ]
+    },
+    {
+      "id": "route_geography.csv",
+      "path": "route_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_geodesic_km"
+      ]
+    },
+    {
+      "id": "vehicle_geography.csv",
+      "path": "vehicle_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_geodesic_km"
+      ]
+    },
+    {
+      "id": "period_geography.csv",
+      "path": "period_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "time_period",
+        "trip_count",
+        "mean_geodesic_km"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "prepare",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "trips_geographic.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "vehicles",
+      "kind": "data",
+      "artifacts": [
+        "trips_geographic.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "periods",
+      "kind": "data",
+      "artifacts": [
+        "trips_geographic.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "prepare": "geo_fanout",
+      "routes": "geo_fanout",
+      "vehicles": "geo_fanout",
+      "periods": "geo_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

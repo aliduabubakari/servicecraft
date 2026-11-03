@@ -1,0 +1,187 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, cols, 'data')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'trip_id', 'data')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "original = d.copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "original"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "d['route'] = d.route.astype(str).str.strip()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "d['vehicle_type'] = d.vehicle_type.fillna('').astype(str).str.strip().replace('', 'Unknown')",
+      "dependencies": {
+        "d": 5
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "d['weather_condition'] = d.weather_condition.fillna('').astype(str).str.strip().replace('', 'Unknown')",
+      "dependencies": {
+        "d": 6
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "counts = {}",
+      "dependencies": {},
+      "writes": [
+        "counts"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "for c in ['passengers', 'fare_amount', 'delay_minutes']:\n    d[c] = pd.to_numeric(d[c], errors='coerce')\n    missing = d[c].isna()\n    counts[c] = int(missing.sum())\n    med = d.groupby('route')[c].transform('median')\n    d.loc[missing, c] = med[missing]\n    d[c] = d[c].fillna(d[c].median()).fillna(0)",
+      "dependencies": {
+        "counts": 8,
+        "d": 7
+      },
+      "writes": [
+        "c",
+        "counts",
+        "d",
+        "med",
+        "missing"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "d[cols].sort_values('trip_id').to_csv(out / 'trips_recovered.csv', index=False)",
+      "dependencies": {
+        "d": 9,
+        "cols": 1
+      },
+      "writes": [],
+      "outputs": [
+        "trips_recovered.csv"
+      ]
+    },
+    {
+      "index": 11,
+      "source": "js(out / 'recovery_audit.json', {'input_rows': len(original), 'output_rows': len(d), 'imputed_numeric': counts, 'unknown_vehicle_type': int((d.vehicle_type == 'Unknown').sum()), 'unknown_weather_condition': int((d.weather_condition == 'Unknown').sum())})",
+      "dependencies": {
+        "counts": 9,
+        "original": 4,
+        "d": 9
+      },
+      "writes": [],
+      "outputs": [
+        "recovery_audit.json"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "d.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), mean_passengers=('passengers', 'mean'), mean_fare=('fare_amount', 'mean'), mean_delay=('delay_minutes', 'mean')).sort_values('route').to_csv(out / 'route_summary.csv', index=False)",
+      "dependencies": {
+        "d": 9
+      },
+      "writes": [],
+      "outputs": [
+        "route_summary.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "d.groupby('vehicle_type', as_index=False).agg(trip_count=('trip_id', 'size'), mean_distance=('distance_km', 'mean'), mean_passengers=('passengers', 'mean'), mean_delay=('delay_minutes', 'mean')).sort_values('vehicle_type').to_csv(out / 'vehicle_summary.csv', index=False)",
+      "dependencies": {
+        "d": 9
+      },
+      "writes": [],
+      "outputs": [
+        "vehicle_summary.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "d.groupby('weather_condition', as_index=False).agg(trip_count=('trip_id', 'size'), mean_delay=('delay_minutes', 'mean'), mean_fare=('fare_amount', 'mean')).sort_values('weather_condition').to_csv(out / 'weather_summary.csv', index=False)",
+      "dependencies": {
+        "d": 9
+      },
+      "writes": [],
+      "outputs": [
+        "weather_summary.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "recover": [
+      10,
+      11
+    ],
+    "routes": [
+      12
+    ],
+    "vehicles": [
+      13
+    ],
+    "weather": [
+      14
+    ]
+  }
+}

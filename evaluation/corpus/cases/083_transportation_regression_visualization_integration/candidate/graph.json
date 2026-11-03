@@ -1,0 +1,254 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "083_transportation_regression_visualization_integration",
+  "benchmark_revision": "batch-13",
+  "review_status": "author_review_pending",
+  "title": "Trip economics fanning out to three operational views",
+  "domain": "transportation",
+  "family_id": "trip_economics_multiview_fanout",
+  "topology": "linear_to_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "weather_condition",
+        "revenue",
+        "operational_cost"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate trips",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_clean.csv"
+      ],
+      "requirements": [
+        "Validate identifiers and economics fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive trip economics",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "trip_economics.csv"
+      ],
+      "requirements": [
+        "Compute profit, margin, and passenger-km."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "aggregate",
+      "name": "Aggregate route economics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_economics.csv"
+      ],
+      "outputs": [
+        "route_economics.csv"
+      ],
+      "requirements": [
+        "Compute route economics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Rank route profitability",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_economics.csv"
+      ],
+      "outputs": [
+        "route_profitability.csv"
+      ],
+      "requirements": [
+        "Rank profit then margin."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Summarize vehicle economics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_economics.csv"
+      ],
+      "outputs": [
+        "vehicle_economics.csv"
+      ],
+      "requirements": [
+        "Compute vehicle economics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "weather",
+      "name": "Summarize weather economics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_economics.csv"
+      ],
+      "outputs": [
+        "weather_economics.csv"
+      ],
+      "requirements": [
+        "Compute weather economics."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_clean.csv",
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route"
+      ]
+    },
+    {
+      "id": "trip_economics.csv",
+      "path": "trip_economics.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "profit",
+        "profit_margin",
+        "passenger_km"
+      ]
+    },
+    {
+      "id": "route_economics.csv",
+      "path": "route_economics.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_profit",
+        "mean_margin"
+      ]
+    },
+    {
+      "id": "route_profitability.csv",
+      "path": "route_profitability.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "profit_rank",
+        "total_profit"
+      ]
+    },
+    {
+      "id": "vehicle_economics.csv",
+      "path": "vehicle_economics.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "total_profit"
+      ]
+    },
+    {
+      "id": "weather_economics.csv",
+      "path": "weather_economics.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "total_profit"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "aggregate",
+      "kind": "data",
+      "artifacts": [
+        "trip_economics.csv"
+      ]
+    },
+    {
+      "source": "aggregate",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "route_economics.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "vehicles",
+      "kind": "data",
+      "artifacts": [
+        "trip_economics.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "weather",
+      "kind": "data",
+      "artifacts": [
+        "trip_economics.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "economics_fanout",
+      "features": "economics_fanout",
+      "aggregate": "economics_fanout",
+      "routes": "economics_fanout",
+      "vehicles": "economics_fanout",
+      "weather": "economics_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "train_rows": 459,
+  "test_rows": 115,
+  "features": [
+    "games_played",
+    "points_per_game",
+    "assists_per_game",
+    "rebounds_per_game",
+    "minutes_per_game",
+    "age",
+    "experience_years",
+    "salary_millions",
+    "efficiency_rating",
+    "usage_rate",
+    "win_shares"
+  ],
+  "mae": 3.733009683031819,
+  "rmse": 4.65321364824701,
+  "r2": 0.817182733320624
+}

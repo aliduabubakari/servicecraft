@@ -1,0 +1,217 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "030_sports_statistical_cleaning",
+  "benchmark_revision": "batch-06",
+  "review_status": "author_review_pending",
+  "title": "Linear player production ranking",
+  "domain": "sports",
+  "family_id": "player_efficiency_ranking",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "field_goal_pct",
+        "three_point_pct",
+        "free_throw_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate players",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_clean.csv"
+      ],
+      "requirements": [
+        "Validate IDs and finite measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive ranking features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "player_features.csv"
+      ],
+      "requirements": [
+        "Compute production, shooting, per-minute measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rank",
+      "name": "Rank all players",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "player_features.csv"
+      ],
+      "outputs": [
+        "ranked_players.csv"
+      ],
+      "requirements": [
+        "Apply declared ordering and one-based ranks."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "select",
+      "name": "Select top players per position",
+      "operation": "grouped_selection",
+      "required": true,
+      "inputs": [
+        "ranked_players.csv"
+      ],
+      "outputs": [
+        "top_players_by_position.csv"
+      ],
+      "requirements": [
+        "Take first five per position by overall rank."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish ranking report",
+      "operation": "ranking_report",
+      "required": true,
+      "inputs": [
+        "top_players_by_position.csv"
+      ],
+      "outputs": [
+        "ranking_report.json"
+      ],
+      "requirements": [
+        "Publish data-derived counts and leader carried in selection."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_clean.csv",
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "position"
+      ]
+    },
+    {
+      "id": "player_features.csv",
+      "path": "player_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "shooting_index",
+        "per_minute_production"
+      ]
+    },
+    {
+      "id": "ranked_players.csv",
+      "path": "ranked_players.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "overall_rank"
+      ]
+    },
+    {
+      "id": "top_players_by_position.csv",
+      "path": "top_players_by_position.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "position",
+        "overall_rank"
+      ]
+    },
+    {
+      "id": "ranking_report.json",
+      "path": "ranking_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "rank",
+      "kind": "data",
+      "artifacts": [
+        "player_features.csv"
+      ]
+    },
+    {
+      "source": "rank",
+      "target": "select",
+      "kind": "data",
+      "artifacts": [
+        "ranked_players.csv"
+      ]
+    },
+    {
+      "source": "select",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "top_players_by_position.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "ranking",
+      "features": "ranking",
+      "rank": "ranking",
+      "select": "ranking",
+      "report": "ranking"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

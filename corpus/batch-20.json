@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-20",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "050_sports_visualization_integration_recovery_v2",
+      "title": "Recovered players fanning out to cohort summaries",
+      "domain": "sports",
+      "family_id": "player_recovery_cohort_fanout_v2",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "052_sports_visualization_integration_validation_v2",
+      "title": "Linear player features to position ranking",
+      "domain": "sports",
+      "family_id": "position_feature_ranking_linear_v3",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "074_transportation_prediction_validation_recovery",
+      "title": "Recovered delay modeling with multiview diagnostics",
+      "domain": "transportation",
+      "family_id": "recovered_delay_model_fanin_fanout",
+      "topology": "fan_in_fan_out",
+      "task_count": 11,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "094_transportation_visualization_cleaning_validation_v2",
+      "title": "Prepared trips fanning out to route, vehicle, and period views",
+      "domain": "transportation",
+      "family_id": "trip_route_vehicle_period_fanout_v5",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "098_transportation_visualization_integration_validation",
+      "title": "Independent operational summaries converging into a report",
+      "domain": "transportation",
+      "family_id": "transport_operations_fanin_v3",
+      "topology": "fan_in",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

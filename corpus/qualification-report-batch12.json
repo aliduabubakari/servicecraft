@@ -1,0 +1,162 @@
+{
+  "status": "passed",
+  "scope": "Batch-12 references, invariants, invalid-ID rejection, topology classification, graph consistency, and export allowlists; not Dagster execution",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "027_sports_regression_prediction_visualization",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in_fan_out",
+      "tasks": 9,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 2,
+        "splits": 2
+      },
+      "output_sha256": {
+        "dual_model_report.json": "ae2038bf2e56dcdfceb44f962338869afd82814294ae3e507628ae7abb763d07",
+        "market_model.pkl": "a9603948176f5d62e5e7d74daa31568d54b163fba5d8c17c8aa010b22f368661",
+        "allstar_metrics.json": "2fcbdb43236a2e2b9b7dd6f352410f6fb1adb868a2a502deb2146eea9c861f49",
+        "market_metrics.json": "8d9fc1594fac7e88efe53001eea723776fede1a70f76103eb9dd713406cd0459",
+        "players_clean.csv": "0d2e1db7f3a9be5ffd218910d9a687ec7907477ff5ab3acd1af35615fc63855f",
+        "context_features.csv": "9830c81b42c1fb32eb6e75bc21b2733c9a8691c8089015d937005550393abf87",
+        "allstar_model.pkl": "81731c37826196ff4eb63521a8fcbd29b3f4d5465b5494891ee2e9c0b8ee2180",
+        "allstar_predictions.csv": "9c3269b1dfd9ad3582f36fb4072d26f0ddeeb202b4bcc3f96ebd4efc393bcfca",
+        "performance_features.csv": "e46ddc770bb3c03eefb284f30de75efa85b4e67952126989d1d4e5649ec7856f",
+        "model_data.csv": "772dbe2d44b5eab420b11d565bd983fdfdc0e65694b32fe9a0325bcfb81cc9e3",
+        "market_predictions.csv": "d707c27d1247c6bfb29c90d6045e34a6adb58fac647c78fb39308ef2e91fcd28"
+      }
+    },
+    {
+      "case": "027_sports_regression_prediction_visualization",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "036_sports_statistical_cleaning_validation",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "position_leaders.csv": "8382b23f10cd9055d4322e0cb0d1bcb88f434654898ba8506082736fe2d72ae6",
+        "player_scores.csv": "3cc6ab6c188b5bf83fdbd85ef757d18f1024f511e963524a237464a294a93b65",
+        "ranking_report.json": "690c0ce42c9f48118874fab0877bb72644382f8669b9d3f6c1e65a23f9abc193",
+        "players_clean.csv": "d7458c01be03dea481e18345a314eb9091e47926977e68a109a41a02cf927a56",
+        "ranked_players.csv": "7e79fde2f69ae8b7eeba9a95d50493dd7d910cac0c4d09df92ab61c136a7a210"
+      }
+    },
+    {
+      "case": "036_sports_statistical_cleaning_validation",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "048_sports_visualization_integration_geospatial",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "parallel",
+      "tasks": 6,
+      "structure": {
+        "components": 2,
+        "roots": 2,
+        "sinks": 2,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "player_performance.csv": "3171c23e2aa9b940d6be714f180ab787c303753635c364298813ee1eb66e88b2",
+        "region_summary.csv": "c37f028363c2c0a7f3ed4b6ae464bd3e6da0e0e71381a43e0f3703415c953ae8",
+        "performance_report.json": "355c5803c8f629a5cce709d749612c1d560b64582644c7cc476b8e9b010389c6",
+        "player_geography.csv": "f5a1972435cda5f9afb7c1e4a7b3902b9fc6e6c6897b0fffcc9fd1ffdfa0ae7e",
+        "team_performance.csv": "3373a2a1ffc0e3e12f7676e84677f57a0022a266e4d8a5ef929cd2967572730b",
+        "geography_report.json": "eaae76764e6a8422b22ff8f77cc8713ae6bdb6613e5c555886c48c06db3266bc"
+      }
+    },
+    {
+      "case": "048_sports_visualization_integration_geospatial",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "066_transportation_integration_geospatial",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_out",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "route_geography.csv": "1c4adbb6334c60f56ff612f56c7c2263d15b40a052e310a770da52f1c14596ef",
+        "period_geography.csv": "aa89b3acfc814f57788f6aca0430ceb2b5bb232a2c5418c7ba46282ca18fa250",
+        "vehicle_geography.csv": "e5ff6398bd325743776fd96ea85838933e746a73211d9dbe28d7dc8bdde3ff4f",
+        "trips_geographic.csv": "01d12a2809fce34ea9decd48e465ce68cae4511b79868f691da23ac10b217e5a"
+      }
+    },
+    {
+      "case": "066_transportation_integration_geospatial",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "082_transportation_regression_statistical_integration",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_in",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 2,
+        "sinks": 1,
+        "joins": 1,
+        "splits": 0
+      },
+      "output_sha256": {
+        "route_ranking.csv": "ffc5dad8d8fad20d427687f0793cafbc8a5da1b65f25de4b3374f01adf3b71fe",
+        "route_service.csv": "8492ef97de6c82a0aab485b1bd1a8cba9caef46f981aed3c39676fabeab49a9b",
+        "route_scores.csv": "37ce2e85ca3a7aa0c8fb52627a0cffdf651e5fe4d963d60cbc151220d35542e0",
+        "route_economics.csv": "b394f54d3fddde5b838d217f64d6d18cdafa05794357a080eac9c969d37f0a10",
+        "route_context.csv": "efd331b37605a299b7f45855cdcccc711fe421b5b3d851fe8c902bbb1d8185f4",
+        "route_report.json": "eaf826d154ece7261780fc5f00356a65bde06b49f8c2e9186cead9d946469378"
+      }
+    },
+    {
+      "case": "082_transportation_regression_statistical_integration",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-12",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-12",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

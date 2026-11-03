@@ -1,0 +1,308 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv', keep_default_na=True)",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "if set(cols) - set(d):\n    raise ValueError('columns')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "cols",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "if not d.player_id.is_unique or d.player_id.astype(str).str.strip().eq('').any():\n    raise ValueError('id')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "for c in ['team', 'position']:\n    d[c] = d[c].replace('^\\\\s*$', np.nan, regex=True)",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "c",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "nums = [c for c in cols if c not in {'player_id', 'team', 'position'}]",
+      "dependencies": {
+        "cols": 2
+      },
+      "writes": [
+        "nums"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "for c in nums:\n    d[c] = pd.to_numeric(d[c], errors='coerce')",
+      "dependencies": {
+        "d": 4,
+        "nums": 5,
+        "c": 4
+      },
+      "writes": [
+        "c",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "d['missing_points_input'] = d.points_per_game.isna().astype(int)",
+      "dependencies": {
+        "d": 6
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "d['missing_salary_input'] = d.salary_millions.isna().astype(int)",
+      "dependencies": {
+        "d": 7
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "d['missing_team_input'] = d.team.isna().astype(int)",
+      "dependencies": {
+        "d": 8
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "d['missing_position_input'] = d.position.isna().astype(int)",
+      "dependencies": {
+        "d": 9
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "flags = ['missing_points_input', 'missing_salary_input', 'missing_team_input', 'missing_position_input']",
+      "dependencies": {},
+      "writes": [
+        "flags"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "d[[*cols, *flags]].sort_values('player_id').to_csv(out / 'audited_players.csv', index=False)",
+      "dependencies": {
+        "d": 10,
+        "cols": 2,
+        "flags": 11
+      },
+      "writes": [],
+      "outputs": [
+        "audited_players.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "n = d.copy()",
+      "dependencies": {
+        "d": 10
+      },
+      "writes": [
+        "n"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "for c in nums:\n    mask = n[c].isna()\n    group = n.groupby('position')[c].transform('median')\n    n.loc[mask, c] = group[mask]\n    n[c] = n[c].fillna(n[c].median())",
+      "dependencies": {
+        "c": 6,
+        "nums": 5,
+        "n": 13
+      },
+      "writes": [
+        "c",
+        "group",
+        "mask",
+        "n"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "if not np.isfinite(n[nums].to_numpy(float)).all():\n    raise ValueError('numeric recovery')",
+      "dependencies": {
+        "nums": 5,
+        "n": 14
+      },
+      "writes": [
+        "n",
+        "nums"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "n[[*cols, *flags]].sort_values('player_id').to_csv(out / 'numeric_recovered.csv', index=False)",
+      "dependencies": {
+        "n": 15,
+        "cols": 2,
+        "flags": 11
+      },
+      "writes": [],
+      "outputs": [
+        "numeric_recovered.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "for c in ['team', 'position']:\n    mask = n[c].isna()\n    counts = n[c].dropna().value_counts()\n    mode = sorted(counts[counts == counts.max()].index.astype(str))[0]\n    n.loc[mask, c] = mode",
+      "dependencies": {
+        "mask": 14,
+        "c": 14,
+        "n": 15
+      },
+      "writes": [
+        "c",
+        "counts",
+        "mask",
+        "mode",
+        "n"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "n['age_band'] = pd.cut(n.age, [0, 24, 29, 34, np.inf], labels=['<=24', '25-29', '30-34', '35+']).astype(str)",
+      "dependencies": {
+        "n": 17
+      },
+      "writes": [
+        "n"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "n[[*cols, *flags, 'age_band']].sort_values('player_id').to_csv(out / 'players_recovered.csv', index=False)",
+      "dependencies": {
+        "n": 18,
+        "cols": 2,
+        "flags": 11
+      },
+      "writes": [],
+      "outputs": [
+        "players_recovered.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "agg = {'player_count': ('player_id', 'size'), 'mean_points': ('points_per_game', 'mean'), 'mean_salary': ('salary_millions', 'mean'), 'recovered_points': ('missing_points_input', 'sum'), 'recovered_salary': ('missing_salary_input', 'sum'), 'recovered_team': ('missing_team_input', 'sum'), 'recovered_position': ('missing_position_input', 'sum')}",
+      "dependencies": {},
+      "writes": [
+        "agg"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "n.groupby('team', as_index=False).agg(**agg).sort_values('team').to_csv(out / 'team_summary.csv', index=False)",
+      "dependencies": {
+        "n": 18,
+        "agg": 20
+      },
+      "writes": [],
+      "outputs": [
+        "team_summary.csv"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "n.groupby('position', as_index=False).agg(**agg).sort_values('position').to_csv(out / 'position_summary.csv', index=False)",
+      "dependencies": {
+        "n": 18,
+        "agg": 20
+      },
+      "writes": [],
+      "outputs": [
+        "position_summary.csv"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "n.groupby('age_band', as_index=False).agg(**agg).sort_values('age_band').to_csv(out / 'age_summary.csv', index=False)",
+      "dependencies": {
+        "n": 18,
+        "agg": 20
+      },
+      "writes": [],
+      "outputs": [
+        "age_summary.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "audit": [
+      12
+    ],
+    "numeric": [
+      16
+    ],
+    "categorical": [
+      19
+    ],
+    "teams": [
+      21
+    ],
+    "positions": [
+      22
+    ],
+    "ages": [
+      23
+    ]
+  }
+}

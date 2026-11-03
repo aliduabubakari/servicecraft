@@ -1,0 +1,154 @@
+{
+  "$defs": {
+    "Control": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate": {
+          "title": "Candidate",
+          "type": "string"
+        },
+        "inputs": {
+          "title": "Inputs",
+          "type": "string"
+        },
+        "spec": {
+          "title": "Spec",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "profile": {
+          "title": "Profile",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidate",
+        "inputs",
+        "spec",
+        "profile"
+      ],
+      "title": "Control",
+      "type": "object"
+    },
+    "Entry": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate": {
+          "title": "Candidate",
+          "type": "string"
+        },
+        "inputs": {
+          "title": "Inputs",
+          "type": "string"
+        },
+        "spec": {
+          "title": "Spec",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "control": {
+          "title": "Control",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidate",
+        "inputs",
+        "spec",
+        "id",
+        "control"
+      ],
+      "title": "Entry",
+      "type": "object"
+    },
+    "Profile": {
+      "additionalProperties": false,
+      "properties": {
+        "image": {
+          "title": "Image",
+          "type": "string"
+        },
+        "required_packages": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "minProperties": 1,
+          "title": "Required Packages",
+          "type": "object"
+        },
+        "required_imports": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Required Imports",
+          "type": "array"
+        }
+      },
+      "required": [
+        "image",
+        "required_packages",
+        "required_imports"
+      ],
+      "title": "Profile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "servicecraft.experiment@1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "profiles": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Profile"
+      },
+      "title": "Profiles",
+      "type": "object"
+    },
+    "controls": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Control"
+      },
+      "title": "Controls",
+      "type": "object"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/Entry"
+      },
+      "minItems": 1,
+      "title": "Entries",
+      "type": "array"
+    },
+    "infrastructure_retries": {
+      "default": 0,
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Infrastructure Retries",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "profiles",
+    "controls",
+    "entries"
+  ],
+  "title": "Experiment",
+  "type": "object"
+}

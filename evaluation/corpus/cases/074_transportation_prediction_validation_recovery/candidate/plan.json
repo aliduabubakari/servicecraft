@@ -1,0 +1,613 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv', keep_default_na=True)",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition', 'is_delayed', 'cancellation_risk']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "if set(cols) - set(d):\n    raise ValueError('columns')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "cols",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "if not d.trip_id.is_unique or d.trip_id.astype(str).str.strip().eq('').any():\n    raise ValueError('id')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "cats = ['route', 'vehicle_type', 'day_of_week', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cats"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "for c in cats:\n    d[c] = d[c].replace('^\\\\s*$', np.nan, regex=True)",
+      "dependencies": {
+        "cats": 4,
+        "d": 3
+      },
+      "writes": [
+        "c",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "nums = [c for c in cols if c not in {'trip_id', *cats}]",
+      "dependencies": {
+        "cols": 2,
+        "cats": 4
+      },
+      "writes": [
+        "nums"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "for c in nums:\n    d[c] = pd.to_numeric(d[c], errors='coerce')",
+      "dependencies": {
+        "c": 5,
+        "d": 5,
+        "nums": 6
+      },
+      "writes": [
+        "c",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "d['missing_distance_input'] = d.distance_km.isna().astype(int)",
+      "dependencies": {
+        "d": 7
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "d['missing_fare_input'] = d.fare_amount.isna().astype(int)",
+      "dependencies": {
+        "d": 8
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "d['missing_vehicle_input'] = d.vehicle_type.isna().astype(int)",
+      "dependencies": {
+        "d": 9
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "d['missing_weather_input'] = d.weather_condition.isna().astype(int)",
+      "dependencies": {
+        "d": 10
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "flags = ['missing_distance_input', 'missing_fare_input', 'missing_vehicle_input', 'missing_weather_input']",
+      "dependencies": {},
+      "writes": [
+        "flags"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "d[[*cols, *flags]].sort_values('trip_id').to_csv(out / 'audited_trips.csv', index=False)",
+      "dependencies": {
+        "cols": 2,
+        "d": 11,
+        "flags": 12
+      },
+      "writes": [],
+      "outputs": [
+        "audited_trips.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "x = d.copy()",
+      "dependencies": {
+        "d": 11
+      },
+      "writes": [
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "recovered_numeric = {}",
+      "dependencies": {},
+      "writes": [
+        "recovered_numeric"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "for c in nums:\n    mask = x[c].isna()\n    recovered_numeric[c] = int(mask.sum())\n    group = x.groupby('route')[c].transform('median')\n    x.loc[mask, c] = group[mask]\n    x[c] = x[c].fillna(x[c].median())",
+      "dependencies": {
+        "nums": 6,
+        "x": 14,
+        "recovered_numeric": 15,
+        "c": 7
+      },
+      "writes": [
+        "c",
+        "group",
+        "mask",
+        "recovered_numeric",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "recovered_categorical = {}",
+      "dependencies": {},
+      "writes": [
+        "recovered_categorical"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "for c in cats:\n    mask = x[c].isna()\n    recovered_categorical[c] = int(mask.sum())\n    counts = x[c].dropna().value_counts()\n    mode = sorted(counts[counts == counts.max()].index.astype(str))[0]\n    x.loc[mask, c] = mode",
+      "dependencies": {
+        "recovered_categorical": 17,
+        "x": 16,
+        "mask": 16,
+        "c": 16,
+        "cats": 4
+      },
+      "writes": [
+        "c",
+        "counts",
+        "mask",
+        "mode",
+        "recovered_categorical",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "if not np.isfinite(x[nums].to_numpy(float)).all() or x[cats].isna().any().any():\n    raise ValueError('recovery')",
+      "dependencies": {
+        "nums": 6,
+        "x": 18,
+        "cats": 4
+      },
+      "writes": [
+        "cats",
+        "nums",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "assert set(x.is_delayed.unique()) <= {0, 1}",
+      "dependencies": {
+        "x": 19
+      },
+      "writes": [
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "x[[*cols, *flags]].sort_values('trip_id').to_csv(out / 'trips_recovered.csv', index=False)",
+      "dependencies": {
+        "cols": 2,
+        "x": 20,
+        "flags": 12
+      },
+      "writes": [],
+      "outputs": [
+        "trips_recovered.csv"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "js(out / 'recovery_audit.json', {'rows': len(x), 'input_missing': int(d[cols].isna().sum().sum()), 'numeric_recovered': recovered_numeric, 'categorical_recovered': recovered_categorical, 'remaining_missing': int(x[cols].isna().sum().sum())})",
+      "dependencies": {
+        "recovered_categorical": 18,
+        "x": 20,
+        "d": 11,
+        "recovered_numeric": 16,
+        "cols": 2
+      },
+      "writes": [],
+      "outputs": [
+        "recovery_audit.json"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "op = x[['trip_id', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'is_holiday', 'cancellation_risk', *flags]].copy()",
+      "dependencies": {
+        "flags": 12,
+        "x": 20
+      },
+      "writes": [
+        "op"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "op['passenger_km'] = op.distance_km * op.passengers",
+      "dependencies": {
+        "op": 23
+      },
+      "writes": [
+        "op"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "op['fare_per_passenger'] = np.where(op.passengers > 0, op.fare_amount / op.passengers, 0)",
+      "dependencies": {
+        "op": 24
+      },
+      "writes": [
+        "op"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "op.to_csv(out / 'operational_features.csv', index=False)",
+      "dependencies": {
+        "op": 25
+      },
+      "writes": [],
+      "outputs": [
+        "operational_features.csv"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "ctx = x[['trip_id', 'route', 'vehicle_type', 'day_of_week', 'weather_condition', 'delay_minutes', 'is_delayed']].copy()",
+      "dependencies": {
+        "x": 20
+      },
+      "writes": [
+        "ctx"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "ctx.to_csv(out / 'context_features.csv', index=False)",
+      "dependencies": {
+        "ctx": 27
+      },
+      "writes": [],
+      "outputs": [
+        "context_features.csv"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "m = op.merge(ctx, on='trip_id', validate='one_to_one')",
+      "dependencies": {
+        "ctx": 27,
+        "op": 25
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "m.to_csv(out / 'model_data.csv', index=False)",
+      "dependencies": {
+        "m": 29
+      },
+      "writes": [],
+      "outputs": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "index": 31,
+      "source": "nums2 = ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'is_holiday', 'cancellation_risk', 'passenger_km', 'fare_per_passenger']",
+      "dependencies": {},
+      "writes": [
+        "nums2"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 32,
+      "source": "features = nums2 + cats",
+      "dependencies": {
+        "cats": 19,
+        "nums2": 31
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 33,
+      "source": "tr, te = train_test_split(m, test_size=0.25, random_state=42, stratify=m.is_delayed)",
+      "dependencies": {
+        "m": 29
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 34,
+      "source": "model = Pipeline([('features', ColumnTransformer([('numeric', StandardScaler(), nums2), ('categorical', OneHotEncoder(handle_unknown='ignore'), cats)])), ('model', LogisticRegression(C=1, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {
+        "cats": 19,
+        "nums2": 31
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 35,
+      "source": "model.fit(tr[features], tr.is_delayed)",
+      "dependencies": {
+        "features": 32,
+        "tr": 33,
+        "model": 34
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 36,
+      "source": "prob = model.predict_proba(te[features])[:, 1]",
+      "dependencies": {
+        "features": 32,
+        "te": 33,
+        "model": 35
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 37,
+      "source": "yp = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 36
+      },
+      "writes": [
+        "yp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 38,
+      "source": "with (out / 'delay_model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 35
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "delay_model.pkl"
+      ]
+    },
+    {
+      "index": 39,
+      "source": "pd.DataFrame({'trip_id': te.trip_id, 'actual_is_delayed': te.is_delayed, 'probability': prob, 'predicted_is_delayed': yp}).sort_values('trip_id').to_csv(out / 'delay_predictions.csv', index=False)",
+      "dependencies": {
+        "yp": 37,
+        "te": 33,
+        "prob": 36
+      },
+      "writes": [],
+      "outputs": [
+        "delay_predictions.csv"
+      ]
+    },
+    {
+      "index": 40,
+      "source": "js(out / 'delay_metrics.json', {'train_rows': len(tr), 'test_rows': len(te), 'accuracy': accuracy_score(te.is_delayed, yp), 'precision': precision_score(te.is_delayed, yp, zero_division=0), 'recall': recall_score(te.is_delayed, yp, zero_division=0), 'f1': f1_score(te.is_delayed, yp, zero_division=0), 'roc_auc': roc_auc_score(te.is_delayed, prob)})",
+      "dependencies": {
+        "yp": 37,
+        "tr": 33,
+        "te": 33,
+        "prob": 36
+      },
+      "writes": [],
+      "outputs": [
+        "delay_metrics.json"
+      ]
+    },
+    {
+      "index": 41,
+      "source": "route = m.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), delay_rate=('is_delayed', 'mean'), mean_delay=('delay_minutes', 'mean'), mean_cancellation_risk=('cancellation_risk', 'mean')).sort_values('route')",
+      "dependencies": {
+        "m": 29
+      },
+      "writes": [
+        "route"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 42,
+      "source": "route.to_csv(out / 'route_diagnostics.csv', index=False)",
+      "dependencies": {
+        "route": 41
+      },
+      "writes": [],
+      "outputs": [
+        "route_diagnostics.csv"
+      ]
+    },
+    {
+      "index": 43,
+      "source": "weather = m.groupby('weather_condition', as_index=False).agg(trip_count=('trip_id', 'size'), delay_rate=('is_delayed', 'mean'), mean_delay=('delay_minutes', 'mean')).sort_values('weather_condition')",
+      "dependencies": {
+        "m": 29
+      },
+      "writes": [
+        "weather"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 44,
+      "source": "weather.to_csv(out / 'weather_diagnostics.csv', index=False)",
+      "dependencies": {
+        "weather": 43
+      },
+      "writes": [],
+      "outputs": [
+        "weather_diagnostics.csv"
+      ]
+    },
+    {
+      "index": 45,
+      "source": "vehicle = m.groupby('vehicle_type', as_index=False).agg(trip_count=('trip_id', 'size'), delay_rate=('is_delayed', 'mean'), mean_cancellation_risk=('cancellation_risk', 'mean'), mean_passenger_km=('passenger_km', 'mean')).sort_values('vehicle_type')",
+      "dependencies": {
+        "m": 29
+      },
+      "writes": [
+        "vehicle"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 46,
+      "source": "vehicle.to_csv(out / 'vehicle_diagnostics.csv', index=False)",
+      "dependencies": {
+        "vehicle": 45
+      },
+      "writes": [],
+      "outputs": [
+        "vehicle_diagnostics.csv"
+      ]
+    },
+    {
+      "index": 47,
+      "source": "js(out / 'delay_report.json', {'trips': len(m), 'input_missing': int(d[cols].isna().sum().sum()), 'model_test_rows': len(te), 'route_trips': int(route.trip_count.sum()), 'weather_trips': int(weather.trip_count.sum()), 'vehicle_trips': int(vehicle.trip_count.sum()), 'routes': len(route), 'weather_conditions': len(weather), 'vehicle_types': len(vehicle)})",
+      "dependencies": {
+        "route": 41,
+        "d": 11,
+        "cols": 2,
+        "te": 33,
+        "m": 29,
+        "weather": 43,
+        "vehicle": 45
+      },
+      "writes": [],
+      "outputs": [
+        "delay_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "audit": [
+      13
+    ],
+    "recover": [
+      21,
+      22
+    ],
+    "operations": [
+      26
+    ],
+    "context": [
+      28
+    ],
+    "integrate": [
+      30
+    ],
+    "fit": [
+      38,
+      39
+    ],
+    "evaluate": [
+      40
+    ],
+    "routes": [
+      42
+    ],
+    "weather": [
+      44
+    ],
+    "vehicles": [
+      46
+    ],
+    "report": [
+      47
+    ]
+  }
+}

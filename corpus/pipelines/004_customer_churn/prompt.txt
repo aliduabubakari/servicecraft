@@ -1,0 +1,43 @@
+# Customer transaction aggregation and churn cohort analysis
+
+1. Objective
+
+Build a local Dagster pipeline for auditable customer-level transaction aggregation and churn cohort analysis. It describes historical associations; it does not train a churn predictor or prescribe retention actions.
+
+2. Available input files
+
+- inputs/customers.csv
+  Columns present: customer_id, segment, acquisition_channel, city, state, payment_method, plan_type, signup_date, tenure_days, monthly_fee, support_contacts, is_churned
+- inputs/transactions.csv
+  Columns present: transaction_id, customer_id, transaction_date, amount, items_count, category, is_return, discount_applied
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Validate unique customer_id and transaction_id values and require every transaction customer_id to exist in customers.csv. is_churned and is_return must be binary. discount_applied is a nonnegative monetary amount. Parse transaction_date, require finite numeric measures, and define the analysis cutoff as the normalized maximum transaction date in the supplied data.
+
+For each customer represented in transactions, compute transaction_count, total_spend (sum of amount, without changing the sign for returns), mean_order_value, total_items, return_count, returned_amount (sum amount where is_return=1), discounted_transaction_count (count where discount_applied is positive), total_discount (sum of discount_applied), last_transaction_date, return_rate, and days_since_last_transaction measured from the cutoff date. Sort customer_metrics.csv by customer_id.
+
+Left-join these metrics to all customers one-to-one. Customers without transactions receive zero for numeric behavioral metrics and a blank last_transaction_date. Retain customer_id, segment, monthly_fee, support_contacts, is_churned, and the derived measures in customer_analysis.csv, sorted by customer_id.
+
+Group the integrated customer table by segment. segment_summary.csv contains segment, customer_count, churn_rate, mean_total_spend, mean_transaction_count, and mean_days_since_last_transaction, sorted by segment. churn_report.json contains cutoff_date, customers, transactions, overall_churn_rate, total_spend, and segments. All values must be derived from the current inputs.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `customer_metrics.csv`
+- `customer_analysis.csv`
+- `segment_summary.csv`
+- `churn_report.json`
+
+6. Execution and numerical requirements
+
+Execution and output contract: generate executable Dagster code using only the supplied local files. Do not use network services, outputs from earlier runs, fixed analytical results, or human intervention. Each mandatory logical operation must be visible in the design/code. A different Dagster asset/op decomposition is allowed when it preserves the specified behavior, dependencies, and observable outputs. Write every output beneath the designated run output directory. Preserve full numeric precision; comparisons use atol=1e-6 and rtol=1e-6. JSON must not contain NaN or Infinity. Missing required columns, broken identifier relationships, duplicate primary identifiers, invalid dates, and missing/non-finite required values must fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

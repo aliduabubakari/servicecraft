@@ -1,0 +1,8 @@
+{
+  "rows": 5000,
+  "eligible_return_rows": 4990,
+  "tickers": 10,
+  "matched_dates": 500,
+  "highest_volatility_ticker": "MSFT",
+  "highest_sp500_correlation_ticker": "TSLA"
+}

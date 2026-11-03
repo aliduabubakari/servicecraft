@@ -1,0 +1,19 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "030_sports_statistical_cleaning",
+  "selection_reason": "One table progresses honestly through validation, feature derivation, ranking, position selection, and reporting.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "input_modifications": [],
+  "pilot_input_sha256": {
+    "data.csv": "c49510eec5d52afa4f9f468936caf9a44148aad520db6a23885c719d2661249e"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

@@ -1,0 +1,10 @@
+{
+  "trips": 759,
+  "model_test_rows": 190,
+  "route_trips": 759,
+  "weather_trips": 759,
+  "vehicle_trips": 759,
+  "routes": 20,
+  "weather_conditions": 4,
+  "vehicle_types": 5
+}

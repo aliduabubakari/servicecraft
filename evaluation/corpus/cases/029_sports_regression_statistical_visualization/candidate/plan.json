@@ -1,0 +1,387 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'market_value', 'win_shares', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'player_id', ['team', 'position'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "d = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "d.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "p = d[['player_id', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'win_shares']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "p['production_index'] = p.points_per_game + p.assists_per_game + p.rebounds_per_game",
+      "dependencies": {
+        "p": 5
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "p['production_per_minute'] = np.where(p.minutes_per_game > 0, p.production_index / p.minutes_per_game, 0)",
+      "dependencies": {
+        "p": 6
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "p.to_csv(out / 'production_features.csv', index=False)",
+      "dependencies": {
+        "p": 7
+      },
+      "writes": [],
+      "outputs": [
+        "production_features.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "s = d[['player_id', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "s['shooting_index'] = s[['field_goal_pct', 'three_point_pct', 'free_throw_pct']].mean(axis=1)",
+      "dependencies": {
+        "s": 9
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "s['weighted_shooting_index'] = 0.5 * s.field_goal_pct + 0.3 * s.three_point_pct + 0.2 * s.free_throw_pct",
+      "dependencies": {
+        "s": 10
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "s.to_csv(out / 'shooting_features.csv', index=False)",
+      "dependencies": {
+        "s": 11
+      },
+      "writes": [],
+      "outputs": [
+        "shooting_features.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "c = d[['player_id', 'team', 'position', 'games_played', 'age', 'experience_years', 'salary_millions', 'market_value']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "c['salary_per_game'] = np.where(c.games_played > 0, c.salary_millions / c.games_played, 0)",
+      "dependencies": {
+        "c": 13
+      },
+      "writes": [
+        "c"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "c.to_csv(out / 'context_features.csv', index=False)",
+      "dependencies": {
+        "c": 14
+      },
+      "writes": [],
+      "outputs": [
+        "context_features.csv"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "m = p.merge(s, on='player_id', validate='one_to_one').merge(c, on='player_id', validate='one_to_one')",
+      "dependencies": {
+        "c": 14,
+        "p": 7,
+        "s": 11
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "m.to_csv(out / 'model_data.csv', index=False)",
+      "dependencies": {
+        "m": 16
+      },
+      "writes": [],
+      "outputs": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "features = ['production_index', 'production_per_minute', 'minutes_per_game', 'win_shares', 'shooting_index', 'weighted_shooting_index', 'age', 'experience_years', 'salary_millions', 'salary_per_game']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "tr, te = train_test_split(m, test_size=0.2, random_state=42)",
+      "dependencies": {
+        "m": 16
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', Ridge(alpha=1))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "model.fit(tr[features], tr.market_value)",
+      "dependencies": {
+        "features": 18,
+        "tr": 19,
+        "model": 20
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "pred = model.predict(te[features])",
+      "dependencies": {
+        "features": 18,
+        "te": 19,
+        "model": 21
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "with (out / 'valuation_model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 21
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "valuation_model.pkl"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "pd.DataFrame({'player_id': te.player_id, 'actual_market_value': te.market_value, 'predicted_market_value': pred}).sort_values('player_id').to_csv(out / 'valuation_predictions.csv', index=False)",
+      "dependencies": {
+        "pred": 22,
+        "te": 19
+      },
+      "writes": [],
+      "outputs": [
+        "valuation_predictions.csv"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "js(out / 'valuation_metrics.json', {'train_rows': len(tr), 'test_rows': len(te), 'mae': mean_absolute_error(te.market_value, pred), 'rmse': mean_squared_error(te.market_value, pred) ** 0.5, 'r2': r2_score(te.market_value, pred)})",
+      "dependencies": {
+        "tr": 19,
+        "te": 19,
+        "pred": 22
+      },
+      "writes": [],
+      "outputs": [
+        "valuation_metrics.json"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "team = m.groupby('team', as_index=False).agg(player_count=('player_id', 'size'), mean_market_value=('market_value', 'mean'), mean_production=('production_index', 'mean'), mean_shooting=('shooting_index', 'mean'), mean_salary=('salary_millions', 'mean')).sort_values('team')",
+      "dependencies": {
+        "m": 16
+      },
+      "writes": [
+        "team"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "team.to_csv(out / 'team_diagnostics.csv', index=False)",
+      "dependencies": {
+        "team": 26
+      },
+      "writes": [],
+      "outputs": [
+        "team_diagnostics.csv"
+      ]
+    },
+    {
+      "index": 28,
+      "source": "pos = m.groupby('position', as_index=False).agg(player_count=('player_id', 'size'), mean_market_value=('market_value', 'mean'), mean_production=('production_index', 'mean'), mean_shooting=('shooting_index', 'mean'), mean_win_shares=('win_shares', 'mean')).sort_values('position')",
+      "dependencies": {
+        "m": 16
+      },
+      "writes": [
+        "pos"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "pos.to_csv(out / 'position_diagnostics.csv', index=False)",
+      "dependencies": {
+        "pos": 28
+      },
+      "writes": [],
+      "outputs": [
+        "position_diagnostics.csv"
+      ]
+    },
+    {
+      "index": 30,
+      "source": "js(out / 'valuation_report.json', {'players': len(m), 'model_test_rows': len(te), 'team_players': int(team.player_count.sum()), 'position_players': int(pos.player_count.sum()), 'teams': len(team), 'positions': len(pos)})",
+      "dependencies": {
+        "team": 26,
+        "pos": 28,
+        "te": 19,
+        "m": 16
+      },
+      "writes": [],
+      "outputs": [
+        "valuation_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      4
+    ],
+    "production": [
+      8
+    ],
+    "shooting": [
+      12
+    ],
+    "context": [
+      15
+    ],
+    "integrate": [
+      17
+    ],
+    "fit": [
+      23,
+      24
+    ],
+    "evaluate": [
+      25
+    ],
+    "teams": [
+      27
+    ],
+    "positions": [
+      29
+    ],
+    "report": [
+      30
+    ]
+  }
+}

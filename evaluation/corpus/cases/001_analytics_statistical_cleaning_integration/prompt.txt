@@ -1,0 +1,46 @@
+# Stock and market return integration with convergent validation
+
+1. Objective
+
+Build a stock/market analysis pipeline with two independent source-validation branches that converge, followed by a linear analysis and report suffix. This required `linear_to_fan_in` topology is justified because stock and index validity can be established independently, but return comparisons require both sources.
+
+2. Available input files
+
+- inputs/market_indices.csv
+  Columns present: date, sp500, nasdaq
+- inputs/stocks.csv
+  Columns present: ticker, sector, date, open, high, low, close, volume
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+The stock branch validates unique (ticker,date), nonblank ticker/sector, parseable dates, and nonnegative finite OHLC/volume. The synthetic source contains recoverable OHLC inconsistencies: normalize high to the maximum and low to the minimum of the row's original open/high/low/close values. It emits clean_stocks.csv sorted ticker/date and stock_quality.json. The market branch independently validates unique dates, positive finite S&P 500 and Nasdaq levels, and emits clean_market.csv sorted by date plus market_quality.json.
+
+The join task computes within-ticker close-to-close stock_return and daily sp500_return/nasdaq_return before an inner many-to-one date join. It computes excess_sp500_return and emits market_panel.csv plus integration.json with source/panel counts, matched dates, and unmatched stock rows. First observations per return series remain missing; do not replace them.
+
+Using rows with all three returns present, calculate ticker_statistics.csv with observations, mean_return, sample volatility (ddof=1), and mean_excess_sp500_return. market_relationships.csv contains Pearson stock-return correlations with each index. Sort both by ticker. finance_report.json publishes panel/eligible counts, tickers, matched dates, and the highest-volatility and highest-S&P-correlation tickers, breaking ties by ticker ascending.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `clean_stocks.csv`
+- `stock_quality.json`
+- `clean_market.csv`
+- `market_quality.json`
+- `market_panel.csv`
+- `integration.json`
+- `ticker_statistics.csv`
+- `market_relationships.csv`
+- `finance_report.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code. Do not use networks, external services, prior-run outputs, fixed analytical answers, or human intervention. The required topology is semantically necessary: independent branches must not consume one another's outputs, while every declared join must consume the listed branch artifacts. A different Dagster asset/op decomposition is allowed only if it preserves the logical tasks, data dependencies, topology class, and observable checkpoints. Write outputs beneath the run output directory. Preserve full numeric precision; comparisons use atol=1e-6 and rtol=1e-6. JSON must be finite. Missing columns, invalid primary/foreign keys, invalid dates, or non-finite required values must fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

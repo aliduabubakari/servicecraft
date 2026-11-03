@@ -1,0 +1,387 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "025_sports_regression_prediction_statistical_v2",
+  "benchmark_revision": "batch-11",
+  "review_status": "author_review_pending",
+  "title": "Shared player features feeding two models and a joint report",
+  "domain": "sports",
+  "family_id": "shared_feature_dual_model_fanin_fanout",
+  "topology": "fan_in_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "all_star",
+        "injury_games_missed",
+        "contract_year",
+        "market_value",
+        "win_shares",
+        "field_goal_pct",
+        "three_point_pct",
+        "free_throw_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate players",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_clean.csv"
+      ],
+      "requirements": [
+        "Validate IDs, targets, and required values."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "performance",
+      "name": "Derive performance features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "performance_features.csv"
+      ],
+      "requirements": [
+        "Compute production and shooting indices."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "availability",
+      "name": "Derive availability features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "availability_features.csv"
+      ],
+      "requirements": [
+        "Compute availability and retain context/targets."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate model features",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "performance_features.csv",
+        "availability_features.csv"
+      ],
+      "outputs": [
+        "model_data.csv"
+      ],
+      "requirements": [
+        "Join one-to-one by player ID."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "market_fit",
+      "name": "Fit market-value model",
+      "operation": "ridge_regression",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "market_model.pkl",
+        "market_predictions.csv"
+      ],
+      "requirements": [
+        "Apply the fixed split, scaling, and Ridge."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "allstar_fit",
+      "name": "Fit All-Star model",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "allstar_model.pkl",
+        "allstar_predictions.csv"
+      ],
+      "requirements": [
+        "Apply the fixed stratified split, scaling, logistic model, and threshold."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "market_evaluate",
+      "name": "Evaluate market-value model",
+      "operation": "regression_evaluation",
+      "required": true,
+      "inputs": [
+        "market_predictions.csv"
+      ],
+      "outputs": [
+        "market_metrics.json"
+      ],
+      "requirements": [
+        "Compute held-out MAE, RMSE, and R2."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "allstar_evaluate",
+      "name": "Evaluate All-Star model",
+      "operation": "classification_evaluation",
+      "required": true,
+      "inputs": [
+        "allstar_predictions.csv"
+      ],
+      "outputs": [
+        "allstar_metrics.json"
+      ],
+      "requirements": [
+        "Compute five held-out metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Reconcile model results",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "market_metrics.json",
+        "allstar_metrics.json"
+      ],
+      "outputs": [
+        "dual_model_report.json"
+      ],
+      "requirements": [
+        "Publish model identities and test counts."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_clean.csv",
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "all_star",
+        "market_value"
+      ]
+    },
+    {
+      "id": "performance_features.csv",
+      "path": "performance_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "shooting_index"
+      ]
+    },
+    {
+      "id": "availability_features.csv",
+      "path": "availability_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "availability_rate"
+      ]
+    },
+    {
+      "id": "model_data.csv",
+      "path": "model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "availability_rate"
+      ]
+    },
+    {
+      "id": "market_model.pkl",
+      "path": "market_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "market_predictions.csv",
+      "path": "market_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_market_value",
+        "predicted_market_value"
+      ]
+    },
+    {
+      "id": "market_metrics.json",
+      "path": "market_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "allstar_model.pkl",
+      "path": "allstar_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "allstar_predictions.csv",
+      "path": "allstar_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_all_star",
+        "probability",
+        "predicted_all_star"
+      ]
+    },
+    {
+      "id": "allstar_metrics.json",
+      "path": "allstar_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "dual_model_report.json",
+      "path": "dual_model_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "performance",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "availability",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "availability",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "availability_features.csv"
+      ]
+    },
+    {
+      "source": "performance",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "performance_features.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "market_fit",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "allstar_fit",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "market_fit",
+      "target": "market_evaluate",
+      "kind": "data",
+      "artifacts": [
+        "market_predictions.csv"
+      ]
+    },
+    {
+      "source": "allstar_fit",
+      "target": "allstar_evaluate",
+      "kind": "data",
+      "artifacts": [
+        "allstar_predictions.csv"
+      ]
+    },
+    {
+      "source": "allstar_evaluate",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "allstar_metrics.json"
+      ]
+    },
+    {
+      "source": "market_evaluate",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "market_metrics.json"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "shared_dual",
+      "performance": "shared_dual",
+      "availability": "shared_dual",
+      "integrate": "shared_dual",
+      "market_fit": "shared_dual",
+      "allstar_fit": "shared_dual",
+      "market_evaluate": "shared_dual",
+      "allstar_evaluate": "shared_dual",
+      "report": "shared_dual"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

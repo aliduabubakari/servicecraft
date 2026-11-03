@@ -1,0 +1,8 @@
+{
+  "cutoff_date": "2024-12-31",
+  "customers": 500,
+  "transactions": 15843,
+  "overall_churn_rate": 0.28,
+  "total_spend": 721262.6499999999,
+  "segments": 3
+}

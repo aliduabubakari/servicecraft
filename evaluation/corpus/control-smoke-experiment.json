@@ -1,0 +1,1728 @@
+{
+  "schema_version": "servicecraft.experiment@1",
+  "profiles": {
+    "scientific-v1": {
+      "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+      "required_packages": {
+        "dagster": "1.13.12",
+        "numpy": "2.0.1",
+        "pandas": "2.2.2",
+        "scikit-learn": "1.5.1",
+        "scipy": "1.14.1",
+        "openpyxl": "3.1.5"
+      },
+      "required_imports": [
+        "dagster",
+        "numpy",
+        "pandas",
+        "sklearn",
+        "scipy",
+        "openpyxl"
+      ]
+    }
+  },
+  "controls": {
+    "001_analytics_statistical_cleaning_integration": {
+      "candidate": "cases/001_analytics_statistical_cleaning_integration/candidate",
+      "inputs": "cases/001_analytics_statistical_cleaning_integration/inputs",
+      "spec": "cases/001_analytics_statistical_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "002_analytics_statistical_integration": {
+      "candidate": "cases/002_analytics_statistical_integration/candidate",
+      "inputs": "cases/002_analytics_statistical_integration/inputs",
+      "spec": "cases/002_analytics_statistical_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "003_credit_risk": {
+      "candidate": "cases/003_credit_risk/candidate",
+      "inputs": "cases/003_credit_risk/inputs",
+      "spec": "cases/003_credit_risk/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "004_customer_churn": {
+      "candidate": "cases/004_customer_churn/candidate",
+      "inputs": "cases/004_customer_churn/inputs",
+      "spec": "cases/004_customer_churn/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "005_demand_forecasting": {
+      "candidate": "cases/005_demand_forecasting/candidate",
+      "inputs": "cases/005_demand_forecasting/inputs",
+      "spec": "cases/005_demand_forecasting/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "006_ecommerce_recommendation": {
+      "candidate": "cases/006_ecommerce_recommendation/candidate",
+      "inputs": "cases/006_ecommerce_recommendation/inputs",
+      "spec": "cases/006_ecommerce_recommendation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "007_employee_attrition": {
+      "candidate": "cases/007_employee_attrition/candidate",
+      "inputs": "cases/007_employee_attrition/inputs",
+      "spec": "cases/007_employee_attrition/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "008_energy_forecasting": {
+      "candidate": "cases/008_energy_forecasting/candidate",
+      "inputs": "cases/008_energy_forecasting/inputs",
+      "spec": "cases/008_energy_forecasting/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "009_healthcare_readmission": {
+      "candidate": "cases/009_healthcare_readmission/candidate",
+      "inputs": "cases/009_healthcare_readmission/inputs",
+      "spec": "cases/009_healthcare_readmission/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "010_hr_regression_visualization_integration": {
+      "candidate": "cases/010_hr_regression_visualization_integration/candidate",
+      "inputs": "cases/010_hr_regression_visualization_integration/inputs",
+      "spec": "cases/010_hr_regression_visualization_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "011_hr_visualization_integration_validation": {
+      "candidate": "cases/011_hr_visualization_integration_validation/candidate",
+      "inputs": "cases/011_hr_visualization_integration_validation/inputs",
+      "spec": "cases/011_hr_visualization_integration_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "012_insurance_claims": {
+      "candidate": "cases/012_insurance_claims/candidate",
+      "inputs": "cases/012_insurance_claims/inputs",
+      "spec": "cases/012_insurance_claims/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "013_predictive_maintenance": {
+      "candidate": "cases/013_predictive_maintenance/candidate",
+      "inputs": "cases/013_predictive_maintenance/inputs",
+      "spec": "cases/013_predictive_maintenance/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "014_sports_clustering_integration_validation": {
+      "candidate": "cases/014_sports_clustering_integration_validation/candidate",
+      "inputs": "cases/014_sports_clustering_integration_validation/inputs",
+      "spec": "cases/014_sports_clustering_integration_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "015_sports_clustering_prediction_statistical": {
+      "candidate": "cases/015_sports_clustering_prediction_statistical/candidate",
+      "inputs": "cases/015_sports_clustering_prediction_statistical/inputs",
+      "spec": "cases/015_sports_clustering_prediction_statistical/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "016_sports_clustering_prediction_visualization": {
+      "candidate": "cases/016_sports_clustering_prediction_visualization/candidate",
+      "inputs": "cases/016_sports_clustering_prediction_visualization/inputs",
+      "spec": "cases/016_sports_clustering_prediction_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "017_sports_clustering_statistical_visualization": {
+      "candidate": "cases/017_sports_clustering_statistical_visualization/candidate",
+      "inputs": "cases/017_sports_clustering_statistical_visualization/inputs",
+      "spec": "cases/017_sports_clustering_statistical_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "018_sports_clustering_visualization_integration": {
+      "candidate": "cases/018_sports_clustering_visualization_integration/candidate",
+      "inputs": "cases/018_sports_clustering_visualization_integration/inputs",
+      "spec": "cases/018_sports_clustering_visualization_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "019_sports_prediction_cleaning_integration": {
+      "candidate": "cases/019_sports_prediction_cleaning_integration/candidate",
+      "inputs": "cases/019_sports_prediction_cleaning_integration/inputs",
+      "spec": "cases/019_sports_prediction_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "020_sports_prediction_statistical_visualization": {
+      "candidate": "cases/020_sports_prediction_statistical_visualization/candidate",
+      "inputs": "cases/020_sports_prediction_statistical_visualization/inputs",
+      "spec": "cases/020_sports_prediction_statistical_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "021_sports_prediction_statistical_visualization_v2": {
+      "candidate": "cases/021_sports_prediction_statistical_visualization_v2/candidate",
+      "inputs": "cases/021_sports_prediction_statistical_visualization_v2/inputs",
+      "spec": "cases/021_sports_prediction_statistical_visualization_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "022_sports_prediction_visualization_cleaning": {
+      "candidate": "cases/022_sports_prediction_visualization_cleaning/candidate",
+      "inputs": "cases/022_sports_prediction_visualization_cleaning/inputs",
+      "spec": "cases/022_sports_prediction_visualization_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "023_sports_regression_clustering_visualization": {
+      "candidate": "cases/023_sports_regression_clustering_visualization/candidate",
+      "inputs": "cases/023_sports_regression_clustering_visualization/inputs",
+      "spec": "cases/023_sports_regression_clustering_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "024_sports_regression_prediction_statistical": {
+      "candidate": "cases/024_sports_regression_prediction_statistical/candidate",
+      "inputs": "cases/024_sports_regression_prediction_statistical/inputs",
+      "spec": "cases/024_sports_regression_prediction_statistical/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "025_sports_regression_prediction_statistical_v2": {
+      "candidate": "cases/025_sports_regression_prediction_statistical_v2/candidate",
+      "inputs": "cases/025_sports_regression_prediction_statistical_v2/inputs",
+      "spec": "cases/025_sports_regression_prediction_statistical_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "026_sports_regression_prediction_statistical_v3": {
+      "candidate": "cases/026_sports_regression_prediction_statistical_v3/candidate",
+      "inputs": "cases/026_sports_regression_prediction_statistical_v3/inputs",
+      "spec": "cases/026_sports_regression_prediction_statistical_v3/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "027_sports_regression_prediction_visualization": {
+      "candidate": "cases/027_sports_regression_prediction_visualization/candidate",
+      "inputs": "cases/027_sports_regression_prediction_visualization/inputs",
+      "spec": "cases/027_sports_regression_prediction_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "028_sports_regression_prediction_visualization_v2": {
+      "candidate": "cases/028_sports_regression_prediction_visualization_v2/candidate",
+      "inputs": "cases/028_sports_regression_prediction_visualization_v2/inputs",
+      "spec": "cases/028_sports_regression_prediction_visualization_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "029_sports_regression_statistical_visualization": {
+      "candidate": "cases/029_sports_regression_statistical_visualization/candidate",
+      "inputs": "cases/029_sports_regression_statistical_visualization/inputs",
+      "spec": "cases/029_sports_regression_statistical_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "030_sports_statistical_cleaning": {
+      "candidate": "cases/030_sports_statistical_cleaning/candidate",
+      "inputs": "cases/030_sports_statistical_cleaning/inputs",
+      "spec": "cases/030_sports_statistical_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "031_sports_statistical_cleaning_integration": {
+      "candidate": "cases/031_sports_statistical_cleaning_integration/candidate",
+      "inputs": "cases/031_sports_statistical_cleaning_integration/inputs",
+      "spec": "cases/031_sports_statistical_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "032_sports_statistical_cleaning_integration_v2": {
+      "candidate": "cases/032_sports_statistical_cleaning_integration_v2/candidate",
+      "inputs": "cases/032_sports_statistical_cleaning_integration_v2/inputs",
+      "spec": "cases/032_sports_statistical_cleaning_integration_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "033_sports_statistical_cleaning_integration_v3": {
+      "candidate": "cases/033_sports_statistical_cleaning_integration_v3/candidate",
+      "inputs": "cases/033_sports_statistical_cleaning_integration_v3/inputs",
+      "spec": "cases/033_sports_statistical_cleaning_integration_v3/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "034_sports_statistical_cleaning_integration_v4": {
+      "candidate": "cases/034_sports_statistical_cleaning_integration_v4/candidate",
+      "inputs": "cases/034_sports_statistical_cleaning_integration_v4/inputs",
+      "spec": "cases/034_sports_statistical_cleaning_integration_v4/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "035_sports_statistical_cleaning_integration_v5": {
+      "candidate": "cases/035_sports_statistical_cleaning_integration_v5/candidate",
+      "inputs": "cases/035_sports_statistical_cleaning_integration_v5/inputs",
+      "spec": "cases/035_sports_statistical_cleaning_integration_v5/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "036_sports_statistical_cleaning_validation": {
+      "candidate": "cases/036_sports_statistical_cleaning_validation/candidate",
+      "inputs": "cases/036_sports_statistical_cleaning_validation/inputs",
+      "spec": "cases/036_sports_statistical_cleaning_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "037_sports_statistical_integration": {
+      "candidate": "cases/037_sports_statistical_integration/candidate",
+      "inputs": "cases/037_sports_statistical_integration/inputs",
+      "spec": "cases/037_sports_statistical_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "038_sports_statistical_integration_v2": {
+      "candidate": "cases/038_sports_statistical_integration_v2/candidate",
+      "inputs": "cases/038_sports_statistical_integration_v2/inputs",
+      "spec": "cases/038_sports_statistical_integration_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "039_sports_statistical_visualization_cleaning": {
+      "candidate": "cases/039_sports_statistical_visualization_cleaning/candidate",
+      "inputs": "cases/039_sports_statistical_visualization_cleaning/inputs",
+      "spec": "cases/039_sports_statistical_visualization_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "040_sports_statistical_visualization_cleaning_v2": {
+      "candidate": "cases/040_sports_statistical_visualization_cleaning_v2/candidate",
+      "inputs": "cases/040_sports_statistical_visualization_cleaning_v2/inputs",
+      "spec": "cases/040_sports_statistical_visualization_cleaning_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "041_sports_statistical_visualization_integration": {
+      "candidate": "cases/041_sports_statistical_visualization_integration/candidate",
+      "inputs": "cases/041_sports_statistical_visualization_integration/inputs",
+      "spec": "cases/041_sports_statistical_visualization_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "042_sports_validation_recovery": {
+      "candidate": "cases/042_sports_validation_recovery/candidate",
+      "inputs": "cases/042_sports_validation_recovery/inputs",
+      "spec": "cases/042_sports_validation_recovery/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "043_sports_visualization": {
+      "candidate": "cases/043_sports_visualization/candidate",
+      "inputs": "cases/043_sports_visualization/inputs",
+      "spec": "cases/043_sports_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "044_sports_visualization_cleaning_integration": {
+      "candidate": "cases/044_sports_visualization_cleaning_integration/candidate",
+      "inputs": "cases/044_sports_visualization_cleaning_integration/inputs",
+      "spec": "cases/044_sports_visualization_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "045_sports_visualization_cleaning_recovery": {
+      "candidate": "cases/045_sports_visualization_cleaning_recovery/candidate",
+      "inputs": "cases/045_sports_visualization_cleaning_recovery/inputs",
+      "spec": "cases/045_sports_visualization_cleaning_recovery/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "046_sports_visualization_cleaning_recovery_v2": {
+      "candidate": "cases/046_sports_visualization_cleaning_recovery_v2/candidate",
+      "inputs": "cases/046_sports_visualization_cleaning_recovery_v2/inputs",
+      "spec": "cases/046_sports_visualization_cleaning_recovery_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "047_sports_visualization_integration_features": {
+      "candidate": "cases/047_sports_visualization_integration_features/candidate",
+      "inputs": "cases/047_sports_visualization_integration_features/inputs",
+      "spec": "cases/047_sports_visualization_integration_features/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "048_sports_visualization_integration_geospatial": {
+      "candidate": "cases/048_sports_visualization_integration_geospatial/candidate",
+      "inputs": "cases/048_sports_visualization_integration_geospatial/inputs",
+      "spec": "cases/048_sports_visualization_integration_geospatial/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "049_sports_visualization_integration_recovery": {
+      "candidate": "cases/049_sports_visualization_integration_recovery/candidate",
+      "inputs": "cases/049_sports_visualization_integration_recovery/inputs",
+      "spec": "cases/049_sports_visualization_integration_recovery/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "050_sports_visualization_integration_recovery_v2": {
+      "candidate": "cases/050_sports_visualization_integration_recovery_v2/candidate",
+      "inputs": "cases/050_sports_visualization_integration_recovery_v2/inputs",
+      "spec": "cases/050_sports_visualization_integration_recovery_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "051_sports_visualization_integration_validation": {
+      "candidate": "cases/051_sports_visualization_integration_validation/candidate",
+      "inputs": "cases/051_sports_visualization_integration_validation/inputs",
+      "spec": "cases/051_sports_visualization_integration_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "052_sports_visualization_integration_validation_v2": {
+      "candidate": "cases/052_sports_visualization_integration_validation_v2/candidate",
+      "inputs": "cases/052_sports_visualization_integration_validation_v2/inputs",
+      "spec": "cases/052_sports_visualization_integration_validation_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "053_sports_visualization_validation_recovery": {
+      "candidate": "cases/053_sports_visualization_validation_recovery/candidate",
+      "inputs": "cases/053_sports_visualization_validation_recovery/inputs",
+      "spec": "cases/053_sports_visualization_validation_recovery/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "054_student_performance": {
+      "candidate": "cases/054_student_performance/candidate",
+      "inputs": "cases/054_student_performance/inputs",
+      "spec": "cases/054_student_performance/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "055_transportation_analysis": {
+      "candidate": "cases/055_transportation_analysis/candidate",
+      "inputs": "cases/055_transportation_analysis/inputs",
+      "spec": "cases/055_transportation_analysis/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "056_transportation_cleaning": {
+      "candidate": "cases/056_transportation_cleaning/candidate",
+      "inputs": "cases/056_transportation_cleaning/inputs",
+      "spec": "cases/056_transportation_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "057_transportation_cleaning_integration": {
+      "candidate": "cases/057_transportation_cleaning_integration/candidate",
+      "inputs": "cases/057_transportation_cleaning_integration/inputs",
+      "spec": "cases/057_transportation_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "058_transportation_cleaning_integration_geospatial": {
+      "candidate": "cases/058_transportation_cleaning_integration_geospatial/candidate",
+      "inputs": "cases/058_transportation_cleaning_integration_geospatial/inputs",
+      "spec": "cases/058_transportation_cleaning_integration_geospatial/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "059_transportation_cleaning_integration_recovery": {
+      "candidate": "cases/059_transportation_cleaning_integration_recovery/candidate",
+      "inputs": "cases/059_transportation_cleaning_integration_recovery/inputs",
+      "spec": "cases/059_transportation_cleaning_integration_recovery/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "060_transportation_cleaning_integration_validation": {
+      "candidate": "cases/060_transportation_cleaning_integration_validation/candidate",
+      "inputs": "cases/060_transportation_cleaning_integration_validation/inputs",
+      "spec": "cases/060_transportation_cleaning_integration_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "061_transportation_cleaning_v2": {
+      "candidate": "cases/061_transportation_cleaning_v2/candidate",
+      "inputs": "cases/061_transportation_cleaning_v2/inputs",
+      "spec": "cases/061_transportation_cleaning_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "062_transportation_cleaning_validation_features": {
+      "candidate": "cases/062_transportation_cleaning_validation_features/candidate",
+      "inputs": "cases/062_transportation_cleaning_validation_features/inputs",
+      "spec": "cases/062_transportation_cleaning_validation_features/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "063_transportation_clustering_validation": {
+      "candidate": "cases/063_transportation_clustering_validation/candidate",
+      "inputs": "cases/063_transportation_clustering_validation/inputs",
+      "spec": "cases/063_transportation_clustering_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "064_transportation_integration": {
+      "candidate": "cases/064_transportation_integration/candidate",
+      "inputs": "cases/064_transportation_integration/inputs",
+      "spec": "cases/064_transportation_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "065_transportation_integration_extra": {
+      "candidate": "cases/065_transportation_integration_extra/candidate",
+      "inputs": "cases/065_transportation_integration_extra/inputs",
+      "spec": "cases/065_transportation_integration_extra/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "066_transportation_integration_geospatial": {
+      "candidate": "cases/066_transportation_integration_geospatial/candidate",
+      "inputs": "cases/066_transportation_integration_geospatial/inputs",
+      "spec": "cases/066_transportation_integration_geospatial/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "067_transportation_integration_validation": {
+      "candidate": "cases/067_transportation_integration_validation/candidate",
+      "inputs": "cases/067_transportation_integration_validation/inputs",
+      "spec": "cases/067_transportation_integration_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "068_transportation_prediction_cleaning": {
+      "candidate": "cases/068_transportation_prediction_cleaning/candidate",
+      "inputs": "cases/068_transportation_prediction_cleaning/inputs",
+      "spec": "cases/068_transportation_prediction_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "069_transportation_prediction_cleaning_integration": {
+      "candidate": "cases/069_transportation_prediction_cleaning_integration/candidate",
+      "inputs": "cases/069_transportation_prediction_cleaning_integration/inputs",
+      "spec": "cases/069_transportation_prediction_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "070_transportation_prediction_cleaning_validation": {
+      "candidate": "cases/070_transportation_prediction_cleaning_validation/candidate",
+      "inputs": "cases/070_transportation_prediction_cleaning_validation/inputs",
+      "spec": "cases/070_transportation_prediction_cleaning_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "071_transportation_prediction_statistical_cleaning": {
+      "candidate": "cases/071_transportation_prediction_statistical_cleaning/candidate",
+      "inputs": "cases/071_transportation_prediction_statistical_cleaning/inputs",
+      "spec": "cases/071_transportation_prediction_statistical_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "072_transportation_prediction_statistical_integration": {
+      "candidate": "cases/072_transportation_prediction_statistical_integration/candidate",
+      "inputs": "cases/072_transportation_prediction_statistical_integration/inputs",
+      "spec": "cases/072_transportation_prediction_statistical_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "073_transportation_prediction_validation": {
+      "candidate": "cases/073_transportation_prediction_validation/candidate",
+      "inputs": "cases/073_transportation_prediction_validation/inputs",
+      "spec": "cases/073_transportation_prediction_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "074_transportation_prediction_validation_recovery": {
+      "candidate": "cases/074_transportation_prediction_validation_recovery/candidate",
+      "inputs": "cases/074_transportation_prediction_validation_recovery/inputs",
+      "spec": "cases/074_transportation_prediction_validation_recovery/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "075_transportation_prediction_validation_v2": {
+      "candidate": "cases/075_transportation_prediction_validation_v2/candidate",
+      "inputs": "cases/075_transportation_prediction_validation_v2/inputs",
+      "spec": "cases/075_transportation_prediction_validation_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "076_transportation_prediction_visualization_geospatial": {
+      "candidate": "cases/076_transportation_prediction_visualization_geospatial/candidate",
+      "inputs": "cases/076_transportation_prediction_visualization_geospatial/inputs",
+      "spec": "cases/076_transportation_prediction_visualization_geospatial/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "077_transportation_prediction_visualization_integration": {
+      "candidate": "cases/077_transportation_prediction_visualization_integration/candidate",
+      "inputs": "cases/077_transportation_prediction_visualization_integration/inputs",
+      "spec": "cases/077_transportation_prediction_visualization_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "078_transportation_prediction_visualization_integration_v2": {
+      "candidate": "cases/078_transportation_prediction_visualization_integration_v2/candidate",
+      "inputs": "cases/078_transportation_prediction_visualization_integration_v2/inputs",
+      "spec": "cases/078_transportation_prediction_visualization_integration_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "079_transportation_regression": {
+      "candidate": "cases/079_transportation_regression/candidate",
+      "inputs": "cases/079_transportation_regression/inputs",
+      "spec": "cases/079_transportation_regression/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "080_transportation_regression_cleaning_integration": {
+      "candidate": "cases/080_transportation_regression_cleaning_integration/candidate",
+      "inputs": "cases/080_transportation_regression_cleaning_integration/inputs",
+      "spec": "cases/080_transportation_regression_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "081_transportation_regression_statistical_cleaning": {
+      "candidate": "cases/081_transportation_regression_statistical_cleaning/candidate",
+      "inputs": "cases/081_transportation_regression_statistical_cleaning/inputs",
+      "spec": "cases/081_transportation_regression_statistical_cleaning/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "082_transportation_regression_statistical_integration": {
+      "candidate": "cases/082_transportation_regression_statistical_integration/candidate",
+      "inputs": "cases/082_transportation_regression_statistical_integration/inputs",
+      "spec": "cases/082_transportation_regression_statistical_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "083_transportation_regression_visualization_integration": {
+      "candidate": "cases/083_transportation_regression_visualization_integration/candidate",
+      "inputs": "cases/083_transportation_regression_visualization_integration/inputs",
+      "spec": "cases/083_transportation_regression_visualization_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "084_transportation_statistical_cleaning_integration": {
+      "candidate": "cases/084_transportation_statistical_cleaning_integration/candidate",
+      "inputs": "cases/084_transportation_statistical_cleaning_integration/inputs",
+      "spec": "cases/084_transportation_statistical_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "085_transportation_statistical_geospatial": {
+      "candidate": "cases/085_transportation_statistical_geospatial/candidate",
+      "inputs": "cases/085_transportation_statistical_geospatial/inputs",
+      "spec": "cases/085_transportation_statistical_geospatial/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "086_transportation_statistical_geospatial_validation": {
+      "candidate": "cases/086_transportation_statistical_geospatial_validation/candidate",
+      "inputs": "cases/086_transportation_statistical_geospatial_validation/inputs",
+      "spec": "cases/086_transportation_statistical_geospatial_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "087_transportation_statistical_integration": {
+      "candidate": "cases/087_transportation_statistical_integration/candidate",
+      "inputs": "cases/087_transportation_statistical_integration/inputs",
+      "spec": "cases/087_transportation_statistical_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "088_transportation_statistical_integration_v2": {
+      "candidate": "cases/088_transportation_statistical_integration_v2/candidate",
+      "inputs": "cases/088_transportation_statistical_integration_v2/inputs",
+      "spec": "cases/088_transportation_statistical_integration_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "089_transportation_statistical_visualization_integration": {
+      "candidate": "cases/089_transportation_statistical_visualization_integration/candidate",
+      "inputs": "cases/089_transportation_statistical_visualization_integration/inputs",
+      "spec": "cases/089_transportation_statistical_visualization_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "090_transportation_statistical_visualization_integration_v2": {
+      "candidate": "cases/090_transportation_statistical_visualization_integration_v2/candidate",
+      "inputs": "cases/090_transportation_statistical_visualization_integration_v2/inputs",
+      "spec": "cases/090_transportation_statistical_visualization_integration_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "091_transportation_visualization": {
+      "candidate": "cases/091_transportation_visualization/candidate",
+      "inputs": "cases/091_transportation_visualization/inputs",
+      "spec": "cases/091_transportation_visualization/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "092_transportation_visualization_cleaning_integration": {
+      "candidate": "cases/092_transportation_visualization_cleaning_integration/candidate",
+      "inputs": "cases/092_transportation_visualization_cleaning_integration/inputs",
+      "spec": "cases/092_transportation_visualization_cleaning_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "093_transportation_visualization_cleaning_validation": {
+      "candidate": "cases/093_transportation_visualization_cleaning_validation/candidate",
+      "inputs": "cases/093_transportation_visualization_cleaning_validation/inputs",
+      "spec": "cases/093_transportation_visualization_cleaning_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "094_transportation_visualization_cleaning_validation_v2": {
+      "candidate": "cases/094_transportation_visualization_cleaning_validation_v2/candidate",
+      "inputs": "cases/094_transportation_visualization_cleaning_validation_v2/inputs",
+      "spec": "cases/094_transportation_visualization_cleaning_validation_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "095_transportation_visualization_geospatial": {
+      "candidate": "cases/095_transportation_visualization_geospatial/candidate",
+      "inputs": "cases/095_transportation_visualization_geospatial/inputs",
+      "spec": "cases/095_transportation_visualization_geospatial/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "096_transportation_visualization_integration": {
+      "candidate": "cases/096_transportation_visualization_integration/candidate",
+      "inputs": "cases/096_transportation_visualization_integration/inputs",
+      "spec": "cases/096_transportation_visualization_integration/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "097_transportation_visualization_integration_v2": {
+      "candidate": "cases/097_transportation_visualization_integration_v2/candidate",
+      "inputs": "cases/097_transportation_visualization_integration_v2/inputs",
+      "spec": "cases/097_transportation_visualization_integration_v2/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "098_transportation_visualization_integration_validation": {
+      "candidate": "cases/098_transportation_visualization_integration_validation/candidate",
+      "inputs": "cases/098_transportation_visualization_integration_validation/inputs",
+      "spec": "cases/098_transportation_visualization_integration_validation/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "099_transportation_visualization_recovery_reporting": {
+      "candidate": "cases/099_transportation_visualization_recovery_reporting/candidate",
+      "inputs": "cases/099_transportation_visualization_recovery_reporting/inputs",
+      "spec": "cases/099_transportation_visualization_recovery_reporting/evaluation.json",
+      "profile": "scientific-v1"
+    },
+    "100_transportation_visualization_v2": {
+      "candidate": "cases/100_transportation_visualization_v2/candidate",
+      "inputs": "cases/100_transportation_visualization_v2/inputs",
+      "spec": "cases/100_transportation_visualization_v2/evaluation.json",
+      "profile": "scientific-v1"
+    }
+  },
+  "entries": [
+    {
+      "candidate": "cases/001_analytics_statistical_cleaning_integration/candidate",
+      "inputs": "cases/001_analytics_statistical_cleaning_integration/inputs",
+      "spec": "cases/001_analytics_statistical_cleaning_integration/evaluation.json",
+      "id": "control_001",
+      "control": "001_analytics_statistical_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/002_analytics_statistical_integration/candidate",
+      "inputs": "cases/002_analytics_statistical_integration/inputs",
+      "spec": "cases/002_analytics_statistical_integration/evaluation.json",
+      "id": "control_002",
+      "control": "002_analytics_statistical_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/003_credit_risk/candidate",
+      "inputs": "cases/003_credit_risk/inputs",
+      "spec": "cases/003_credit_risk/evaluation.json",
+      "id": "control_003",
+      "control": "003_credit_risk",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/004_customer_churn/candidate",
+      "inputs": "cases/004_customer_churn/inputs",
+      "spec": "cases/004_customer_churn/evaluation.json",
+      "id": "control_004",
+      "control": "004_customer_churn",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/005_demand_forecasting/candidate",
+      "inputs": "cases/005_demand_forecasting/inputs",
+      "spec": "cases/005_demand_forecasting/evaluation.json",
+      "id": "control_005",
+      "control": "005_demand_forecasting",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/006_ecommerce_recommendation/candidate",
+      "inputs": "cases/006_ecommerce_recommendation/inputs",
+      "spec": "cases/006_ecommerce_recommendation/evaluation.json",
+      "id": "control_006",
+      "control": "006_ecommerce_recommendation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/007_employee_attrition/candidate",
+      "inputs": "cases/007_employee_attrition/inputs",
+      "spec": "cases/007_employee_attrition/evaluation.json",
+      "id": "control_007",
+      "control": "007_employee_attrition",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/008_energy_forecasting/candidate",
+      "inputs": "cases/008_energy_forecasting/inputs",
+      "spec": "cases/008_energy_forecasting/evaluation.json",
+      "id": "control_008",
+      "control": "008_energy_forecasting",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/009_healthcare_readmission/candidate",
+      "inputs": "cases/009_healthcare_readmission/inputs",
+      "spec": "cases/009_healthcare_readmission/evaluation.json",
+      "id": "control_009",
+      "control": "009_healthcare_readmission",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/010_hr_regression_visualization_integration/candidate",
+      "inputs": "cases/010_hr_regression_visualization_integration/inputs",
+      "spec": "cases/010_hr_regression_visualization_integration/evaluation.json",
+      "id": "control_010",
+      "control": "010_hr_regression_visualization_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/011_hr_visualization_integration_validation/candidate",
+      "inputs": "cases/011_hr_visualization_integration_validation/inputs",
+      "spec": "cases/011_hr_visualization_integration_validation/evaluation.json",
+      "id": "control_011",
+      "control": "011_hr_visualization_integration_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/012_insurance_claims/candidate",
+      "inputs": "cases/012_insurance_claims/inputs",
+      "spec": "cases/012_insurance_claims/evaluation.json",
+      "id": "control_012",
+      "control": "012_insurance_claims",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/013_predictive_maintenance/candidate",
+      "inputs": "cases/013_predictive_maintenance/inputs",
+      "spec": "cases/013_predictive_maintenance/evaluation.json",
+      "id": "control_013",
+      "control": "013_predictive_maintenance",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/014_sports_clustering_integration_validation/candidate",
+      "inputs": "cases/014_sports_clustering_integration_validation/inputs",
+      "spec": "cases/014_sports_clustering_integration_validation/evaluation.json",
+      "id": "control_014",
+      "control": "014_sports_clustering_integration_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/015_sports_clustering_prediction_statistical/candidate",
+      "inputs": "cases/015_sports_clustering_prediction_statistical/inputs",
+      "spec": "cases/015_sports_clustering_prediction_statistical/evaluation.json",
+      "id": "control_015",
+      "control": "015_sports_clustering_prediction_statistical",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/016_sports_clustering_prediction_visualization/candidate",
+      "inputs": "cases/016_sports_clustering_prediction_visualization/inputs",
+      "spec": "cases/016_sports_clustering_prediction_visualization/evaluation.json",
+      "id": "control_016",
+      "control": "016_sports_clustering_prediction_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/017_sports_clustering_statistical_visualization/candidate",
+      "inputs": "cases/017_sports_clustering_statistical_visualization/inputs",
+      "spec": "cases/017_sports_clustering_statistical_visualization/evaluation.json",
+      "id": "control_017",
+      "control": "017_sports_clustering_statistical_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/018_sports_clustering_visualization_integration/candidate",
+      "inputs": "cases/018_sports_clustering_visualization_integration/inputs",
+      "spec": "cases/018_sports_clustering_visualization_integration/evaluation.json",
+      "id": "control_018",
+      "control": "018_sports_clustering_visualization_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/019_sports_prediction_cleaning_integration/candidate",
+      "inputs": "cases/019_sports_prediction_cleaning_integration/inputs",
+      "spec": "cases/019_sports_prediction_cleaning_integration/evaluation.json",
+      "id": "control_019",
+      "control": "019_sports_prediction_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/020_sports_prediction_statistical_visualization/candidate",
+      "inputs": "cases/020_sports_prediction_statistical_visualization/inputs",
+      "spec": "cases/020_sports_prediction_statistical_visualization/evaluation.json",
+      "id": "control_020",
+      "control": "020_sports_prediction_statistical_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/021_sports_prediction_statistical_visualization_v2/candidate",
+      "inputs": "cases/021_sports_prediction_statistical_visualization_v2/inputs",
+      "spec": "cases/021_sports_prediction_statistical_visualization_v2/evaluation.json",
+      "id": "control_021",
+      "control": "021_sports_prediction_statistical_visualization_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/022_sports_prediction_visualization_cleaning/candidate",
+      "inputs": "cases/022_sports_prediction_visualization_cleaning/inputs",
+      "spec": "cases/022_sports_prediction_visualization_cleaning/evaluation.json",
+      "id": "control_022",
+      "control": "022_sports_prediction_visualization_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/023_sports_regression_clustering_visualization/candidate",
+      "inputs": "cases/023_sports_regression_clustering_visualization/inputs",
+      "spec": "cases/023_sports_regression_clustering_visualization/evaluation.json",
+      "id": "control_023",
+      "control": "023_sports_regression_clustering_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/024_sports_regression_prediction_statistical/candidate",
+      "inputs": "cases/024_sports_regression_prediction_statistical/inputs",
+      "spec": "cases/024_sports_regression_prediction_statistical/evaluation.json",
+      "id": "control_024",
+      "control": "024_sports_regression_prediction_statistical",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/025_sports_regression_prediction_statistical_v2/candidate",
+      "inputs": "cases/025_sports_regression_prediction_statistical_v2/inputs",
+      "spec": "cases/025_sports_regression_prediction_statistical_v2/evaluation.json",
+      "id": "control_025",
+      "control": "025_sports_regression_prediction_statistical_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/026_sports_regression_prediction_statistical_v3/candidate",
+      "inputs": "cases/026_sports_regression_prediction_statistical_v3/inputs",
+      "spec": "cases/026_sports_regression_prediction_statistical_v3/evaluation.json",
+      "id": "control_026",
+      "control": "026_sports_regression_prediction_statistical_v3",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/027_sports_regression_prediction_visualization/candidate",
+      "inputs": "cases/027_sports_regression_prediction_visualization/inputs",
+      "spec": "cases/027_sports_regression_prediction_visualization/evaluation.json",
+      "id": "control_027",
+      "control": "027_sports_regression_prediction_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/028_sports_regression_prediction_visualization_v2/candidate",
+      "inputs": "cases/028_sports_regression_prediction_visualization_v2/inputs",
+      "spec": "cases/028_sports_regression_prediction_visualization_v2/evaluation.json",
+      "id": "control_028",
+      "control": "028_sports_regression_prediction_visualization_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/029_sports_regression_statistical_visualization/candidate",
+      "inputs": "cases/029_sports_regression_statistical_visualization/inputs",
+      "spec": "cases/029_sports_regression_statistical_visualization/evaluation.json",
+      "id": "control_029",
+      "control": "029_sports_regression_statistical_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/030_sports_statistical_cleaning/candidate",
+      "inputs": "cases/030_sports_statistical_cleaning/inputs",
+      "spec": "cases/030_sports_statistical_cleaning/evaluation.json",
+      "id": "control_030",
+      "control": "030_sports_statistical_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/031_sports_statistical_cleaning_integration/candidate",
+      "inputs": "cases/031_sports_statistical_cleaning_integration/inputs",
+      "spec": "cases/031_sports_statistical_cleaning_integration/evaluation.json",
+      "id": "control_031",
+      "control": "031_sports_statistical_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/032_sports_statistical_cleaning_integration_v2/candidate",
+      "inputs": "cases/032_sports_statistical_cleaning_integration_v2/inputs",
+      "spec": "cases/032_sports_statistical_cleaning_integration_v2/evaluation.json",
+      "id": "control_032",
+      "control": "032_sports_statistical_cleaning_integration_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/033_sports_statistical_cleaning_integration_v3/candidate",
+      "inputs": "cases/033_sports_statistical_cleaning_integration_v3/inputs",
+      "spec": "cases/033_sports_statistical_cleaning_integration_v3/evaluation.json",
+      "id": "control_033",
+      "control": "033_sports_statistical_cleaning_integration_v3",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/034_sports_statistical_cleaning_integration_v4/candidate",
+      "inputs": "cases/034_sports_statistical_cleaning_integration_v4/inputs",
+      "spec": "cases/034_sports_statistical_cleaning_integration_v4/evaluation.json",
+      "id": "control_034",
+      "control": "034_sports_statistical_cleaning_integration_v4",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/035_sports_statistical_cleaning_integration_v5/candidate",
+      "inputs": "cases/035_sports_statistical_cleaning_integration_v5/inputs",
+      "spec": "cases/035_sports_statistical_cleaning_integration_v5/evaluation.json",
+      "id": "control_035",
+      "control": "035_sports_statistical_cleaning_integration_v5",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/036_sports_statistical_cleaning_validation/candidate",
+      "inputs": "cases/036_sports_statistical_cleaning_validation/inputs",
+      "spec": "cases/036_sports_statistical_cleaning_validation/evaluation.json",
+      "id": "control_036",
+      "control": "036_sports_statistical_cleaning_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/037_sports_statistical_integration/candidate",
+      "inputs": "cases/037_sports_statistical_integration/inputs",
+      "spec": "cases/037_sports_statistical_integration/evaluation.json",
+      "id": "control_037",
+      "control": "037_sports_statistical_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/038_sports_statistical_integration_v2/candidate",
+      "inputs": "cases/038_sports_statistical_integration_v2/inputs",
+      "spec": "cases/038_sports_statistical_integration_v2/evaluation.json",
+      "id": "control_038",
+      "control": "038_sports_statistical_integration_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/039_sports_statistical_visualization_cleaning/candidate",
+      "inputs": "cases/039_sports_statistical_visualization_cleaning/inputs",
+      "spec": "cases/039_sports_statistical_visualization_cleaning/evaluation.json",
+      "id": "control_039",
+      "control": "039_sports_statistical_visualization_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/040_sports_statistical_visualization_cleaning_v2/candidate",
+      "inputs": "cases/040_sports_statistical_visualization_cleaning_v2/inputs",
+      "spec": "cases/040_sports_statistical_visualization_cleaning_v2/evaluation.json",
+      "id": "control_040",
+      "control": "040_sports_statistical_visualization_cleaning_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/041_sports_statistical_visualization_integration/candidate",
+      "inputs": "cases/041_sports_statistical_visualization_integration/inputs",
+      "spec": "cases/041_sports_statistical_visualization_integration/evaluation.json",
+      "id": "control_041",
+      "control": "041_sports_statistical_visualization_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/042_sports_validation_recovery/candidate",
+      "inputs": "cases/042_sports_validation_recovery/inputs",
+      "spec": "cases/042_sports_validation_recovery/evaluation.json",
+      "id": "control_042",
+      "control": "042_sports_validation_recovery",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/043_sports_visualization/candidate",
+      "inputs": "cases/043_sports_visualization/inputs",
+      "spec": "cases/043_sports_visualization/evaluation.json",
+      "id": "control_043",
+      "control": "043_sports_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/044_sports_visualization_cleaning_integration/candidate",
+      "inputs": "cases/044_sports_visualization_cleaning_integration/inputs",
+      "spec": "cases/044_sports_visualization_cleaning_integration/evaluation.json",
+      "id": "control_044",
+      "control": "044_sports_visualization_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/045_sports_visualization_cleaning_recovery/candidate",
+      "inputs": "cases/045_sports_visualization_cleaning_recovery/inputs",
+      "spec": "cases/045_sports_visualization_cleaning_recovery/evaluation.json",
+      "id": "control_045",
+      "control": "045_sports_visualization_cleaning_recovery",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/046_sports_visualization_cleaning_recovery_v2/candidate",
+      "inputs": "cases/046_sports_visualization_cleaning_recovery_v2/inputs",
+      "spec": "cases/046_sports_visualization_cleaning_recovery_v2/evaluation.json",
+      "id": "control_046",
+      "control": "046_sports_visualization_cleaning_recovery_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/047_sports_visualization_integration_features/candidate",
+      "inputs": "cases/047_sports_visualization_integration_features/inputs",
+      "spec": "cases/047_sports_visualization_integration_features/evaluation.json",
+      "id": "control_047",
+      "control": "047_sports_visualization_integration_features",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/048_sports_visualization_integration_geospatial/candidate",
+      "inputs": "cases/048_sports_visualization_integration_geospatial/inputs",
+      "spec": "cases/048_sports_visualization_integration_geospatial/evaluation.json",
+      "id": "control_048",
+      "control": "048_sports_visualization_integration_geospatial",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/049_sports_visualization_integration_recovery/candidate",
+      "inputs": "cases/049_sports_visualization_integration_recovery/inputs",
+      "spec": "cases/049_sports_visualization_integration_recovery/evaluation.json",
+      "id": "control_049",
+      "control": "049_sports_visualization_integration_recovery",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/050_sports_visualization_integration_recovery_v2/candidate",
+      "inputs": "cases/050_sports_visualization_integration_recovery_v2/inputs",
+      "spec": "cases/050_sports_visualization_integration_recovery_v2/evaluation.json",
+      "id": "control_050",
+      "control": "050_sports_visualization_integration_recovery_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/051_sports_visualization_integration_validation/candidate",
+      "inputs": "cases/051_sports_visualization_integration_validation/inputs",
+      "spec": "cases/051_sports_visualization_integration_validation/evaluation.json",
+      "id": "control_051",
+      "control": "051_sports_visualization_integration_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/052_sports_visualization_integration_validation_v2/candidate",
+      "inputs": "cases/052_sports_visualization_integration_validation_v2/inputs",
+      "spec": "cases/052_sports_visualization_integration_validation_v2/evaluation.json",
+      "id": "control_052",
+      "control": "052_sports_visualization_integration_validation_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/053_sports_visualization_validation_recovery/candidate",
+      "inputs": "cases/053_sports_visualization_validation_recovery/inputs",
+      "spec": "cases/053_sports_visualization_validation_recovery/evaluation.json",
+      "id": "control_053",
+      "control": "053_sports_visualization_validation_recovery",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/054_student_performance/candidate",
+      "inputs": "cases/054_student_performance/inputs",
+      "spec": "cases/054_student_performance/evaluation.json",
+      "id": "control_054",
+      "control": "054_student_performance",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/055_transportation_analysis/candidate",
+      "inputs": "cases/055_transportation_analysis/inputs",
+      "spec": "cases/055_transportation_analysis/evaluation.json",
+      "id": "control_055",
+      "control": "055_transportation_analysis",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/056_transportation_cleaning/candidate",
+      "inputs": "cases/056_transportation_cleaning/inputs",
+      "spec": "cases/056_transportation_cleaning/evaluation.json",
+      "id": "control_056",
+      "control": "056_transportation_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/057_transportation_cleaning_integration/candidate",
+      "inputs": "cases/057_transportation_cleaning_integration/inputs",
+      "spec": "cases/057_transportation_cleaning_integration/evaluation.json",
+      "id": "control_057",
+      "control": "057_transportation_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/058_transportation_cleaning_integration_geospatial/candidate",
+      "inputs": "cases/058_transportation_cleaning_integration_geospatial/inputs",
+      "spec": "cases/058_transportation_cleaning_integration_geospatial/evaluation.json",
+      "id": "control_058",
+      "control": "058_transportation_cleaning_integration_geospatial",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/059_transportation_cleaning_integration_recovery/candidate",
+      "inputs": "cases/059_transportation_cleaning_integration_recovery/inputs",
+      "spec": "cases/059_transportation_cleaning_integration_recovery/evaluation.json",
+      "id": "control_059",
+      "control": "059_transportation_cleaning_integration_recovery",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/060_transportation_cleaning_integration_validation/candidate",
+      "inputs": "cases/060_transportation_cleaning_integration_validation/inputs",
+      "spec": "cases/060_transportation_cleaning_integration_validation/evaluation.json",
+      "id": "control_060",
+      "control": "060_transportation_cleaning_integration_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/061_transportation_cleaning_v2/candidate",
+      "inputs": "cases/061_transportation_cleaning_v2/inputs",
+      "spec": "cases/061_transportation_cleaning_v2/evaluation.json",
+      "id": "control_061",
+      "control": "061_transportation_cleaning_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/062_transportation_cleaning_validation_features/candidate",
+      "inputs": "cases/062_transportation_cleaning_validation_features/inputs",
+      "spec": "cases/062_transportation_cleaning_validation_features/evaluation.json",
+      "id": "control_062",
+      "control": "062_transportation_cleaning_validation_features",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/063_transportation_clustering_validation/candidate",
+      "inputs": "cases/063_transportation_clustering_validation/inputs",
+      "spec": "cases/063_transportation_clustering_validation/evaluation.json",
+      "id": "control_063",
+      "control": "063_transportation_clustering_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/064_transportation_integration/candidate",
+      "inputs": "cases/064_transportation_integration/inputs",
+      "spec": "cases/064_transportation_integration/evaluation.json",
+      "id": "control_064",
+      "control": "064_transportation_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/065_transportation_integration_extra/candidate",
+      "inputs": "cases/065_transportation_integration_extra/inputs",
+      "spec": "cases/065_transportation_integration_extra/evaluation.json",
+      "id": "control_065",
+      "control": "065_transportation_integration_extra",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/066_transportation_integration_geospatial/candidate",
+      "inputs": "cases/066_transportation_integration_geospatial/inputs",
+      "spec": "cases/066_transportation_integration_geospatial/evaluation.json",
+      "id": "control_066",
+      "control": "066_transportation_integration_geospatial",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/067_transportation_integration_validation/candidate",
+      "inputs": "cases/067_transportation_integration_validation/inputs",
+      "spec": "cases/067_transportation_integration_validation/evaluation.json",
+      "id": "control_067",
+      "control": "067_transportation_integration_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/068_transportation_prediction_cleaning/candidate",
+      "inputs": "cases/068_transportation_prediction_cleaning/inputs",
+      "spec": "cases/068_transportation_prediction_cleaning/evaluation.json",
+      "id": "control_068",
+      "control": "068_transportation_prediction_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/069_transportation_prediction_cleaning_integration/candidate",
+      "inputs": "cases/069_transportation_prediction_cleaning_integration/inputs",
+      "spec": "cases/069_transportation_prediction_cleaning_integration/evaluation.json",
+      "id": "control_069",
+      "control": "069_transportation_prediction_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/070_transportation_prediction_cleaning_validation/candidate",
+      "inputs": "cases/070_transportation_prediction_cleaning_validation/inputs",
+      "spec": "cases/070_transportation_prediction_cleaning_validation/evaluation.json",
+      "id": "control_070",
+      "control": "070_transportation_prediction_cleaning_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/071_transportation_prediction_statistical_cleaning/candidate",
+      "inputs": "cases/071_transportation_prediction_statistical_cleaning/inputs",
+      "spec": "cases/071_transportation_prediction_statistical_cleaning/evaluation.json",
+      "id": "control_071",
+      "control": "071_transportation_prediction_statistical_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/072_transportation_prediction_statistical_integration/candidate",
+      "inputs": "cases/072_transportation_prediction_statistical_integration/inputs",
+      "spec": "cases/072_transportation_prediction_statistical_integration/evaluation.json",
+      "id": "control_072",
+      "control": "072_transportation_prediction_statistical_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/073_transportation_prediction_validation/candidate",
+      "inputs": "cases/073_transportation_prediction_validation/inputs",
+      "spec": "cases/073_transportation_prediction_validation/evaluation.json",
+      "id": "control_073",
+      "control": "073_transportation_prediction_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/074_transportation_prediction_validation_recovery/candidate",
+      "inputs": "cases/074_transportation_prediction_validation_recovery/inputs",
+      "spec": "cases/074_transportation_prediction_validation_recovery/evaluation.json",
+      "id": "control_074",
+      "control": "074_transportation_prediction_validation_recovery",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/075_transportation_prediction_validation_v2/candidate",
+      "inputs": "cases/075_transportation_prediction_validation_v2/inputs",
+      "spec": "cases/075_transportation_prediction_validation_v2/evaluation.json",
+      "id": "control_075",
+      "control": "075_transportation_prediction_validation_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/076_transportation_prediction_visualization_geospatial/candidate",
+      "inputs": "cases/076_transportation_prediction_visualization_geospatial/inputs",
+      "spec": "cases/076_transportation_prediction_visualization_geospatial/evaluation.json",
+      "id": "control_076",
+      "control": "076_transportation_prediction_visualization_geospatial",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/077_transportation_prediction_visualization_integration/candidate",
+      "inputs": "cases/077_transportation_prediction_visualization_integration/inputs",
+      "spec": "cases/077_transportation_prediction_visualization_integration/evaluation.json",
+      "id": "control_077",
+      "control": "077_transportation_prediction_visualization_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/078_transportation_prediction_visualization_integration_v2/candidate",
+      "inputs": "cases/078_transportation_prediction_visualization_integration_v2/inputs",
+      "spec": "cases/078_transportation_prediction_visualization_integration_v2/evaluation.json",
+      "id": "control_078",
+      "control": "078_transportation_prediction_visualization_integration_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/079_transportation_regression/candidate",
+      "inputs": "cases/079_transportation_regression/inputs",
+      "spec": "cases/079_transportation_regression/evaluation.json",
+      "id": "control_079",
+      "control": "079_transportation_regression",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/080_transportation_regression_cleaning_integration/candidate",
+      "inputs": "cases/080_transportation_regression_cleaning_integration/inputs",
+      "spec": "cases/080_transportation_regression_cleaning_integration/evaluation.json",
+      "id": "control_080",
+      "control": "080_transportation_regression_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/081_transportation_regression_statistical_cleaning/candidate",
+      "inputs": "cases/081_transportation_regression_statistical_cleaning/inputs",
+      "spec": "cases/081_transportation_regression_statistical_cleaning/evaluation.json",
+      "id": "control_081",
+      "control": "081_transportation_regression_statistical_cleaning",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/082_transportation_regression_statistical_integration/candidate",
+      "inputs": "cases/082_transportation_regression_statistical_integration/inputs",
+      "spec": "cases/082_transportation_regression_statistical_integration/evaluation.json",
+      "id": "control_082",
+      "control": "082_transportation_regression_statistical_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/083_transportation_regression_visualization_integration/candidate",
+      "inputs": "cases/083_transportation_regression_visualization_integration/inputs",
+      "spec": "cases/083_transportation_regression_visualization_integration/evaluation.json",
+      "id": "control_083",
+      "control": "083_transportation_regression_visualization_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/084_transportation_statistical_cleaning_integration/candidate",
+      "inputs": "cases/084_transportation_statistical_cleaning_integration/inputs",
+      "spec": "cases/084_transportation_statistical_cleaning_integration/evaluation.json",
+      "id": "control_084",
+      "control": "084_transportation_statistical_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/085_transportation_statistical_geospatial/candidate",
+      "inputs": "cases/085_transportation_statistical_geospatial/inputs",
+      "spec": "cases/085_transportation_statistical_geospatial/evaluation.json",
+      "id": "control_085",
+      "control": "085_transportation_statistical_geospatial",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/086_transportation_statistical_geospatial_validation/candidate",
+      "inputs": "cases/086_transportation_statistical_geospatial_validation/inputs",
+      "spec": "cases/086_transportation_statistical_geospatial_validation/evaluation.json",
+      "id": "control_086",
+      "control": "086_transportation_statistical_geospatial_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/087_transportation_statistical_integration/candidate",
+      "inputs": "cases/087_transportation_statistical_integration/inputs",
+      "spec": "cases/087_transportation_statistical_integration/evaluation.json",
+      "id": "control_087",
+      "control": "087_transportation_statistical_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/088_transportation_statistical_integration_v2/candidate",
+      "inputs": "cases/088_transportation_statistical_integration_v2/inputs",
+      "spec": "cases/088_transportation_statistical_integration_v2/evaluation.json",
+      "id": "control_088",
+      "control": "088_transportation_statistical_integration_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/089_transportation_statistical_visualization_integration/candidate",
+      "inputs": "cases/089_transportation_statistical_visualization_integration/inputs",
+      "spec": "cases/089_transportation_statistical_visualization_integration/evaluation.json",
+      "id": "control_089",
+      "control": "089_transportation_statistical_visualization_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/090_transportation_statistical_visualization_integration_v2/candidate",
+      "inputs": "cases/090_transportation_statistical_visualization_integration_v2/inputs",
+      "spec": "cases/090_transportation_statistical_visualization_integration_v2/evaluation.json",
+      "id": "control_090",
+      "control": "090_transportation_statistical_visualization_integration_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/091_transportation_visualization/candidate",
+      "inputs": "cases/091_transportation_visualization/inputs",
+      "spec": "cases/091_transportation_visualization/evaluation.json",
+      "id": "control_091",
+      "control": "091_transportation_visualization",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/092_transportation_visualization_cleaning_integration/candidate",
+      "inputs": "cases/092_transportation_visualization_cleaning_integration/inputs",
+      "spec": "cases/092_transportation_visualization_cleaning_integration/evaluation.json",
+      "id": "control_092",
+      "control": "092_transportation_visualization_cleaning_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/093_transportation_visualization_cleaning_validation/candidate",
+      "inputs": "cases/093_transportation_visualization_cleaning_validation/inputs",
+      "spec": "cases/093_transportation_visualization_cleaning_validation/evaluation.json",
+      "id": "control_093",
+      "control": "093_transportation_visualization_cleaning_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/094_transportation_visualization_cleaning_validation_v2/candidate",
+      "inputs": "cases/094_transportation_visualization_cleaning_validation_v2/inputs",
+      "spec": "cases/094_transportation_visualization_cleaning_validation_v2/evaluation.json",
+      "id": "control_094",
+      "control": "094_transportation_visualization_cleaning_validation_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/095_transportation_visualization_geospatial/candidate",
+      "inputs": "cases/095_transportation_visualization_geospatial/inputs",
+      "spec": "cases/095_transportation_visualization_geospatial/evaluation.json",
+      "id": "control_095",
+      "control": "095_transportation_visualization_geospatial",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/096_transportation_visualization_integration/candidate",
+      "inputs": "cases/096_transportation_visualization_integration/inputs",
+      "spec": "cases/096_transportation_visualization_integration/evaluation.json",
+      "id": "control_096",
+      "control": "096_transportation_visualization_integration",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/097_transportation_visualization_integration_v2/candidate",
+      "inputs": "cases/097_transportation_visualization_integration_v2/inputs",
+      "spec": "cases/097_transportation_visualization_integration_v2/evaluation.json",
+      "id": "control_097",
+      "control": "097_transportation_visualization_integration_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/098_transportation_visualization_integration_validation/candidate",
+      "inputs": "cases/098_transportation_visualization_integration_validation/inputs",
+      "spec": "cases/098_transportation_visualization_integration_validation/evaluation.json",
+      "id": "control_098",
+      "control": "098_transportation_visualization_integration_validation",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/099_transportation_visualization_recovery_reporting/candidate",
+      "inputs": "cases/099_transportation_visualization_recovery_reporting/inputs",
+      "spec": "cases/099_transportation_visualization_recovery_reporting/evaluation.json",
+      "id": "control_099",
+      "control": "099_transportation_visualization_recovery_reporting",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    },
+    {
+      "candidate": "cases/100_transportation_visualization_v2/candidate",
+      "inputs": "cases/100_transportation_visualization_v2/inputs",
+      "spec": "cases/100_transportation_visualization_v2/evaluation.json",
+      "id": "control_100",
+      "control": "100_transportation_visualization_v2",
+      "metadata": {
+        "method": "trusted_control_smoke",
+        "not_llm_experiment": true
+      }
+    }
+  ]
+}

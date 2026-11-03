@@ -1,0 +1,452 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "base = ['player_id', 'team', 'position']",
+      "dependencies": {},
+      "writes": [
+        "base"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "shoot = ['field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "shoot"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "play = ['points_per_game', 'assists_per_game', 'rebounds_per_game', 'play_style_score', 'efficiency_rating', 'usage_rate']",
+      "dependencies": {},
+      "writes": [
+        "play"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "req(d, [*base, *shoot, *play], 'data')",
+      "dependencies": {
+        "play": 3,
+        "base": 1,
+        "shoot": 2,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "key(d, 'player_id', 'data')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "nums(d, shoot + play, 'data')",
+      "dependencies": {
+        "play": 3,
+        "d": 5,
+        "shoot": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean = d[[*base, *shoot, *play]].sort_values('player_id')",
+      "dependencies": {
+        "play": 3,
+        "d": 6,
+        "shoot": 2,
+        "base": 1
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "clean.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 7
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "shooting = clean[['player_id', *shoot]].copy()",
+      "dependencies": {
+        "shoot": 2,
+        "clean": 7
+      },
+      "writes": [
+        "shooting"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "shooting['shooting_composite'] = shooting[shoot].mean(axis=1)",
+      "dependencies": {
+        "shoot": 2,
+        "shooting": 9
+      },
+      "writes": [
+        "shooting"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "shooting.to_csv(out / 'shooting_features.csv', index=False)",
+      "dependencies": {
+        "shooting": 10
+      },
+      "writes": [],
+      "outputs": [
+        "shooting_features.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "playing = clean[['player_id', *play]].copy()",
+      "dependencies": {
+        "play": 3,
+        "clean": 7
+      },
+      "writes": [
+        "playing"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "playing['production_index'] = playing.points_per_game + playing.assists_per_game + playing.rebounds_per_game",
+      "dependencies": {
+        "playing": 12
+      },
+      "writes": [
+        "playing"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "playing.to_csv(out / 'playmaking_features.csv', index=False)",
+      "dependencies": {
+        "playing": 13
+      },
+      "writes": [],
+      "outputs": [
+        "playmaking_features.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "integrated = clean[base].merge(shooting, on='player_id', validate='one_to_one').merge(playing, on='player_id', validate='one_to_one').sort_values('player_id')",
+      "dependencies": {
+        "playing": 13,
+        "shooting": 10,
+        "base": 1,
+        "clean": 7
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "integrated.to_csv(out / 'style_features.csv', index=False)",
+      "dependencies": {
+        "integrated": 15
+      },
+      "writes": [],
+      "outputs": [
+        "style_features.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "features = [*shoot, 'shooting_composite', *play, 'production_index']",
+      "dependencies": {
+        "play": 3,
+        "shoot": 2
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "scaler = StandardScaler()",
+      "dependencies": {},
+      "writes": [
+        "scaler"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "x = scaler.fit_transform(integrated[features])",
+      "dependencies": {
+        "scaler": 18,
+        "features": 17,
+        "integrated": 15
+      },
+      "writes": [
+        "scaler",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "km = KMeans(n_clusters=5, random_state=42, n_init=20, algorithm='lloyd').fit(x)",
+      "dependencies": {
+        "x": 19
+      },
+      "writes": [
+        "km"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "order = np.lexsort((np.arange(5), km.cluster_centers_[:, features.index('usage_rate')], km.cluster_centers_[:, features.index('efficiency_rating')]))",
+      "dependencies": {
+        "km": 20,
+        "features": 17
+      },
+      "writes": [
+        "order"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "mapping = {int(raw): int(label) for label, raw in enumerate(order)}",
+      "dependencies": {
+        "order": 21
+      },
+      "writes": [
+        "mapping"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "assigned = integrated.copy()",
+      "dependencies": {
+        "integrated": 15
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "assigned['cluster'] = [mapping[int(v)] for v in km.labels_]",
+      "dependencies": {
+        "mapping": 22,
+        "assigned": 23,
+        "km": 20
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "assigned.to_csv(out / 'player_clusters.csv', index=False)",
+      "dependencies": {
+        "assigned": 24
+      },
+      "writes": [],
+      "outputs": [
+        "player_clusters.csv"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "with (out / 'cluster_model.pkl').open('wb') as h:\n    pickle.dump({'scaler': scaler, 'model': km, 'mapping': mapping, 'features': features}, h)",
+      "dependencies": {
+        "mapping": 22,
+        "scaler": 19,
+        "features": 17,
+        "km": 20
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "profile = assigned.groupby('cluster', as_index=False).agg(player_count=('player_id', 'size'), mean_shooting=('shooting_composite', 'mean'), mean_production=('production_index', 'mean'), mean_efficiency=('efficiency_rating', 'mean'), mean_usage=('usage_rate', 'mean')).sort_values('cluster')",
+      "dependencies": {
+        "assigned": 24
+      },
+      "writes": [
+        "profile"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "profile.to_csv(out / 'cluster_profiles.csv', index=False)",
+      "dependencies": {
+        "profile": 27
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "mix = assigned.groupby(['position', 'cluster'], as_index=False).size().rename(columns={'size': 'player_count'})",
+      "dependencies": {
+        "assigned": 24
+      },
+      "writes": [
+        "mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "mix['position_share'] = mix.player_count / mix.groupby('position').player_count.transform('sum')",
+      "dependencies": {
+        "mix": 29
+      },
+      "writes": [
+        "mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 31,
+      "source": "mix.sort_values(['position', 'cluster']).to_csv(out / 'position_cluster_mix.csv', index=False)",
+      "dependencies": {
+        "mix": 30
+      },
+      "writes": [],
+      "outputs": [
+        "position_cluster_mix.csv"
+      ]
+    },
+    {
+      "index": 32,
+      "source": "coords = PCA(n_components=2, random_state=42).fit_transform(x)",
+      "dependencies": {
+        "x": 19
+      },
+      "writes": [
+        "coords"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 33,
+      "source": "scatter = pd.DataFrame({'player_id': integrated.player_id, 'cluster': assigned.cluster, 'pc1': coords[:, 0], 'pc2': coords[:, 1]})",
+      "dependencies": {
+        "coords": 32,
+        "integrated": 15,
+        "assigned": 24
+      },
+      "writes": [
+        "scatter"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 34,
+      "source": "scatter.to_csv(out / 'cluster_scatter_data.csv', index=False)",
+      "dependencies": {
+        "scatter": 33
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_scatter_data.csv"
+      ]
+    },
+    {
+      "index": 35,
+      "source": "js(out / 'style_report.json', {'players': len(assigned), 'clusters': 5, 'silhouette_score': silhouette_score(x, km.labels_), 'positions': mix.position.nunique(), 'scatter_rows': len(scatter)})",
+      "dependencies": {
+        "assigned": 24,
+        "x": 19,
+        "mix": 30,
+        "scatter": 33,
+        "km": 20
+      },
+      "writes": [],
+      "outputs": [
+        "style_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      8
+    ],
+    "shooting": [
+      11
+    ],
+    "playmaking": [
+      14
+    ],
+    "integrate": [
+      16
+    ],
+    "cluster": [
+      25,
+      26
+    ],
+    "profiles": [
+      28
+    ],
+    "positions": [
+      31
+    ],
+    "scatter": [
+      34
+    ],
+    "report": [
+      35
+    ]
+  }
+}

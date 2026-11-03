@@ -1,0 +1,22 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "source_pipeline": "042_sports_validation_recovery",
+  "change_kind": "new_behavioral_variant_not_equivalent_to_original",
+  "selection_reason": "The upstream recovery/validation label describes a generic regression workflow and does not define a recovery policy.",
+  "input_modifications": [
+    "Row 1 points_per_game missing",
+    "Row 2 minutes_per_game missing",
+    "Row 3 games_played=-1",
+    "Row 4 player_id blank",
+    "Row 5 padded team and missing position",
+    "Append a duplicate of original row 6"
+  ],
+  "source_input_sha256": {
+    "data.csv": "cbcd959796de21146cbaf3a172adc9b341e2cf3396a94403fbb9251ffe34a495"
+  },
+  "pilot_input_sha256": {
+    "data.csv": "161ddcf82bf28051e8965e960a2add584fdfceebbe6faac6b5dd2fe71360d59d"
+  },
+  "review_status": "author_review_pending"
+}

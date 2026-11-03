@@ -1,0 +1,40 @@
+# All-Star modeling with convergent feature and diagnostic branches
+
+1. Objective
+
+Build 8-task fan-in/fan-out. Validate players; derive performance/production and injury/availability features independently; join one-to-one; fit a fixed 75/25 stratified seed-42 StandardScaler+LogisticRegression model; fan predictions to overall metrics and team diagnostics; reconverge into a report. Threshold is 0.5 and metrics are accuracy, precision, recall, F1, ROC AUC.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: player_id, team, position, games_played, points_per_game, assists_per_game, rebounds_per_game, minutes_per_game, age, experience_years, salary_millions, all_star, injury_games_missed, contract_year
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Apply all processing requirements in the objective above. Retain its specified transformations, parameters, validation policies and ordering.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `players_clean.csv`
+- `performance_features.csv`
+- `availability_features.csv`
+- `model_data.csv`
+- `model.pkl`
+- `predictions.csv`
+- `metrics.json`
+- `team_diagnostics.csv`
+- `model_report.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without networks, prior outputs, fixed answers, or human intervention. Preserve the declared artifact-backed topology. Write beneath the run output directory. Numeric comparisons use atol=1e-6 and rtol=1e-6; JSON must be finite. Invalid identifiers, missing columns, or non-finite required values fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

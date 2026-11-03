@@ -1,0 +1,480 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "stocks = pd.read_csv(data / 'stocks.csv')",
+      "dependencies": {},
+      "writes": [
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "market = pd.read_csv(data / 'market_indices.csv')",
+      "dependencies": {},
+      "writes": [
+        "market"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "sc = ['ticker', 'sector', 'date', 'open', 'high', 'low', 'close', 'volume']",
+      "dependencies": {},
+      "writes": [
+        "sc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "mc = ['date', 'sp500', 'nasdaq']",
+      "dependencies": {},
+      "writes": [
+        "mc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "require(stocks, sc, 'stocks.csv')",
+      "dependencies": {
+        "stocks": 0,
+        "sc": 2
+      },
+      "writes": [
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "require(market, mc, 'market_indices.csv')",
+      "dependencies": {
+        "mc": 3,
+        "market": 1
+      },
+      "writes": [
+        "market"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "nonblank_unique(stocks, ['ticker', 'date'], 'stocks.csv')",
+      "dependencies": {
+        "stocks": 4
+      },
+      "writes": [
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "nonblank_unique(market, ['date'], 'market_indices.csv')",
+      "dependencies": {
+        "market": 5
+      },
+      "writes": [
+        "market"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "numeric(stocks, ['open', 'high', 'low', 'close', 'volume'], 'stocks.csv')",
+      "dependencies": {
+        "stocks": 6
+      },
+      "writes": [
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "numeric(market, ['sp500', 'nasdaq'], 'market_indices.csv')",
+      "dependencies": {
+        "market": 7
+      },
+      "writes": [
+        "market"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "stocks['date'] = pd.to_datetime(stocks.date, errors='raise')",
+      "dependencies": {
+        "stocks": 8
+      },
+      "writes": [
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "market['date'] = pd.to_datetime(market.date, errors='raise')",
+      "dependencies": {
+        "market": 9
+      },
+      "writes": [
+        "market"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "if (stocks[['open', 'high', 'low', 'close', 'volume']] < 0).any().any() or (market[['sp500', 'nasdaq']] <= 0).any().any():\n    raise ValueError('prices, volume, and index levels violate bounds')",
+      "dependencies": {
+        "stocks": 10,
+        "market": 11
+      },
+      "writes": [
+        "market",
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "stocks['high'] = stocks[['open', 'high', 'low', 'close']].max(axis=1)",
+      "dependencies": {
+        "stocks": 12
+      },
+      "writes": [
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "stocks['low'] = stocks[['open', 'high', 'low', 'close']].min(axis=1)",
+      "dependencies": {
+        "stocks": 13
+      },
+      "writes": [
+        "stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "clean_stocks = stocks[sc].sort_values(['ticker', 'date'])",
+      "dependencies": {
+        "stocks": 14,
+        "sc": 2
+      },
+      "writes": [
+        "clean_stocks"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "clean_market = market[mc].sort_values('date')",
+      "dependencies": {
+        "mc": 3,
+        "market": 12
+      },
+      "writes": [
+        "clean_market"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "clean_stocks.to_csv(out / 'clean_stocks.csv', index=False, date_format='%Y-%m-%d')",
+      "dependencies": {
+        "clean_stocks": 15
+      },
+      "writes": [],
+      "outputs": [
+        "clean_stocks.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "clean_market.to_csv(out / 'clean_market.csv', index=False, date_format='%Y-%m-%d')",
+      "dependencies": {
+        "clean_market": 16
+      },
+      "writes": [],
+      "outputs": [
+        "clean_market.csv"
+      ]
+    },
+    {
+      "index": 19,
+      "source": "write_json(out / 'stock_quality.json', {'rows': len(clean_stocks), 'tickers': clean_stocks.ticker.nunique(), 'dates': clean_stocks.date.nunique()})",
+      "dependencies": {
+        "clean_stocks": 15
+      },
+      "writes": [],
+      "outputs": [
+        "stock_quality.json"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "write_json(out / 'market_quality.json', {'rows': len(clean_market), 'dates': clean_market.date.nunique()})",
+      "dependencies": {
+        "clean_market": 16
+      },
+      "writes": [],
+      "outputs": [
+        "market_quality.json"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "stock = clean_stocks.copy()",
+      "dependencies": {
+        "clean_stocks": 15
+      },
+      "writes": [
+        "stock"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "stock['stock_return'] = stock.groupby('ticker').close.pct_change()",
+      "dependencies": {
+        "stock": 21
+      },
+      "writes": [
+        "stock"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "idx = clean_market.copy()",
+      "dependencies": {
+        "clean_market": 16
+      },
+      "writes": [
+        "idx"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "idx['sp500_return'] = idx.sp500.pct_change()",
+      "dependencies": {
+        "idx": 23
+      },
+      "writes": [
+        "idx"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "idx['nasdaq_return'] = idx.nasdaq.pct_change()",
+      "dependencies": {
+        "idx": 24
+      },
+      "writes": [
+        "idx"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "panel = stock.merge(idx, on='date', how='inner', validate='many_to_one')",
+      "dependencies": {
+        "idx": 25,
+        "stock": 22
+      },
+      "writes": [
+        "panel"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "panel['excess_sp500_return'] = panel.stock_return - panel.sp500_return",
+      "dependencies": {
+        "panel": 26
+      },
+      "writes": [
+        "panel"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "panel = panel.sort_values(['ticker', 'date'])",
+      "dependencies": {
+        "panel": 27
+      },
+      "writes": [
+        "panel"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "panel.to_csv(out / 'market_panel.csv', index=False, date_format='%Y-%m-%d')",
+      "dependencies": {
+        "panel": 28
+      },
+      "writes": [],
+      "outputs": [
+        "market_panel.csv"
+      ]
+    },
+    {
+      "index": 30,
+      "source": "write_json(out / 'integration.json', {'stock_rows': len(stock), 'panel_rows': len(panel), 'matched_dates': panel.date.nunique(), 'unmatched_stock_rows': len(stock) - len(panel)})",
+      "dependencies": {
+        "stock": 22,
+        "panel": 28
+      },
+      "writes": [],
+      "outputs": [
+        "integration.json"
+      ]
+    },
+    {
+      "index": 31,
+      "source": "eligible = panel.dropna(subset=['stock_return', 'sp500_return', 'nasdaq_return'])",
+      "dependencies": {
+        "panel": 28
+      },
+      "writes": [
+        "eligible"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 32,
+      "source": "stats = eligible.groupby(['ticker', 'sector'], as_index=False).agg(observations=('stock_return', 'size'), mean_return=('stock_return', 'mean'), volatility=('stock_return', lambda s: s.std(ddof=1)), mean_excess_sp500_return=('excess_sp500_return', 'mean'))",
+      "dependencies": {
+        "eligible": 31
+      },
+      "writes": [
+        "stats"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 33,
+      "source": "correlations = []",
+      "dependencies": {},
+      "writes": [
+        "correlations"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 34,
+      "source": "for ticker, group in eligible.groupby('ticker'):\n    correlations.append([ticker, group.stock_return.corr(group.sp500_return), group.stock_return.corr(group.nasdaq_return)])",
+      "dependencies": {
+        "eligible": 31,
+        "correlations": 33
+      },
+      "writes": [
+        "correlations",
+        "group",
+        "ticker"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 35,
+      "source": "relationships = pd.DataFrame(correlations, columns=['ticker', 'sp500_correlation', 'nasdaq_correlation']).sort_values('ticker')",
+      "dependencies": {
+        "correlations": 34
+      },
+      "writes": [
+        "relationships"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 36,
+      "source": "stats = stats.sort_values('ticker')",
+      "dependencies": {
+        "stats": 32
+      },
+      "writes": [
+        "stats"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 37,
+      "source": "stats.to_csv(out / 'ticker_statistics.csv', index=False)",
+      "dependencies": {
+        "stats": 36
+      },
+      "writes": [],
+      "outputs": [
+        "ticker_statistics.csv"
+      ]
+    },
+    {
+      "index": 38,
+      "source": "relationships.to_csv(out / 'market_relationships.csv', index=False)",
+      "dependencies": {
+        "relationships": 35
+      },
+      "writes": [],
+      "outputs": [
+        "market_relationships.csv"
+      ]
+    },
+    {
+      "index": 39,
+      "source": "report = {'rows': len(panel), 'eligible_return_rows': len(eligible), 'tickers': stats.ticker.nunique(), 'matched_dates': panel.date.nunique(), 'highest_volatility_ticker': stats.sort_values(['volatility', 'ticker'], ascending=[False, True]).iloc[0].ticker, 'highest_sp500_correlation_ticker': relationships.sort_values(['sp500_correlation', 'ticker'], ascending=[False, True]).iloc[0].ticker}",
+      "dependencies": {
+        "eligible": 31,
+        "relationships": 35,
+        "panel": 28,
+        "stats": 36
+      },
+      "writes": [
+        "report"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 40,
+      "source": "write_json(out / 'finance_report.json', report)",
+      "dependencies": {
+        "report": 39
+      },
+      "writes": [],
+      "outputs": [
+        "finance_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate_stocks": [
+      17,
+      19
+    ],
+    "validate_market": [
+      18,
+      20
+    ],
+    "integrate": [
+      29,
+      30
+    ],
+    "analyze": [
+      37,
+      38
+    ],
+    "report": [
+      40
+    ]
+  }
+}

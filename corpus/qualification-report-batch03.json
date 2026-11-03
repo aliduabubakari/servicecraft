@@ -1,0 +1,174 @@
+{
+  "status": "passed",
+  "scope": "Batch-03 Python references, independent invariants, invalid-key rejection, topology classification, graph consistency, and export allowlists; not Dagster execution or generated-code evaluation",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "001_analytics_statistical_cleaning_integration",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_in",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 2,
+        "sinks": 1,
+        "joins": 1,
+        "splits": 0
+      },
+      "output_sha256": {
+        "market_quality.json": "cf06186080b25fddb3ef73a11b6a7de72cd433ca53c0d2e676cef44a67516c69",
+        "market_relationships.csv": "fe7227631add9c439d934221655b17405e335ed5f20e09cbed3758d773af85d8",
+        "market_panel.csv": "065e1ad3f598d319fa0898b93ac4783e899559a02e413fa3814c570b13fbf781",
+        "stock_quality.json": "b6094aaafb67559b56afd5868287ef62927773e2d317093a84e7f3691f926743",
+        "clean_market.csv": "5db252673d4f6d9a4a61218128c297e5bd7f29f51f64f1eb6c66c8c01f98980e",
+        "clean_stocks.csv": "c9069b64dd0a0244a0ceb12de9461d4005be0817808a5974db66d1ed42b390d2",
+        "finance_report.json": "367bba02c183e9d724d72c686ecdefc7094a7fefcd50818e68b4ef4087eb883e",
+        "integration.json": "f4a8504bb94ca79b785d1811e6f6e8e20a6047a245a37f0813212df04ad5c0fe",
+        "ticker_statistics.csv": "a10a2f16502d7c3f5e05c833ab495d3a34582516a5eced913b64820f1bf8e230"
+      }
+    },
+    {
+      "case": "001_analytics_statistical_cleaning_integration",
+      "probe": "invalid_key_relationship_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "007_employee_attrition",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "parallel",
+      "tasks": 6,
+      "structure": {
+        "components": 3,
+        "roots": 3,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "performance_report.json": "d15c75ed948631e58371ff51e5499bb224de6a1cc4d5547d27ff30d8d82d748f",
+        "attrition_report.json": "c8ec5c9d4e832a69f21b9992010d63aed72fe288a1bb24ea9be1ae05772d1f9a",
+        "engagement_by_employee.csv": "7e22c43a7bbce4e5bfb0c9fcbb709eb2be911a603d387a98b6015ae1f649bea6",
+        "workforce.csv": "bd7e78f37a9d7f865ec38deda65e6cad006234576d8d6e5086082fc286ad77b5",
+        "engagement_report.json": "73dee66b03c548c8836ebbbf80a593aca8606267afc5d8e1e0c636307c0db76b",
+        "performance_by_employee.csv": "e9994c417edfac05d900181e9f06572d73fb87d82006a3110cdfaa867c1adb33",
+        "attrition_by_department.csv": "5819dfff1642d35fc5b93456e1ba0620bfa4af4ae9da6f16dac666bc1b464a1f",
+        "performance_by_department.csv": "57b7bafeb919e7de3629fa50e988c635085f2320ab837ca7a17b8e719a08b019",
+        "engagement_by_month.csv": "90bd7f22925e54c8eba7c8fa03b60acf505ed74f83a9103f98973778e9ddf721"
+      }
+    },
+    {
+      "case": "007_employee_attrition",
+      "probe": "invalid_key_relationship_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "009_healthcare_readmission",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in_fan_out",
+      "tasks": 9,
+      "structure": {
+        "components": 1,
+        "roots": 4,
+        "sinks": 1,
+        "joins": 2,
+        "splits": 1
+      },
+      "output_sha256": {
+        "patients_clean.csv": "d9ac0b6da864dfafd93004d3ffc6779d1fedbf151ba3bbba095098a7ae244c2a",
+        "labs_by_patient.csv": "207445ee8634e34ab3fc1894489bcb506e7e9411077ea20650028b026942f32e",
+        "clinical_summary.csv": "bfdef9b1f84e4887558e33698447154312e75071d7db0d88ec67518809ec0e60",
+        "readmission_report.json": "c11bced2cba1294da6a4232bdb32c4babd53b936068f9f0a17112a93c5d3a16f",
+        "predictions.csv": "11f5aeb7826d5bf7bd2c065e50456a88634da4adcf085967612fdd98d3127c8e",
+        "model.pkl": "c532dbf7960925ed5b95cb9bd0048db678d7a98a7fb3c542b5a371686716a3e1",
+        "medications_by_patient.csv": "7c2b179cd3c72d9bb16a9496a26cb45cf86343bd1df2c5b0e03f6417a6dee325",
+        "utilization_by_readmission.csv": "8bb4391ba255793a3a3c5f5ae02d440c1f3d2a38c80ab9dda3e882c065e1d980",
+        "readmission_metrics.json": "7d162d033f352a74a8ef212f440589714f19ff6b9c24f9d5f7b053d64f05a898",
+        "admissions_by_patient.csv": "582216c7d383e47550b7c84a185cdd1fa0ec5a7ad5df13f8f34ccff73f35b07d",
+        "patient_features.csv": "ef084561a38355d8ebd1790b5913f52a28624d3383f2fd89177292c6ed6a90a2"
+      }
+    },
+    {
+      "case": "009_healthcare_readmission",
+      "probe": "invalid_key_relationship_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "010_hr_regression_visualization_integration",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_out",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "salary_model.pkl": "321f9dfb803a263bab820d2d2eb91b36dec060aee695bb9d90397caa102111ca",
+        "salary_metrics.json": "fabc32709a91d42d88afbc786beba9df6c6c0fa286b1feb90b613ecafa0f0fbd",
+        "gender_pay_summary.csv": "e964fce4d6c3e894f9d373a840dc584d57fb2db4dc1ec39d9fa0410160fd39de",
+        "workforce_features.csv": "fd18d09836708d2bbe055e5e3fee6173176e4704c544d140d0a440900eb8c5db",
+        "workforce.csv": "6e2f4a1b147be9e845c80b6989180cedabfa7d606f73d64a191ebb47a5978da4",
+        "department_summary.csv": "0314db5cf88d36e3d02d70b3aa208b3138076a610eebe74812ffc62ba62e3a0e",
+        "salary_predictions.csv": "16a220c0284767a05f0e209e9d45c76f943fbf7b223fde5d765cbb0a1f695366"
+      }
+    },
+    {
+      "case": "010_hr_regression_visualization_integration",
+      "probe": "invalid_key_relationship_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "054_student_performance",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "metrics.json": "056a87ce536232167010bb0dae1558ba24cbfb0e0daec3eb92d237379e639bf8",
+        "test.csv": "165a7cb134334bdd5bd4c9bfc6dcbf1063e538c133b93fdc0e4b84f74fea380e",
+        "predictions.csv": "90164c188fdb3b9c8541a2d1e6c91ee762394230214101fbb0d19b213be452f5",
+        "model.pkl": "bfebf0994b3ae963187d2fa578ceb9d5ae800daf5b72e955bae60ed8e24af835",
+        "student_report.json": "056a87ce536232167010bb0dae1558ba24cbfb0e0daec3eb92d237379e639bf8",
+        "students_clean.csv": "7739a6a24bc99331c1ded1c73826c48b4005b09f2c1ae616af31bddecb42c351",
+        "train.csv": "76ab3a788c851c803042ade491c59aa14c5403959008921f66247f0d5fc4f0dc",
+        "student_features.csv": "f6b09c5d0aeaebfdb95c01be7a3952b990d0447dd3555b07f859a1cf36b507da"
+      }
+    },
+    {
+      "case": "054_student_performance",
+      "probe": "invalid_key_relationship_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-03",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-03",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

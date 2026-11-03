@@ -1,0 +1,209 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'weather_condition', 'revenue', 'operational_cost']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'trip_id', ['route', 'vehicle_type', 'weather_condition'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "clean = d[cols].sort_values('trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "clean.to_csv(out / 'trips_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [],
+      "outputs": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "f = clean.copy()",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "f['profit'] = f.revenue - f.operational_cost",
+      "dependencies": {
+        "f": 5
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "f['profit_margin'] = np.where(f.revenue != 0, f.profit / f.revenue, 0)",
+      "dependencies": {
+        "f": 6
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "f['passenger_km'] = f.distance_km * f.passengers",
+      "dependencies": {
+        "f": 7
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "f.to_csv(out / 'trip_economics.csv', index=False)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [],
+      "outputs": [
+        "trip_economics.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "r = f.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), total_revenue=('revenue', 'sum'), total_cost=('operational_cost', 'sum'), total_profit=('profit', 'sum'), mean_margin=('profit_margin', 'mean'), total_passenger_km=('passenger_km', 'sum')).sort_values('route')",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [
+        "r"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "r.to_csv(out / 'route_economics.csv', index=False)",
+      "dependencies": {
+        "r": 10
+      },
+      "writes": [],
+      "outputs": [
+        "route_economics.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "rank = r.sort_values(['total_profit', 'mean_margin', 'route'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "r": 10
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "rank.insert(1, 'profit_rank', np.arange(1, len(rank) + 1))",
+      "dependencies": {
+        "rank": 12
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "rank.to_csv(out / 'route_profitability.csv', index=False)",
+      "dependencies": {
+        "rank": 13
+      },
+      "writes": [],
+      "outputs": [
+        "route_profitability.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "f.groupby('vehicle_type', as_index=False).agg(trip_count=('trip_id', 'size'), total_profit=('profit', 'sum'), mean_margin=('profit_margin', 'mean'), mean_passengers=('passengers', 'mean')).sort_values('vehicle_type').to_csv(out / 'vehicle_economics.csv', index=False)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [],
+      "outputs": [
+        "vehicle_economics.csv"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "f.groupby('weather_condition', as_index=False).agg(trip_count=('trip_id', 'size'), total_profit=('profit', 'sum'), mean_margin=('profit_margin', 'mean'), mean_delay=('delay_minutes', 'mean')).sort_values('weather_condition').to_csv(out / 'weather_economics.csv', index=False)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [],
+      "outputs": [
+        "weather_economics.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      4
+    ],
+    "features": [
+      9
+    ],
+    "aggregate": [
+      11
+    ],
+    "routes": [
+      14
+    ],
+    "vehicles": [
+      15
+    ],
+    "weather": [
+      16
+    ]
+  }
+}

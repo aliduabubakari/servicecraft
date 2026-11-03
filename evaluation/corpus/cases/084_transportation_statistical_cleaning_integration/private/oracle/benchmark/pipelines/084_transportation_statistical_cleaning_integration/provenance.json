@@ -1,0 +1,19 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "084_transportation_statistical_cleaning_integration",
+  "selection_reason": "Reliability and satisfaction summaries are independently computed, converge into a route score, then proceed through ranking/reporting.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "input_modifications": [],
+  "pilot_input_sha256": {
+    "data.csv": "d95be36bf05072c6e6877d1bb0710ee557c110620602912f9264a75061a50044"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

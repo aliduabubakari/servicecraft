@@ -1,0 +1,188 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "071_transportation_prediction_statistical_cleaning",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "delay_prepare",
+    "delay_fit",
+    "delay_evaluate",
+    "service_prepare",
+    "service_aggregate",
+    "service_report"
+  ],
+  "expected_edges": [
+    [
+      "delay_prepare",
+      "delay_fit"
+    ],
+    [
+      "delay_fit",
+      "delay_evaluate"
+    ],
+    [
+      "service_prepare",
+      "service_aggregate"
+    ],
+    [
+      "service_aggregate",
+      "service_report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "delay_model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "is_delayed"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "delay_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "delay_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "actual_is_delayed",
+        "probability",
+        "predicted_is_delayed"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "delay_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "service_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "on_time_pct"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_service.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "service_score"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "service_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "delay_model_data.csv",
+      "artifact": "delay_model_data.csv",
+      "kind": "csv_equals",
+      "reference": "expected/delay_model_data.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "delay_predictions.csv",
+      "artifact": "delay_predictions.csv",
+      "kind": "csv_equals",
+      "reference": "expected/delay_predictions.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "delay_metrics.json",
+      "artifact": "delay_metrics.json",
+      "kind": "json_equals",
+      "reference": "expected/delay_metrics.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "service_data.csv",
+      "artifact": "service_data.csv",
+      "kind": "csv_equals",
+      "reference": "expected/service_data.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_service.csv",
+      "artifact": "route_service.csv",
+      "kind": "csv_equals",
+      "reference": "expected/route_service.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "service_report.json",
+      "artifact": "service_report.json",
+      "kind": "json_equals",
+      "reference": "expected/service_report.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

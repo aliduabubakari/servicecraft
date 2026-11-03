@@ -1,0 +1,30 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "007_employee_attrition",
+  "selection_reason": "The three source-specific descriptive analyses can execute independently; joining them would add an artificial dependency and discard employees without surveys.",
+  "input_transformations": [
+    {
+      "source": "employees.csv",
+      "benchmark_file": "employees.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "engagement_surveys.json",
+      "benchmark_file": "engagement_surveys.csv",
+      "conversion": "json_to_csv"
+    },
+    {
+      "source": "performance_reviews.xlsx",
+      "benchmark_file": "performance_reviews.csv",
+      "conversion": "xlsx_to_csv"
+    }
+  ],
+  "pilot_input_sha256": {
+    "employees.csv": "0c249a2d812fe9fc90b06a7a7aebbf45c634f7af44bb38dac93967a365a685d2",
+    "engagement_surveys.csv": "b0cba8010f8f67fea40b8fb062f333e9cb8ca02b2a472ed1fd26d456d54545f5",
+    "performance_reviews.csv": "4aa7192158285e9ac9da5d1947cd2d611acdf022c0a5a259ead5475ea922a5e3"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

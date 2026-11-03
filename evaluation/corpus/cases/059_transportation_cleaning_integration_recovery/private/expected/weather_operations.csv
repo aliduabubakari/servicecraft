@@ -1,0 +1,5 @@
+weather_condition,trip_count,mean_delay,on_time_rate
+Clear,370,5.2510810810810815,0.6081081081081081
+Fog,32,5.609375,0.5625
+Rain,160,4.876875,0.6
+Snow,64,4.23125,0.6875

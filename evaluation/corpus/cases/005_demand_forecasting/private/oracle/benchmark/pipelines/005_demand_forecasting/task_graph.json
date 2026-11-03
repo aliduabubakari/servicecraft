@@ -1,0 +1,174 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "005_demand_forecasting",
+  "benchmark_revision": "batch-02",
+  "review_status": "author_review_pending",
+  "title": "Trailing-demand inventory reorder planning",
+  "domain": "manufacturing",
+  "family_id": "temporal_aggregation_inventory_optimization",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:inventory.csv",
+      "path": "inputs/inventory.csv",
+      "format": "csv",
+      "required_columns": [
+        "sku_id",
+        "product_name",
+        "supplier",
+        "lead_time_days",
+        "current_stock"
+      ]
+    },
+    {
+      "id": "input:sales_orders.csv",
+      "path": "inputs/sales_orders.csv",
+      "format": "csv",
+      "required_columns": [
+        "order_id",
+        "sku_id",
+        "order_date",
+        "quantity"
+      ]
+    },
+    {
+      "id": "input:suppliers.csv",
+      "path": "inputs/suppliers.csv",
+      "format": "csv",
+      "required_columns": [
+        "supplier_name",
+        "minimum_order_qty"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "aggregate",
+      "name": "Validate sources and construct zero-filled daily demand",
+      "operation": "temporal_aggregation",
+      "required": true,
+      "inputs": [
+        "input:inventory.csv",
+        "input:sales_orders.csv",
+        "input:suppliers.csv"
+      ],
+      "outputs": [
+        "daily_demand.csv"
+      ],
+      "requirements": [
+        "Validate primary/foreign keys and required values.",
+        "Construct the inclusive trailing 90-day SKU/date grid and aggregate quantities."
+      ],
+      "parameters": {
+        "window_days": 90,
+        "missing_day_quantity": 0
+      }
+    },
+    {
+      "id": "plan",
+      "name": "Compute demand statistics and reorder quantities",
+      "operation": "inventory_planning",
+      "required": true,
+      "inputs": [
+        "daily_demand.csv",
+        "input:inventory.csv",
+        "input:suppliers.csv"
+      ],
+      "outputs": [
+        "inventory_plan.csv"
+      ],
+      "requirements": [
+        "Use population standard deviations, the declared service factor, lead time, stock, and MOQ rounding."
+      ],
+      "parameters": {
+        "service_z": 1.645,
+        "std_ddof": 0
+      }
+    },
+    {
+      "id": "report",
+      "name": "Publish inventory planning summary",
+      "operation": "optimization_report",
+      "required": true,
+      "inputs": [
+        "inventory_plan.csv"
+      ],
+      "outputs": [
+        "inventory_report.json"
+      ],
+      "requirements": [
+        "Publish data-derived window metadata, counts, and total suggested units."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "daily_demand.csv",
+      "path": "daily_demand.csv",
+      "format": "csv",
+      "required_columns": [
+        "sku_id",
+        "date",
+        "quantity"
+      ]
+    },
+    {
+      "id": "inventory_plan.csv",
+      "path": "inventory_plan.csv",
+      "format": "csv",
+      "required_columns": [
+        "sku_id",
+        "supplier",
+        "mean_daily_demand",
+        "std_daily_demand",
+        "target_stock",
+        "suggested_order_quantity",
+        "reorder_required"
+      ]
+    },
+    {
+      "id": "inventory_report.json",
+      "path": "inventory_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "aggregate",
+      "target": "plan",
+      "kind": "data",
+      "artifacts": [
+        "daily_demand.csv"
+      ]
+    },
+    {
+      "source": "plan",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "inventory_plan.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "aggregate": "inventory",
+      "plan": "inventory",
+      "report": "inventory"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

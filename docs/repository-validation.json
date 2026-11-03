@@ -1,0 +1,55 @@
+{
+  "schema_version": "servicecraft.repository-validation@1",
+  "date": "2026-11-03",
+  "python": "3.12.3",
+  "evaluator_tests_passed": 32,
+  "prompt_tests_passed": 5,
+  "source_specifications_validated": 100,
+  "prompt_pairs_verified": 100,
+  "original_case_files_byte_preserved": 715,
+  "git_only_archive_tests_passed": true,
+  "docker_example_complete_success": 1,
+  "fresh_image_corpus_controls": {
+    "001_analytics_statistical_cleaning_integration": {
+      "dagster_executable": 1,
+      "output_contract_valid": 1,
+      "behaviorally_correct": 1,
+      "complete_success": 1
+    },
+    "016_sports_clustering_prediction_visualization": {
+      "dagster_executable": 1,
+      "output_contract_valid": 1,
+      "behaviorally_correct": 1,
+      "complete_success": 1
+    }
+  },
+  "scope": "Repository packaging and selected runtime requalification; not a new full-corpus qualification or LLM experiment.",
+  "images": {
+    "servicecraft-runtime:1.13.12": "sha256:f09ed49eef7ef3c20fe1395955498e28721a2399b1ca6c613370a1abacfb93fb",
+    "servicecraft-oracle:corpus-v1": "sha256:dae729caedbee296f54b441ab0a68879b9f9a7540072e20f38ef0a9172c82e43"
+  },
+  "qualification_tool_changes": [
+    "Include public prompt renderer in newly prepared oracle contexts",
+    "Increase intentional runtime-hang fixture limit to 60s to allow static startup"
+  ],
+  "docker_regression": {
+    "scenarios": 18,
+    "initial_matching_scenarios": 17,
+    "initial_failure": {
+      "case": "fault_timeout",
+      "cause": "10s fixture budget expired during static analysis before intentional runtime hang"
+    },
+    "targeted_rerun": {
+      "case": "fault_timeout",
+      "fixture_timeout_seconds": 60,
+      "checks": {
+        "static": true,
+        "definition": true,
+        "runtime_timeout": true,
+        "candidate_zero": true
+      }
+    },
+    "verified_scenarios_after_fixture_correction": 18,
+    "evidence_policy": "Initial failed evidence retained locally; corrected timeout rerun stored separately. Evaluator scoring was unchanged."
+  }
+}

@@ -1,0 +1,35 @@
+# Validated trips fanning out to operational summaries
+
+1. Objective
+
+Build a four-task pure fan-out graph. Validate trips and derive passenger_km=distance*passengers and on_time=(delay<=5) in one shared artifact. Three independent leaves consume only that artifact: route passenger-km/delay/on-time metrics, vehicle passenger/fare/delay metrics, and weather delay/on-time metrics. Do not add a final join.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: trip_id, route, vehicle_type, departure_hour, distance_km, passengers, fare_amount, delay_minutes, day_of_week, is_holiday, weather_condition
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Apply all processing requirements in the objective above. Retain its specified transformations, parameters, validation policies and ordering.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `trips_clean.csv`
+- `route_operations.csv`
+- `vehicle_operations.csv`
+- `weather_operations.csv`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without networks, prior outputs, fixed answers, or human intervention. Preserve the declared artifact-backed topology and write beneath the run output directory. Numeric comparisons use atol=1e-6 and rtol=1e-6; JSON must contain only finite values. Reject missing required columns, blank or duplicate identifiers, and non-finite required numeric values.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

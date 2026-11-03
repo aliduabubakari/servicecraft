@@ -1,0 +1,21 @@
+{
+  "rows": 731,
+  "input_missing": 4,
+  "numeric_recovered": {
+    "departure_hour": 0,
+    "distance_km": 1,
+    "passengers": 0,
+    "fare_amount": 1,
+    "delay_minutes": 0,
+    "is_holiday": 0,
+    "is_delayed": 0,
+    "cancellation_risk": 0
+  },
+  "categorical_recovered": {
+    "route": 0,
+    "vehicle_type": 1,
+    "day_of_week": 0,
+    "weather_condition": 1
+  },
+  "remaining_missing": 0
+}

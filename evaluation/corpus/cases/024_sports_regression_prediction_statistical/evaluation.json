@@ -1,0 +1,194 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "024_sports_regression_prediction_statistical",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "reg_prepare",
+    "reg_fit",
+    "reg_evaluate",
+    "cls_prepare",
+    "cls_fit",
+    "cls_evaluate"
+  ],
+  "expected_edges": [
+    [
+      "reg_prepare",
+      "reg_fit"
+    ],
+    [
+      "reg_fit",
+      "reg_evaluate"
+    ],
+    [
+      "cls_prepare",
+      "cls_fit"
+    ],
+    [
+      "cls_fit",
+      "cls_evaluate"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "regression_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "market_value"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_market_value",
+        "predicted_market_value"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "classification_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "all_star"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "allstar_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "allstar_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_all_star",
+        "probability",
+        "predicted_all_star"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "allstar_metrics.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "regression_data.csv",
+      "artifact": "regression_data.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/regression_data.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "market_predictions.csv",
+      "artifact": "market_predictions.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/market_predictions.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "market_metrics.json",
+      "artifact": "market_metrics.json",
+      "kind": "json_equals",
+      "reference": "private/expected/market_metrics.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "classification_data.csv",
+      "artifact": "classification_data.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/classification_data.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "allstar_predictions.csv",
+      "artifact": "allstar_predictions.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/allstar_predictions.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "allstar_metrics.json",
+      "artifact": "allstar_metrics.json",
+      "kind": "json_equals",
+      "reference": "private/expected/allstar_metrics.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

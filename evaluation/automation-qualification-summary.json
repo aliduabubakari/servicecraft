@@ -1,0 +1,36 @@
+{
+  "evaluator_version": "0.5.0",
+  "status": "pass",
+  "tests_passed": 23,
+  "docker_regression_cases": 18,
+  "docker_regression_status": "pass",
+  "batch_automation": {
+    "status": "pass",
+    "scheduled": 5,
+    "correct_controls": 2,
+    "detected_candidate_failures": 2,
+    "blocked_environment": 1,
+    "resume_reexecuted_attempts": 0,
+    "scope": "Evaluator automation controls, not paper generation results"
+  },
+  "runtime_image": {
+    "id": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+    "os": "linux",
+    "architecture": "arm64",
+    "repo_digests": [
+      "servicecraft-runtime@sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb"
+    ]
+  },
+  "evaluator_source_sha256": {
+    "__init__.py": "b175e9801c6278f67e84f3d0a59e6285b2e6e63c8cc82e72e9527ebee0627151",
+    "batch.py": "381faf5fec6c07079dcf0d5c0281bcfec824fbbe45950165c4e3e86ca8a85bfd",
+    "environment_check.py": "36c88ddf346981f5002b0724642b110e4fe3e5245ba0e9c5b848aa020aedbd17",
+    "evaluation_models.py": "c5f4d3582af8e9e18c3acb0425f8e27a5c788a1ec3a241d5964810f630fa48bf",
+    "evaluator.py": "5d5087dce004e31b470767d2aa50c8becceddfcc202e7164c867d1725140f762",
+    "main.py": "697b5c5efcc20a7ca97e9718725f30358d4ac47997ac387f277af8c3db8c43da",
+    "runtime_worker.py": "d457ccd16c93286050975c99d00dbec7181f239f3eb2dccd32f5e089a6354f37",
+    "service_craft.py": "ce895f91505f4304e6b50049342f08f14c313e3669ef3491b1142f108931b927",
+    "static_analysis.py": "dccb6874549b9c8f559c7c3fffcd27b47d2ec0cf01dac64b088064a38cad9590"
+  },
+  "scope": "Automation and authored controls only; all corpus cases still need individual qualification"
+}

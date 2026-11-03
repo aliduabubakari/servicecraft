@@ -1,0 +1,273 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "003_credit_risk",
+  "benchmark_revision": "batch-02",
+  "review_status": "author_review_pending",
+  "title": "Credit-default classification with multi-source history aggregation",
+  "domain": "finance",
+  "family_id": "multisource_supervised_binary_classification",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:applications.csv",
+      "path": "inputs/applications.csv",
+      "format": "csv",
+      "required_columns": [
+        "application_id",
+        "annual_income",
+        "loan_amount",
+        "dti_ratio",
+        "age",
+        "months_at_address",
+        "default_flag"
+      ]
+    },
+    {
+      "id": "input:bureau_data.csv",
+      "path": "inputs/bureau_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "application_id",
+        "fico_score",
+        "total_accounts",
+        "delinquencies_2yrs",
+        "inquiries_6mo",
+        "public_records",
+        "revolving_utilization",
+        "credit_age_months"
+      ]
+    },
+    {
+      "id": "input:credit_history.csv",
+      "path": "inputs/credit_history.csv",
+      "format": "csv",
+      "required_columns": [
+        "application_id",
+        "account_status",
+        "balance",
+        "utilization_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "integrate",
+      "name": "Validate sources and aggregate account history",
+      "operation": "multisource_validation_aggregation",
+      "required": true,
+      "inputs": [
+        "input:applications.csv",
+        "input:bureau_data.csv",
+        "input:credit_history.csv"
+      ],
+      "outputs": [
+        "integrated.csv"
+      ],
+      "requirements": [
+        "Validate identifier relationships and numeric fields.",
+        "Aggregate the four specified history measures and join sources with declared cardinalities."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "split",
+      "name": "Create a reproducible stratified holdout",
+      "operation": "stratified_split",
+      "required": true,
+      "inputs": [
+        "integrated.csv"
+      ],
+      "outputs": [
+        "train.csv",
+        "test.csv"
+      ],
+      "requirements": [
+        "Use a 75/25 stratified split with seed 42 and preserve all rows."
+      ],
+      "parameters": {
+        "test_fraction": 0.25,
+        "random_state": 42
+      }
+    },
+    {
+      "id": "fit_predict",
+      "name": "Fit train-only scaling and logistic regression",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "train.csv",
+        "test.csv"
+      ],
+      "outputs": [
+        "model.pkl",
+        "predictions.csv",
+        "fit_metadata.json"
+      ],
+      "requirements": [
+        "Fit preprocessing and estimator on training rows only.",
+        "Emit probabilities and thresholded predictions for every test row."
+      ],
+      "parameters": {
+        "estimator": "LogisticRegression",
+        "C": 1.0,
+        "solver": "liblinear",
+        "threshold": 0.5
+      }
+    },
+    {
+      "id": "evaluate",
+      "name": "Measure held-out classification validity",
+      "operation": "classification_evaluation",
+      "required": true,
+      "inputs": [
+        "predictions.csv",
+        "fit_metadata.json"
+      ],
+      "outputs": [
+        "metrics.json"
+      ],
+      "requirements": [
+        "Compute accuracy, precision, recall, F1, and ROC AUC from held-out predictions."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish credit experiment report",
+      "operation": "model_report",
+      "required": true,
+      "inputs": [
+        "metrics.json"
+      ],
+      "outputs": [
+        "credit_report.json"
+      ],
+      "requirements": [
+        "Publish the computed metrics and fit metadata without fixed results."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "integrated.csv",
+      "path": "integrated.csv",
+      "format": "csv",
+      "required_columns": [
+        "application_id",
+        "default_flag",
+        "history_record_count"
+      ]
+    },
+    {
+      "id": "train.csv",
+      "path": "train.csv",
+      "format": "csv",
+      "required_columns": [
+        "application_id",
+        "default_flag"
+      ]
+    },
+    {
+      "id": "test.csv",
+      "path": "test.csv",
+      "format": "csv",
+      "required_columns": [
+        "application_id",
+        "default_flag"
+      ]
+    },
+    {
+      "id": "model.pkl",
+      "path": "model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "predictions.csv",
+      "path": "predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "application_id",
+        "actual_default",
+        "default_probability",
+        "predicted_default"
+      ]
+    },
+    {
+      "id": "fit_metadata.json",
+      "path": "fit_metadata.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "metrics.json",
+      "path": "metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "credit_report.json",
+      "path": "credit_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "integrate",
+      "target": "split",
+      "kind": "data",
+      "artifacts": [
+        "integrated.csv"
+      ]
+    },
+    {
+      "source": "split",
+      "target": "fit_predict",
+      "kind": "data",
+      "artifacts": [
+        "train.csv",
+        "test.csv"
+      ]
+    },
+    {
+      "source": "fit_predict",
+      "target": "evaluate",
+      "kind": "data",
+      "artifacts": [
+        "predictions.csv",
+        "fit_metadata.json"
+      ]
+    },
+    {
+      "source": "evaluate",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "metrics.json"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "integrate": "credit",
+      "split": "credit",
+      "fit_predict": "credit",
+      "evaluate": "credit",
+      "report": "credit"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

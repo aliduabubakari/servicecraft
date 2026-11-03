@@ -1,0 +1,28 @@
+{
+  "train_rows": 375,
+  "test_rows": 125,
+  "features": [
+    "age",
+    "has_diabetes",
+    "has_heart_condition",
+    "bmi",
+    "smoker",
+    "n_conditions",
+    "admission_count",
+    "total_length_of_stay",
+    "mean_length_of_stay",
+    "icu_admission_count",
+    "total_procedures",
+    "er_admission_count",
+    "lab_count",
+    "abnormal_lab_count",
+    "mean_test_value",
+    "medication_record_count",
+    "unique_medications"
+  ],
+  "accuracy": 0.696,
+  "precision": 0.5652173913043478,
+  "recall": 0.3170731707317073,
+  "f1": 0.40625,
+  "roc_auc": 0.7288037166085947
+}

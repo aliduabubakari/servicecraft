@@ -1,0 +1,226 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "case": "linear",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "parallel",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "fan_out",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "fan_in",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "fan_in_fan_out",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_syntax",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 0,
+        "output_contract_valid": 0,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_import",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 0,
+        "output_contract_valid": 0,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_definition",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 0,
+        "output_contract_valid": 0,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_runtime",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 0,
+        "output_contract_valid": 0,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_timeout",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 0,
+        "output_contract_valid": 0,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_wrong_value",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_missing_output",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 0,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_wrong_graph",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "fault_failed_check",
+      "expected_success": 0,
+      "scores": {
+        "dagster_executable": 0,
+        "output_contract_valid": 0,
+        "behaviorally_correct": 0,
+        "complete_success": 0
+      },
+      "qualified": true
+    },
+    {
+      "case": "native_job",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "callable_definitions",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "bundle_relative_paths",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    },
+    {
+      "case": "explicit_environment_alias",
+      "expected_success": 1,
+      "scores": {
+        "dagster_executable": 1,
+        "output_contract_valid": 1,
+        "behaviorally_correct": 1,
+        "complete_success": 1
+      },
+      "qualified": true
+    }
+  ],
+  "project": "servicecraft-evaluation",
+  "evaluator_version": "0.4.0",
+  "measurement_version": "servicecraft.raw-static@1",
+  "qualification_date": "2026-10-30",
+  "unit_tests_passed": 15,
+  "runtime_image": {
+    "id": "sha256:1e0d025d0e83ce90227c41733fcfb54063fec5b9555320d274a9f27633860c0e",
+    "os": "linux",
+    "architecture": "arm64",
+    "repo_digests": [
+      "servicecraft-runtime@sha256:1e0d025d0e83ce90227c41733fcfb54063fec5b9555320d274a9f27633860c0e"
+    ]
+  },
+  "scope": "Synthetic evaluator qualification, not paper benchmark results",
+  "source_sha256": {
+    "app/__init__.py": "6407317d286dc242d82c144a143d8c9e97bbe9ee977b497f90b8dcd58e05db6c",
+    "app/evaluation_models.py": "1f9e3196d8a35d51dce0f7723bfc706d2293ec7e3fd13aac87f15a90bc8849af",
+    "app/evaluator.py": "b607186b33141db91fd6995713a86f1b43068d074c206694dcd38e47ccef5269",
+    "app/main.py": "697b5c5efcc20a7ca97e9718725f30358d4ac47997ac387f277af8c3db8c43da",
+    "app/runtime_worker.py": "45f6d4d88f9eafbe3b41b59d2d046fbba23b0e75eb4625a87f7d259247985ede",
+    "app/service_craft.py": "5ef6c2a67a2f730c349731f07306177adea26ead48eb24a1ead9d2487b99339f",
+    "app/static_analysis.py": "dccb6874549b9c8f559c7c3fffcd27b47d2ec0cf01dac64b088064a38cad9590"
+  }
+}

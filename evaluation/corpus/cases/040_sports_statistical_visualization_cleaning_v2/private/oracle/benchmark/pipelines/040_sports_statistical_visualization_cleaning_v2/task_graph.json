@@ -1,0 +1,438 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "040_sports_statistical_visualization_cleaning_v2",
+  "benchmark_revision": "batch-16",
+  "review_status": "author_review_pending",
+  "title": "Three player feature branches feeding four cohort analyses",
+  "domain": "sports",
+  "family_id": "sports_feature_cohort_fanin_fanout",
+  "topology": "fan_in_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "field_goal_pct",
+        "three_point_pct",
+        "free_throw_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate players",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_clean.csv"
+      ],
+      "requirements": [
+        "Validate identifiers and required values."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "performance",
+      "name": "Derive performance features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "performance_features.csv"
+      ],
+      "requirements": [
+        "Compute production and per-minute production."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "shooting",
+      "name": "Derive shooting features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "shooting_features.csv"
+      ],
+      "requirements": [
+        "Compute mean and weighted shooting."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "context",
+      "name": "Derive cohort context",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "context_features.csv"
+      ],
+      "requirements": [
+        "Create fixed age and salary bands."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate player analysis table",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "performance_features.csv",
+        "shooting_features.csv",
+        "context_features.csv"
+      ],
+      "outputs": [
+        "analysis_table.csv"
+      ],
+      "requirements": [
+        "Join all branches one-to-one."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "teams",
+      "name": "Summarize teams",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "analysis_table.csv"
+      ],
+      "outputs": [
+        "team_summary.csv"
+      ],
+      "requirements": [
+        "Compute team cohort measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "positions",
+      "name": "Summarize positions",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "analysis_table.csv"
+      ],
+      "outputs": [
+        "position_summary.csv"
+      ],
+      "requirements": [
+        "Compute position cohort measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "ages",
+      "name": "Summarize age bands",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "analysis_table.csv"
+      ],
+      "outputs": [
+        "age_summary.csv"
+      ],
+      "requirements": [
+        "Compute age-band measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "salaries",
+      "name": "Summarize salary bands",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "analysis_table.csv"
+      ],
+      "outputs": [
+        "salary_summary.csv"
+      ],
+      "requirements": [
+        "Compute salary-band measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Reconcile cohort summaries",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "team_summary.csv",
+        "position_summary.csv",
+        "age_summary.csv",
+        "salary_summary.csv"
+      ],
+      "outputs": [
+        "sports_report.json"
+      ],
+      "requirements": [
+        "Reconcile four player totals and group counts."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_clean.csv",
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position"
+      ]
+    },
+    {
+      "id": "performance_features.csv",
+      "path": "performance_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "production_per_minute"
+      ]
+    },
+    {
+      "id": "shooting_features.csv",
+      "path": "shooting_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "shooting_index",
+        "weighted_shooting_index"
+      ]
+    },
+    {
+      "id": "context_features.csv",
+      "path": "context_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "age_band",
+        "salary_band"
+      ]
+    },
+    {
+      "id": "analysis_table.csv",
+      "path": "analysis_table.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "shooting_index"
+      ]
+    },
+    {
+      "id": "team_summary.csv",
+      "path": "team_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "mean_production"
+      ]
+    },
+    {
+      "id": "position_summary.csv",
+      "path": "position_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "player_count",
+        "mean_shooting"
+      ]
+    },
+    {
+      "id": "age_summary.csv",
+      "path": "age_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "age_band",
+        "player_count",
+        "mean_production"
+      ]
+    },
+    {
+      "id": "salary_summary.csv",
+      "path": "salary_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "salary_band",
+        "player_count",
+        "mean_production"
+      ]
+    },
+    {
+      "id": "sports_report.json",
+      "path": "sports_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "performance",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "shooting",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "context",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "context",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "context_features.csv"
+      ]
+    },
+    {
+      "source": "performance",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "performance_features.csv"
+      ]
+    },
+    {
+      "source": "shooting",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "shooting_features.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "teams",
+      "kind": "data",
+      "artifacts": [
+        "analysis_table.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "positions",
+      "kind": "data",
+      "artifacts": [
+        "analysis_table.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "ages",
+      "kind": "data",
+      "artifacts": [
+        "analysis_table.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "salaries",
+      "kind": "data",
+      "artifacts": [
+        "analysis_table.csv"
+      ]
+    },
+    {
+      "source": "ages",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "age_summary.csv"
+      ]
+    },
+    {
+      "source": "positions",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "position_summary.csv"
+      ]
+    },
+    {
+      "source": "salaries",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "salary_summary.csv"
+      ]
+    },
+    {
+      "source": "teams",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "team_summary.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "sports_multiview",
+      "performance": "sports_multiview",
+      "shooting": "sports_multiview",
+      "context": "sports_multiview",
+      "integrate": "sports_multiview",
+      "teams": "sports_multiview",
+      "positions": "sports_multiview",
+      "ages": "sports_multiview",
+      "salaries": "sports_multiview",
+      "report": "sports_multiview"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

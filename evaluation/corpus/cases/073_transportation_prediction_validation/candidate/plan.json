@@ -1,0 +1,342 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'day_of_week', 'is_holiday', 'weather_condition', 'is_delayed', 'cancellation_risk']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prep(d, cols, 'trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "assert set(d.is_delayed.unique()) <= {0, 1}",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums = ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'is_holiday']",
+      "dependencies": {},
+      "writes": [
+        "nums"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "cats = ['route', 'vehicle_type', 'day_of_week', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cats"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "features = nums + cats",
+      "dependencies": {
+        "cats": 5,
+        "nums": 4
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "def pre(model):\n    return Pipeline([('features', ColumnTransformer([('numeric', StandardScaler(), nums), ('categorical', OneHotEncoder(handle_unknown='ignore'), cats)])), ('model', model)])",
+      "dependencies": {
+        "nums": 4,
+        "cats": 5
+      },
+      "writes": [
+        "pre"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "cd = d[['trip_id', 'is_delayed', *features]].sort_values('trip_id')",
+      "dependencies": {
+        "d": 3,
+        "features": 6
+      },
+      "writes": [
+        "cd"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "cd.to_csv(out / 'delay_model_data.csv', index=False)",
+      "dependencies": {
+        "cd": 8
+      },
+      "writes": [],
+      "outputs": [
+        "delay_model_data.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "tr, te = train_test_split(cd, test_size=0.25, random_state=42, stratify=cd.is_delayed)",
+      "dependencies": {
+        "cd": 8
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "cm = pre(LogisticRegression(C=1, solver='liblinear', max_iter=1000, random_state=42))",
+      "dependencies": {
+        "pre": 7
+      },
+      "writes": [
+        "cm"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "cm.fit(tr[features], tr.is_delayed)",
+      "dependencies": {
+        "cm": 11,
+        "tr": 10,
+        "features": 6
+      },
+      "writes": [
+        "cm"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "prob = cm.predict_proba(te[features])[:, 1]",
+      "dependencies": {
+        "cm": 12,
+        "te": 10,
+        "features": 6
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "yp = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 13
+      },
+      "writes": [
+        "yp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "with (out / 'delay_model.pkl').open('wb') as h:\n    pickle.dump(cm, h)",
+      "dependencies": {
+        "cm": 12
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "delay_model.pkl"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "pd.DataFrame({'trip_id': te.trip_id, 'actual_is_delayed': te.is_delayed, 'probability': prob, 'predicted_is_delayed': yp}).sort_values('trip_id').to_csv(out / 'delay_predictions.csv', index=False)",
+      "dependencies": {
+        "te": 10,
+        "prob": 13,
+        "yp": 14
+      },
+      "writes": [],
+      "outputs": [
+        "delay_predictions.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "js(out / 'delay_metrics.json', {'train_rows': len(tr), 'test_rows': len(te), 'accuracy': accuracy_score(te.is_delayed, yp), 'precision': precision_score(te.is_delayed, yp, zero_division=0), 'recall': recall_score(te.is_delayed, yp, zero_division=0), 'f1': f1_score(te.is_delayed, yp, zero_division=0), 'roc_auc': roc_auc_score(te.is_delayed, prob)})",
+      "dependencies": {
+        "te": 10,
+        "prob": 13,
+        "yp": 14,
+        "tr": 10
+      },
+      "writes": [],
+      "outputs": [
+        "delay_metrics.json"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "rd = d[['trip_id', 'cancellation_risk', *features]].sort_values('trip_id')",
+      "dependencies": {
+        "d": 3,
+        "features": 6
+      },
+      "writes": [
+        "rd"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "rd.to_csv(out / 'risk_model_data.csv', index=False)",
+      "dependencies": {
+        "rd": 18
+      },
+      "writes": [],
+      "outputs": [
+        "risk_model_data.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "tr, te = train_test_split(rd, test_size=0.25, random_state=42)",
+      "dependencies": {
+        "rd": 18
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "rm = pre(Ridge(alpha=1))",
+      "dependencies": {
+        "pre": 7
+      },
+      "writes": [
+        "rm"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "rm.fit(tr[features], tr.cancellation_risk)",
+      "dependencies": {
+        "rm": 21,
+        "tr": 20,
+        "features": 6
+      },
+      "writes": [
+        "rm"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "rp = rm.predict(te[features])",
+      "dependencies": {
+        "rm": 22,
+        "te": 20,
+        "features": 6
+      },
+      "writes": [
+        "rp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "with (out / 'risk_model.pkl').open('wb') as h:\n    pickle.dump(rm, h)",
+      "dependencies": {
+        "rm": 22
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "risk_model.pkl"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "pd.DataFrame({'trip_id': te.trip_id, 'actual_cancellation_risk': te.cancellation_risk, 'predicted_cancellation_risk': rp}).sort_values('trip_id').to_csv(out / 'risk_predictions.csv', index=False)",
+      "dependencies": {
+        "te": 20,
+        "rp": 23
+      },
+      "writes": [],
+      "outputs": [
+        "risk_predictions.csv"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "js(out / 'risk_metrics.json', {'train_rows': len(tr), 'test_rows': len(te), 'mae': mean_absolute_error(te.cancellation_risk, rp), 'rmse': mean_squared_error(te.cancellation_risk, rp) ** 0.5, 'r2': r2_score(te.cancellation_risk, rp)})",
+      "dependencies": {
+        "te": 20,
+        "rp": 23,
+        "tr": 20
+      },
+      "writes": [],
+      "outputs": [
+        "risk_metrics.json"
+      ]
+    }
+  ],
+  "targets": {
+    "delay_prepare": [
+      9
+    ],
+    "delay_fit": [
+      15,
+      16
+    ],
+    "delay_evaluate": [
+      17
+    ],
+    "risk_prepare": [
+      19
+    ],
+    "risk_fit": [
+      24,
+      25
+    ],
+    "risk_evaluate": [
+      26
+    ]
+  }
+}

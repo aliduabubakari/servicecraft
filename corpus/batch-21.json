@@ -1,0 +1,32 @@
+{
+  "batch_id": "batch-21",
+  "case_count": 2,
+  "partial_final_batch": true,
+  "standard_batch_size": 5,
+  "partial_batch_reason": "Only two unused upstream numbered pipeline cases remained after batch 20; no duplicate cases or artificial nodes were added.",
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 2,
+    "standard_five_case_policy_not_applicable": true
+  },
+  "cases": [
+    {
+      "pipeline_id": "053_sports_visualization_validation_recovery",
+      "title": "Recovered players fanning out to cohort summaries",
+      "domain": "sports",
+      "family_id": "player_recovery_cohort_fanout_v3",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "100_transportation_visualization_v2",
+      "title": "Linear route performance ranking and chart preparation",
+      "domain": "transportation",
+      "family_id": "route_performance_chart_linear",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

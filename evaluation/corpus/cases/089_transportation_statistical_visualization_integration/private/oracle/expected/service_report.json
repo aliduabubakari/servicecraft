@@ -1,0 +1,10 @@
+{
+  "trips": 536,
+  "route_trips": 536,
+  "vehicle_trips": 536,
+  "weather_trips": 536,
+  "routes": 20,
+  "vehicles": 5,
+  "weather_conditions": 4,
+  "best_route": "Route_7"
+}

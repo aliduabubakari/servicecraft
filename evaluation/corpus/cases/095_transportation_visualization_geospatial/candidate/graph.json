@@ -1,0 +1,258 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "095_transportation_visualization_geospatial",
+  "benchmark_revision": "batch-15",
+  "review_status": "author_review_pending",
+  "title": "Trip geography fanning out to route ranking and two summaries",
+  "domain": "transportation",
+  "family_id": "trip_geography_linear_fanout",
+  "topology": "linear_to_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition",
+        "origin_lat",
+        "origin_lon",
+        "dest_lat",
+        "dest_lon"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate geographic trips",
+      "operation": "geospatial_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_clean.csv"
+      ],
+      "requirements": [
+        "Validate identifiers, fields, and coordinate bounds."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive trip geography",
+      "operation": "geospatial_transformation",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "trip_geography.csv"
+      ],
+      "requirements": [
+        "Compute distances and periods."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Aggregate route geography",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_geography.csv"
+      ],
+      "outputs": [
+        "route_geography.csv"
+      ],
+      "requirements": [
+        "Compute route geographic measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rank",
+      "name": "Rank route geography",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_geography.csv"
+      ],
+      "outputs": [
+        "route_geography_ranking.csv"
+      ],
+      "requirements": [
+        "Rank passenger-distance then mean distance."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Summarize vehicle geography",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_geography.csv"
+      ],
+      "outputs": [
+        "vehicle_geography.csv"
+      ],
+      "requirements": [
+        "Compute vehicle geographic measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "periods",
+      "name": "Summarize period geography",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_geography.csv"
+      ],
+      "outputs": [
+        "period_geography.csv"
+      ],
+      "requirements": [
+        "Compute period geographic measures."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_clean.csv",
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route"
+      ]
+    },
+    {
+      "id": "trip_geography.csv",
+      "path": "trip_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "geodesic_km",
+        "passenger_geodesic_km",
+        "time_period"
+      ]
+    },
+    {
+      "id": "route_geography.csv",
+      "path": "route_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_geodesic_km"
+      ]
+    },
+    {
+      "id": "route_geography_ranking.csv",
+      "path": "route_geography_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "total_passenger_geodesic_km"
+      ]
+    },
+    {
+      "id": "vehicle_geography.csv",
+      "path": "vehicle_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_geodesic_km"
+      ]
+    },
+    {
+      "id": "period_geography.csv",
+      "path": "period_geography.csv",
+      "format": "csv",
+      "required_columns": [
+        "time_period",
+        "trip_count",
+        "mean_geodesic_km"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "trip_geography.csv"
+      ]
+    },
+    {
+      "source": "routes",
+      "target": "rank",
+      "kind": "data",
+      "artifacts": [
+        "route_geography.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "vehicles",
+      "kind": "data",
+      "artifacts": [
+        "trip_geography.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "periods",
+      "kind": "data",
+      "artifacts": [
+        "trip_geography.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "geo_ltof",
+      "features": "geo_ltof",
+      "routes": "geo_ltof",
+      "rank": "geo_ltof",
+      "vehicles": "geo_ltof",
+      "periods": "geo_ltof"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

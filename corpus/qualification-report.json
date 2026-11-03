@@ -1,0 +1,103 @@
+{
+  "status": "passed",
+  "scope": "Python references, independent behavioral calculations, graph consistency, and export allowlists; not Dagster execution or generated-code evaluation",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scipy": "1.16.0",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "042_sports_validation_recovery",
+      "probe": "revised_visible_fixture",
+      "status": "passed",
+      "output_sha256": {
+        "quality_report.json": "f637b656f488d06f0cfa9515c9c4e1a12fbab68ad9a7c5bcbcf3c589e731c183",
+        "rejected.csv": "043989e001ae1142c0c844492e8f898fc6cd62d57b5ac103a69f557b9a837bbb",
+        "recovered.csv": "b2acbdcffcfa40d31f389d5168c3a70a2d5acdce3daa484b32e45fe820aa0094",
+        "validation.json": "edcf286b0d2d08a81c772eafc5bc0699e462bce67543a95e9930ce7ef65b54db",
+        "eligible.csv": "492d071cea3f2ba1afe2696b3885b2214275f0b5df851fb927e648651d463d5c",
+        "recovery.json": "3bcfdfb39d98be8dc6951a344b681c288b155b8fe19cf542d6ff21a5669b074d",
+        "normalized.csv": "cd1961bba5c99d6e3166a8dfb133ae9cbf3cac884d3e6c5210b09d88c810ac00"
+      }
+    },
+    {
+      "case": "058_transportation_cleaning_integration_geospatial",
+      "probe": "revised_visible_fixture",
+      "status": "passed",
+      "output_sha256": {
+        "rejected_trips.csv": "ff080244fe952adb0a605349facf6f5d0cfefe2525db7e73ac868589e15f7cfa",
+        "aggregate.json": "5baa6c47935b840ef78848271c11d82d5eb55c6e9eae0a312785891dff0993e7",
+        "spatial_report.json": "5baa6c47935b840ef78848271c11d82d5eb55c6e9eae0a312785891dff0993e7",
+        "trip_metrics.csv": "8260f024675604304bbabd932a4f47fa6b10d1d10015b607c55303ab8fbeb460",
+        "spatial_metadata.json": "85cc84b256f6895ecd2463724de6e6fc6538d83d92bf53bc4f1b5d85d9043ad7",
+        "validation.json": "25594ddf21ecd54b2b1da4956fa3119ca7a9df5b9f4c9568ba95d504cbb7bd43",
+        "valid_trips.csv": "7a64e171fc1f0e763bfa77cff8b6460fb12e10f585a4e371108912bfb3399728",
+        "route_summary.csv": "34284872ad63002dfac832c75f5c2d0472955454b4aa460fa0ab0f08fdd9135f"
+      }
+    },
+    {
+      "case": "008_energy_forecasting",
+      "probe": "revised_visible_fixture",
+      "status": "passed",
+      "output_sha256": {
+        "aligned.csv": "4925803ee3b8ed082032403ced2c6ccce3e85dca5c633c0f3ab8ac26391b7def",
+        "metrics.json": "e2aeac3066de6694738a63c323c96e96b8cd59467bfa32f3d7c40bbbe9bda9d1",
+        "fit_metadata.json": "5018216b4c45597adb47bc0d021b09b8c1d885b90a6a292d674fa523fe451583",
+        "test.csv": "4b1c904387b905edfaa56d4e0e44ab9aa77a77c4fab2c595f3255efe54bc954a",
+        "predictions.csv": "c4546b64e04a419004cfd9a9202a3e605a080415257253755edcfb197eb2c094",
+        "energy_report.json": "e2aeac3066de6694738a63c323c96e96b8cd59467bfa32f3d7c40bbbe9bda9d1",
+        "model.pkl": "f3b34fe00d5bcc73e2af68a950d60df7e75808b4670a6ff5f309b3f6fc0c8d58",
+        "train.csv": "8aab4108716d06b30e26cc15ea14c5d6725546091af934b4253515242dd5b072",
+        "hourly.csv": "855e1452da578419a503cd7cffc83d155e6ec61e99007970f878cc96043fb555",
+        "features.csv": "b08e235f4c497dcd81176d38f02a99848150979fe657a42b3f97a8ae2138d644",
+        "daily_weather.csv": "536d4b9704860734f85012ee5f9b781731935aa10810cffc1644b406ae447d39"
+      }
+    },
+    {
+      "case": "042_sports_validation_recovery",
+      "probe": "all_missing_zero_fallback_and_rejection_priority",
+      "status": "passed"
+    },
+    {
+      "case": "058_transportation_cleaning_integration_geospatial",
+      "probe": "zero_distance_antipodes_invalid_latitude_and_rank_tie",
+      "status": "passed"
+    },
+    {
+      "case": "058_transportation_cleaning_integration_geospatial",
+      "probe": "empty_valid_partition",
+      "status": "passed"
+    },
+    {
+      "case": "008_energy_forecasting",
+      "probe": "shuffled_inputs_lagged_weather_train_only_scaling_closed_form_prediction",
+      "status": "passed"
+    },
+    {
+      "case": "008_energy_forecasting",
+      "probe": "missing_hour_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "008_energy_forecasting",
+      "probe": "duplicate_weather_date_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "schema",
+      "probe": "missing_artifact_dependency_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "export",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

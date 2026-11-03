@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "source_pipeline": "058_transportation_cleaning_integration_geospatial",
+  "change_kind": "new_behavioral_variant_not_equivalent_to_original",
+  "selection_reason": "The upstream geospatial label lacks a specified spatial computation and its generic model predicts destination longitude.",
+  "input_modifications": [
+    "Row 1 origin_lat=95 (invalid)",
+    "Row 2 dest_lon missing"
+  ],
+  "source_input_sha256": {
+    "data.csv": "58ef63972bc6de81864d4ed696f9c275b837c826905e07c2a86488807f008835"
+  },
+  "pilot_input_sha256": {
+    "data.csv": "65d2e20c04e859f895fa201c94f462967ee61398181f7836c2c3cf63e33361ca"
+  },
+  "review_status": "author_review_pending"
+}

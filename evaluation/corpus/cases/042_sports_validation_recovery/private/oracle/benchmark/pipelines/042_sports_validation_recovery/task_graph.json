@@ -1,0 +1,240 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "042_sports_validation_recovery",
+  "benchmark_revision": "pilot-01",
+  "review_status": "author_review_pending",
+  "title": "Sports roster validation and deterministic recovery",
+  "domain": "sports",
+  "family_id": "validation_groupwise_recovery",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "minutes_per_game"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "normalize",
+      "name": "Normalize roster fields",
+      "operation": "normalize_records",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "normalized.csv"
+      ],
+      "requirements": [
+        "Trim string fields and retain source_row.",
+        "Select the six named fields and coerce numeric text.",
+        "Replace missing team/position with Unknown."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "validate",
+      "name": "Identify eligible and rejected rows",
+      "operation": "validate_and_partition",
+      "required": true,
+      "inputs": [
+        "normalized.csv"
+      ],
+      "outputs": [
+        "eligible.csv",
+        "rejected.csv",
+        "validation.json"
+      ],
+      "requirements": [
+        "Apply missing ID, duplicate ID, and games rules with the stated reason priority.",
+        "Convert invalid recovery fields to missing without rejecting their rows."
+      ],
+      "parameters": {
+        "games_min": 0,
+        "games_max": 82,
+        "minutes_min": 0,
+        "minutes_max": 48,
+        "duplicate_policy": "first_input_occurrence"
+      }
+    },
+    {
+      "id": "recover",
+      "name": "Recover missing measures and derive totals",
+      "operation": "groupwise_imputation",
+      "required": true,
+      "inputs": [
+        "eligible.csv",
+        "validation.json"
+      ],
+      "outputs": [
+        "recovered.csv",
+        "recovery.json"
+      ],
+      "requirements": [
+        "Use pre-recovery position medians with global median then zero fallback.",
+        "Preserve valid values and compute total_points."
+      ],
+      "parameters": {
+        "group_by": "position",
+        "strategy": "median",
+        "fields": [
+          "points_per_game",
+          "minutes_per_game"
+        ],
+        "fallback": [
+          "global_median",
+          0
+        ],
+        "sort_by": "player_id"
+      }
+    },
+    {
+      "id": "report",
+      "name": "Produce quality and roster summary",
+      "operation": "quality_report",
+      "required": true,
+      "inputs": [
+        "recovered.csv",
+        "recovery.json"
+      ],
+      "outputs": [
+        "quality_report.json"
+      ],
+      "requirements": [
+        "Reconcile input/eligible/rejected counts and report both imputation counts.",
+        "Compute team counts and total points from recovered rows."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "normalized.csv",
+      "path": "normalized.csv",
+      "format": "csv",
+      "required_columns": [
+        "source_row",
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "minutes_per_game"
+      ]
+    },
+    {
+      "id": "eligible.csv",
+      "path": "eligible.csv",
+      "format": "csv",
+      "required_columns": [
+        "source_row",
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "minutes_per_game"
+      ]
+    },
+    {
+      "id": "rejected.csv",
+      "path": "rejected.csv",
+      "format": "csv",
+      "required_columns": [
+        "source_row",
+        "player_id",
+        "reason"
+      ]
+    },
+    {
+      "id": "validation.json",
+      "path": "validation.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "recovered.csv",
+      "path": "recovered.csv",
+      "format": "csv",
+      "required_columns": [
+        "source_row",
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "minutes_per_game",
+        "total_points"
+      ]
+    },
+    {
+      "id": "recovery.json",
+      "path": "recovery.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "quality_report.json",
+      "path": "quality_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "normalize",
+      "target": "validate",
+      "kind": "data",
+      "artifacts": [
+        "normalized.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "recover",
+      "kind": "data",
+      "artifacts": [
+        "eligible.csv",
+        "validation.json"
+      ]
+    },
+    {
+      "source": "recover",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "recovered.csv",
+        "recovery.json"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "normalize": "normalize",
+      "validate": "validate",
+      "recover": "recover",
+      "report": "report"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

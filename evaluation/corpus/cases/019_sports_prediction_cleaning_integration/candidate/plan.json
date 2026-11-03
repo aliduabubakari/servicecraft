@@ -1,0 +1,259 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'all_star', 'injury_games_missed', 'contract_year']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, cols, 'data.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'player_id', 'data.csv')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums(d, cols[3:], 'data.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if not set(d.all_star.unique()) <= {0, 1}:\n    raise ValueError('all_star binary')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean['availability_rate'] = (clean.games_played - clean.injury_games_missed).clip(lower=0) / clean.games_played",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "clean['salary_per_point'] = np.where(clean.points_per_game > 0, clean.salary_millions / clean.points_per_game, np.nan)",
+      "dependencies": {
+        "clean": 7
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "clean.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 8
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "features = ['games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'injury_games_missed', 'contract_year']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "train, test = train_test_split(clean, test_size=0.25, random_state=42, stratify=clean.all_star)",
+      "dependencies": {
+        "clean": 8
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', LogisticRegression(C=1, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "model.fit(train[features], train.all_star)",
+      "dependencies": {
+        "model": 12,
+        "features": 10,
+        "train": 11
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "prob = model.predict_proba(test[features])[:, 1]",
+      "dependencies": {
+        "model": 13,
+        "features": 10,
+        "test": 11
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "pred = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 14
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "with (out / 'all_star_model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 13
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "all_star_model.pkl"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "pd.DataFrame({'player_id': test.player_id, 'actual_all_star': test.all_star, 'probability': prob, 'predicted_all_star': pred}).sort_values('player_id').to_csv(out / 'all_star_predictions.csv', index=False)",
+      "dependencies": {
+        "prob": 14,
+        "test": 11,
+        "pred": 15
+      },
+      "writes": [],
+      "outputs": [
+        "all_star_predictions.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "js(out / 'all_star_metrics.json', {'train_rows': len(train), 'test_rows': len(test), 'features': features, 'accuracy': accuracy_score(test.all_star, pred), 'precision': precision_score(test.all_star, pred, zero_division=0), 'recall': recall_score(test.all_star, pred, zero_division=0), 'f1': f1_score(test.all_star, pred, zero_division=0), 'roc_auc': roc_auc_score(test.all_star, prob)})",
+      "dependencies": {
+        "pred": 15,
+        "features": 10,
+        "train": 11,
+        "prob": 14,
+        "test": 11
+      },
+      "writes": [],
+      "outputs": [
+        "all_star_metrics.json"
+      ]
+    },
+    {
+      "index": 19,
+      "source": "clean.groupby('team', as_index=False).agg(player_count=('player_id', 'size'), mean_games_played=('games_played', 'mean'), mean_injury_games_missed=('injury_games_missed', 'mean'), mean_availability_rate=('availability_rate', 'mean')).sort_values('team').to_csv(out / 'team_availability.csv', index=False)",
+      "dependencies": {
+        "clean": 8
+      },
+      "writes": [],
+      "outputs": [
+        "team_availability.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "clean.groupby('position', as_index=False).agg(player_count=('player_id', 'size'), mean_salary_millions=('salary_millions', 'mean'), mean_points_per_game=('points_per_game', 'mean'), mean_salary_per_point=('salary_per_point', 'mean')).sort_values('position').to_csv(out / 'position_compensation.csv', index=False)",
+      "dependencies": {
+        "clean": 8
+      },
+      "writes": [],
+      "outputs": [
+        "position_compensation.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare": [
+      9
+    ],
+    "predict": [
+      16,
+      17,
+      18
+    ],
+    "availability": [
+      19
+    ],
+    "compensation": [
+      20
+    ]
+  }
+}

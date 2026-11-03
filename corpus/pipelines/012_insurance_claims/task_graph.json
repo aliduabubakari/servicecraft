@@ -1,0 +1,186 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "012_insurance_claims",
+  "benchmark_revision": "batch-04",
+  "review_status": "author_review_pending",
+  "title": "Independent claims analyses converging into a portfolio report",
+  "domain": "insurance",
+  "family_id": "claims_descriptive_fanin",
+  "topology": "fan_in",
+  "inputs": [
+    {
+      "id": "input:claims.csv",
+      "path": "inputs/claims.csv",
+      "format": "csv",
+      "required_columns": [
+        "claim_id",
+        "claim_type",
+        "claim_amount",
+        "policy_type",
+        "incident_date",
+        "report_date",
+        "report_delay_days",
+        "claim_status",
+        "is_fraudulent"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "financial",
+      "name": "Analyze claim amounts",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:claims.csv"
+      ],
+      "outputs": [
+        "financial_by_claim_type.csv"
+      ],
+      "requirements": [
+        "Validate claims and compute claim-type financial measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "processing",
+      "name": "Analyze processing delay",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:claims.csv"
+      ],
+      "outputs": [
+        "processing_by_status.csv"
+      ],
+      "requirements": [
+        "Validate claims and compute status processing measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "fraud",
+      "name": "Analyze fraud by policy",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:claims.csv"
+      ],
+      "outputs": [
+        "fraud_by_policy_type.csv"
+      ],
+      "requirements": [
+        "Validate claims and compute policy fraud measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Synthesize claims portfolio results",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "financial_by_claim_type.csv",
+        "processing_by_status.csv",
+        "fraud_by_policy_type.csv"
+      ],
+      "outputs": [
+        "claims_report.json"
+      ],
+      "requirements": [
+        "Consume all branches and publish reconciled totals/rankings."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "financial_by_claim_type.csv",
+      "path": "financial_by_claim_type.csv",
+      "format": "csv",
+      "required_columns": [
+        "claim_type",
+        "claim_count",
+        "total_claim_amount",
+        "mean_claim_amount",
+        "median_claim_amount"
+      ]
+    },
+    {
+      "id": "processing_by_status.csv",
+      "path": "processing_by_status.csv",
+      "format": "csv",
+      "required_columns": [
+        "claim_status",
+        "claim_count",
+        "mean_report_delay_days",
+        "median_report_delay_days",
+        "mean_claim_amount"
+      ]
+    },
+    {
+      "id": "fraud_by_policy_type.csv",
+      "path": "fraud_by_policy_type.csv",
+      "format": "csv",
+      "required_columns": [
+        "policy_type",
+        "claim_count",
+        "fraud_count",
+        "fraud_rate",
+        "mean_claim_amount"
+      ]
+    },
+    {
+      "id": "claims_report.json",
+      "path": "claims_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "financial",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "financial_by_claim_type.csv"
+      ]
+    },
+    {
+      "source": "fraud",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "fraud_by_policy_type.csv"
+      ]
+    },
+    {
+      "source": "processing",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "processing_by_status.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "financial": "claims_fanin",
+      "processing": "claims_fanin",
+      "fraud": "claims_fanin",
+      "report": "claims_fanin"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "005_demand_forecasting",
+  "selection_reason": "The upstream forecasting narrative requests many incompatible model families while its actionable inventory formula and time window are not fixed.",
+  "input_transformations": [
+    {
+      "source": "inventory.csv",
+      "benchmark_file": "inventory.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "sales_orders.json",
+      "benchmark_file": "sales_orders.csv",
+      "conversion": "json_to_csv"
+    },
+    {
+      "source": "suppliers.xlsx",
+      "benchmark_file": "suppliers.csv",
+      "conversion": "xlsx_to_csv"
+    }
+  ],
+  "pilot_input_sha256": {
+    "inventory.csv": "80f5042224e12716d41c6c520e48fd6c0c06162ff69c0a10177df1e2115f525f",
+    "sales_orders.csv": "3555c24c9f583981e037fed633eb1d725ce1c5a75d0005a904445abc681cc0b1",
+    "suppliers.csv": "ee69e2c562cbe71b5f6431a71ebb75430ad3764169bcfd42060523ca7e54256a"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

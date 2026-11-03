@@ -1,0 +1,19 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "020_sports_prediction_statistical_visualization",
+  "selection_reason": "Prediction, position statistics, and team chart datasets answer independent questions and need no artifact joins.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "input_modifications": [],
+  "pilot_input_sha256": {
+    "data.csv": "85b58b325b12990644ece3cccd14bfb6c08bc233948929e149fe81c89d857f15"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

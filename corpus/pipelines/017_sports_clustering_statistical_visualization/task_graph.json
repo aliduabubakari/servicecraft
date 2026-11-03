@@ -1,0 +1,402 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "017_sports_clustering_statistical_visualization",
+  "benchmark_revision": "batch-06",
+  "review_status": "author_review_pending",
+  "title": "Convergent player-style features with multi-view cluster analysis",
+  "domain": "sports",
+  "family_id": "player_style_multiview_clustering",
+  "topology": "fan_in_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "play_style_score",
+        "efficiency_rating",
+        "usage_rate",
+        "field_goal_pct",
+        "three_point_pct",
+        "free_throw_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate players",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_clean.csv"
+      ],
+      "requirements": [
+        "Validate keys and finite style/shooting fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "shooting",
+      "name": "Derive shooting features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "shooting_features.csv"
+      ],
+      "requirements": [
+        "Compute three percentages and shooting composite."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "playmaking",
+      "name": "Derive playmaking features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "playmaking_features.csv"
+      ],
+      "requirements": [
+        "Compute production index and retain six style measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Join style branches",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "players_clean.csv",
+        "shooting_features.csv",
+        "playmaking_features.csv"
+      ],
+      "outputs": [
+        "style_features.csv"
+      ],
+      "requirements": [
+        "Join branches one-to-one by player."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "cluster",
+      "name": "Fit canonical style clusters",
+      "operation": "kmeans_clustering",
+      "required": true,
+      "inputs": [
+        "style_features.csv"
+      ],
+      "outputs": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ],
+      "requirements": [
+        "Scale, fit fixed K-means, canonicalize, and retain feature fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "profiles",
+      "name": "Profile clusters",
+      "operation": "cluster_profiling",
+      "required": true,
+      "inputs": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ],
+      "outputs": [
+        "cluster_profiles.csv"
+      ],
+      "requirements": [
+        "Compute declared cluster means/counts."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "positions",
+      "name": "Compute position mix",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "player_clusters.csv"
+      ],
+      "outputs": [
+        "position_cluster_mix.csv"
+      ],
+      "requirements": [
+        "Compute position/cluster counts and shares."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "scatter",
+      "name": "Prepare PCA scatter data",
+      "operation": "dimensionality_reduction",
+      "required": true,
+      "inputs": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ],
+      "outputs": [
+        "cluster_scatter_data.csv"
+      ],
+      "requirements": [
+        "Compute deterministic two-component PCA coordinates."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Synthesize style analysis",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "cluster_profiles.csv",
+        "position_cluster_mix.csv",
+        "cluster_scatter_data.csv"
+      ],
+      "outputs": [
+        "style_report.json"
+      ],
+      "requirements": [
+        "Consume all three analytical views."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_clean.csv",
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position"
+      ]
+    },
+    {
+      "id": "shooting_features.csv",
+      "path": "shooting_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "shooting_composite"
+      ]
+    },
+    {
+      "id": "playmaking_features.csv",
+      "path": "playmaking_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index"
+      ]
+    },
+    {
+      "id": "style_features.csv",
+      "path": "style_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "shooting_composite",
+        "production_index"
+      ]
+    },
+    {
+      "id": "player_clusters.csv",
+      "path": "player_clusters.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "cluster"
+      ]
+    },
+    {
+      "id": "cluster_model.pkl",
+      "path": "cluster_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "cluster_profiles.csv",
+      "path": "cluster_profiles.csv",
+      "format": "csv",
+      "required_columns": [
+        "cluster",
+        "player_count",
+        "mean_efficiency"
+      ]
+    },
+    {
+      "id": "position_cluster_mix.csv",
+      "path": "position_cluster_mix.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "cluster",
+        "player_count",
+        "position_share"
+      ]
+    },
+    {
+      "id": "cluster_scatter_data.csv",
+      "path": "cluster_scatter_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "cluster",
+        "pc1",
+        "pc2"
+      ]
+    },
+    {
+      "id": "style_report.json",
+      "path": "style_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "shooting",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "playmaking",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "playmaking",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "playmaking_features.csv"
+      ]
+    },
+    {
+      "source": "shooting",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "shooting_features.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "cluster",
+      "kind": "data",
+      "artifacts": [
+        "style_features.csv"
+      ]
+    },
+    {
+      "source": "cluster",
+      "target": "profiles",
+      "kind": "data",
+      "artifacts": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "source": "cluster",
+      "target": "positions",
+      "kind": "data",
+      "artifacts": [
+        "player_clusters.csv"
+      ]
+    },
+    {
+      "source": "cluster",
+      "target": "scatter",
+      "kind": "data",
+      "artifacts": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "source": "positions",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "position_cluster_mix.csv"
+      ]
+    },
+    {
+      "source": "profiles",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "source": "scatter",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "cluster_scatter_data.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "style",
+      "shooting": "style",
+      "playmaking": "style",
+      "integrate": "style",
+      "cluster": "style",
+      "profiles": "style",
+      "positions": "style",
+      "scatter": "style",
+      "report": "style"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

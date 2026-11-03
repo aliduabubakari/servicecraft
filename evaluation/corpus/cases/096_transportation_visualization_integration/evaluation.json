@@ -1,0 +1,141 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "096_transportation_visualization_integration",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "routes",
+    "vehicles",
+    "weather",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "routes",
+      "report"
+    ],
+    [
+      "vehicles",
+      "report"
+    ],
+    [
+      "weather",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "route_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "vehicle_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_passengers"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "weather_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "on_time_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "operations_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "route_operations.csv",
+      "artifact": "route_operations.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/route_operations.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "vehicle_operations.csv",
+      "artifact": "vehicle_operations.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/vehicle_operations.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "weather_operations.csv",
+      "artifact": "weather_operations.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/weather_operations.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "operations_report.json",
+      "artifact": "operations_report.json",
+      "kind": "json_equals",
+      "reference": "private/expected/operations_report.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

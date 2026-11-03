@@ -1,0 +1,381 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'sensor_readings.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "sensors = ['temperature_c', 'vibration_mm_s', 'pressure_bar', 'rpm', 'power_consumption_kw', 'noise_db', 'humidity_pct']",
+      "dependencies": {},
+      "writes": [
+        "sensors"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "targets = ['is_failure', 'failure_within_24h', 'failure_within_7d']",
+      "dependencies": {},
+      "writes": [
+        "targets"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "cols = ['machine_id', 'machine_type', 'timestamp', *sensors, *targets]",
+      "dependencies": {
+        "sensors": 1,
+        "targets": 2
+      },
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "require(d, cols, 'sensor_readings.csv')",
+      "dependencies": {
+        "cols": 3,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "unique_nonblank(d, ['machine_id', 'timestamp'], 'sensor_readings.csv')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "numeric(d, sensors + targets, 'sensor_readings.csv')",
+      "dependencies": {
+        "targets": 2,
+        "d": 5,
+        "sensors": 1
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "if any((not set(d[t].unique()) <= {0, 1} for t in targets)):\n    raise ValueError('maintenance targets must be binary')",
+      "dependencies": {
+        "targets": 2,
+        "d": 6
+      },
+      "writes": [
+        "d",
+        "t",
+        "targets"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "d['timestamp'] = pd.to_datetime(d.timestamp, errors='raise')",
+      "dependencies": {
+        "d": 7
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "clean = d[cols].sort_values(['machine_id', 'timestamp']).reset_index(drop=True)",
+      "dependencies": {
+        "cols": 3,
+        "d": 8
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "for _, group in clean.groupby('machine_id'):\n    if not group.timestamp.diff().dropna().eq(pd.Timedelta(hours=1)).all():\n        raise ValueError('machine series must be hourly and continuous')",
+      "dependencies": {
+        "clean": 9
+      },
+      "writes": [
+        "_",
+        "group"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "clean.to_csv(out / 'sensor_clean.csv', index=False, date_format='%Y-%m-%d %H:%M:%S')",
+      "dependencies": {
+        "clean": 9
+      },
+      "writes": [],
+      "outputs": [
+        "sensor_clean.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "temporal = clean[['machine_id', 'timestamp']].copy()",
+      "dependencies": {
+        "clean": 9
+      },
+      "writes": [
+        "temporal"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "for column in ['temperature_c', 'vibration_mm_s', 'power_consumption_kw']:\n    grouped = clean.groupby('machine_id')[column]\n    temporal[f'{column}_lag1'] = grouped.shift(1)\n    temporal[f'{column}_rolling24_mean'] = grouped.transform(lambda s: s.shift(1).rolling(24, min_periods=24).mean())",
+      "dependencies": {
+        "clean": 9,
+        "temporal": 12
+      },
+      "writes": [
+        "column",
+        "grouped",
+        "temporal"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "temporal.to_csv(out / 'temporal_features.csv', index=False, date_format='%Y-%m-%d %H:%M:%S')",
+      "dependencies": {
+        "temporal": 13
+      },
+      "writes": [],
+      "outputs": [
+        "temporal_features.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "baseline = clean[['machine_id', 'timestamp']].copy()",
+      "dependencies": {
+        "clean": 9
+      },
+      "writes": [
+        "baseline"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "for column in ['temperature_c', 'vibration_mm_s']:\n    grouped = clean.groupby('machine_id')[column]\n    baseline[f'{column}_prior_mean'] = grouped.transform(lambda s: s.shift(1).expanding(min_periods=24).mean())\n    baseline[f'{column}_prior_std'] = grouped.transform(lambda s: s.shift(1).expanding(min_periods=24).std(ddof=0))",
+      "dependencies": {
+        "column": 13,
+        "clean": 9,
+        "baseline": 15,
+        "grouped": 13
+      },
+      "writes": [
+        "baseline",
+        "column",
+        "grouped"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "baseline.to_csv(out / 'expanding_baselines.csv', index=False, date_format='%Y-%m-%d %H:%M:%S')",
+      "dependencies": {
+        "baseline": 16
+      },
+      "writes": [],
+      "outputs": [
+        "expanding_baselines.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "integrated = clean.merge(temporal, on=['machine_id', 'timestamp'], validate='one_to_one').merge(baseline, on=['machine_id', 'timestamp'], validate='one_to_one').dropna().sort_values(['timestamp', 'machine_id']).reset_index(drop=True)",
+      "dependencies": {
+        "clean": 9,
+        "temporal": 13,
+        "baseline": 16
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "integrated.to_csv(out / 'maintenance_features.csv', index=False, date_format='%Y-%m-%d %H:%M:%S')",
+      "dependencies": {
+        "integrated": 18
+      },
+      "writes": [],
+      "outputs": [
+        "maintenance_features.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "features = [*sensors, *[c for c in temporal.columns if c not in {'machine_id', 'timestamp'}], *[c for c in baseline.columns if c not in {'machine_id', 'timestamp'}]]",
+      "dependencies": {
+        "baseline": 16,
+        "sensors": 1,
+        "temporal": 13
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "cut = math.floor(0.8 * len(integrated))",
+      "dependencies": {
+        "integrated": 18
+      },
+      "writes": [
+        "cut"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "train = integrated.iloc[:cut]",
+      "dependencies": {
+        "cut": 21,
+        "integrated": 18
+      },
+      "writes": [
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "test = integrated.iloc[cut:]",
+      "dependencies": {
+        "cut": 21,
+        "integrated": 18
+      },
+      "writes": [
+        "test"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "m24 = _classification(train, test, features, 'failure_within_24h', 'failure24h', out)",
+      "dependencies": {
+        "features": 20,
+        "train": 22,
+        "test": 23
+      },
+      "writes": [
+        "m24"
+      ],
+      "outputs": [
+        "failure24h_metrics.json",
+        "failure24h_model.pkl",
+        "failure24h_predictions.csv"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "m7 = _classification(train, test, features, 'failure_within_7d', 'failure7d', out)",
+      "dependencies": {
+        "features": 20,
+        "train": 22,
+        "test": 23
+      },
+      "writes": [
+        "m7"
+      ],
+      "outputs": [
+        "failure7d_metrics.json",
+        "failure7d_model.pkl",
+        "failure7d_predictions.csv"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "risk = integrated.groupby('machine_id', as_index=False).agg(observations=('timestamp', 'size'), failure_count=('is_failure', 'sum'), failure24h_rate=('failure_within_24h', 'mean'), failure7d_rate=('failure_within_7d', 'mean'), mean_temperature_c=('temperature_c', 'mean'), mean_vibration_mm_s=('vibration_mm_s', 'mean')).sort_values('machine_id')",
+      "dependencies": {
+        "integrated": 18
+      },
+      "writes": [
+        "risk"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "risk.to_csv(out / 'machine_risk_summary.csv', index=False)",
+      "dependencies": {
+        "risk": 26
+      },
+      "writes": [],
+      "outputs": [
+        "machine_risk_summary.csv"
+      ]
+    },
+    {
+      "index": 28,
+      "source": "write_json(out / 'maintenance_report.json', {'rows': len(integrated), 'machines': len(risk), 'failure24h_model': m24, 'failure7d_model': m7, 'highest_failure7d_machine': risk.sort_values(['failure7d_rate', 'machine_id'], ascending=[False, True]).iloc[0].machine_id})",
+      "dependencies": {
+        "m7": 25,
+        "risk": 26,
+        "m24": 24,
+        "integrated": 18
+      },
+      "writes": [],
+      "outputs": [
+        "maintenance_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      11
+    ],
+    "temporal": [
+      14
+    ],
+    "baselines": [
+      17
+    ],
+    "integrate": [
+      19
+    ],
+    "model24h": [
+      24
+    ],
+    "model7d": [
+      25
+    ],
+    "risk": [
+      27
+    ],
+    "report": [
+      28
+    ]
+  }
+}

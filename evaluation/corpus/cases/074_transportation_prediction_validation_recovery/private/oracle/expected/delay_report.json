@@ -1,0 +1,11 @@
+{
+  "trips": 731,
+  "input_missing": 4,
+  "model_test_rows": 183,
+  "route_trips": 731,
+  "weather_trips": 731,
+  "vehicle_trips": 731,
+  "routes": 20,
+  "weather_conditions": 4,
+  "vehicle_types": 5
+}

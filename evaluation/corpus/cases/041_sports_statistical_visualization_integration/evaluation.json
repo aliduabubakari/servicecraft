@@ -1,0 +1,305 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "041_sports_statistical_visualization_integration",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "validate",
+    "performance",
+    "shooting",
+    "context_features",
+    "integrate",
+    "teams",
+    "positions",
+    "ages",
+    "salaries",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "validate",
+      "performance"
+    ],
+    [
+      "validate",
+      "shooting"
+    ],
+    [
+      "validate",
+      "context_features"
+    ],
+    [
+      "context_features",
+      "integrate"
+    ],
+    [
+      "performance",
+      "integrate"
+    ],
+    [
+      "shooting",
+      "integrate"
+    ],
+    [
+      "integrate",
+      "teams"
+    ],
+    [
+      "integrate",
+      "positions"
+    ],
+    [
+      "integrate",
+      "ages"
+    ],
+    [
+      "integrate",
+      "salaries"
+    ],
+    [
+      "ages",
+      "report"
+    ],
+    [
+      "positions",
+      "report"
+    ],
+    [
+      "salaries",
+      "report"
+    ],
+    [
+      "teams",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "performance_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "production_per_minute"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "shooting_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "shooting_index",
+        "weighted_shooting_index"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "context_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "age_band",
+        "salary_band"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "analysis_table.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "shooting_index"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "team_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "mean_production"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "position_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "player_count",
+        "mean_shooting"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "age_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "age_band",
+        "player_count",
+        "mean_production"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "salary_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "salary_band",
+        "player_count",
+        "mean_production"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "sports_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "players_clean.csv",
+      "artifact": "players_clean.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/players_clean.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "performance_features.csv",
+      "artifact": "performance_features.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/performance_features.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "shooting_features.csv",
+      "artifact": "shooting_features.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/shooting_features.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "context_features.csv",
+      "artifact": "context_features.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/context_features.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "analysis_table.csv",
+      "artifact": "analysis_table.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/analysis_table.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "team_summary.csv",
+      "artifact": "team_summary.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/team_summary.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "position_summary.csv",
+      "artifact": "position_summary.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/position_summary.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "age_summary.csv",
+      "artifact": "age_summary.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/age_summary.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "salary_summary.csv",
+      "artifact": "salary_summary.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/salary_summary.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "sports_report.json",
+      "artifact": "sports_report.json",
+      "kind": "json_equals",
+      "reference": "private/expected/sports_report.json",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

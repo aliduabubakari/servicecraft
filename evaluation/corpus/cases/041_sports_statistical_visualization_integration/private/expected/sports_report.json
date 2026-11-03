@@ -1,0 +1,11 @@
+{
+  "players": 500,
+  "team_players": 500,
+  "position_players": 500,
+  "age_players": 500,
+  "salary_players": 500,
+  "teams": 12,
+  "positions": 6,
+  "age_bands": 4,
+  "salary_bands": 4
+}

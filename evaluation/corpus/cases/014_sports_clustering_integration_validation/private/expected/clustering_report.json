@@ -1,0 +1,25 @@
+{
+  "players": 511,
+  "clusters": 4,
+  "features": [
+    "points_per_game",
+    "assists_per_game",
+    "rebounds_per_game",
+    "minutes_per_game",
+    "age",
+    "experience_years",
+    "salary_millions",
+    "play_style_score",
+    "efficiency_rating",
+    "usage_rate"
+  ],
+  "random_state": 42,
+  "n_init": 20,
+  "silhouette_score": 0.08051928440136862,
+  "cluster_sizes": {
+    "0": 133,
+    "1": 172,
+    "2": 142,
+    "3": 64
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "features = ['games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'injury_games_missed', 'contract_year', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, ['player_id', 'team', 'position', 'all_star', *features], 'data')",
+      "dependencies": {
+        "d": 0,
+        "features": 1
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'player_id', 'data')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums(d, ['all_star', *features], 'data')",
+      "dependencies": {
+        "features": 1,
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "pred = d[['player_id', 'all_star', *features]].sort_values('player_id')",
+      "dependencies": {
+        "features": 1,
+        "d": 4
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "pred.to_csv(out / 'prediction_data.csv', index=False)",
+      "dependencies": {
+        "pred": 5
+      },
+      "writes": [],
+      "outputs": [
+        "prediction_data.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "train, test = train_test_split(pred, test_size=0.25, random_state=42, stratify=pred.all_star)",
+      "dependencies": {
+        "pred": 5
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', LogisticRegression(C=1, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "model.fit(train[features], train.all_star)",
+      "dependencies": {
+        "features": 1,
+        "train": 7,
+        "model": 8
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "prob = model.predict_proba(test[features])[:, 1]",
+      "dependencies": {
+        "features": 1,
+        "test": 7,
+        "model": 9
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "yp = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 10
+      },
+      "writes": [
+        "yp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "with (out / 'all_star_model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 9
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "all_star_model.pkl"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "pd.DataFrame({'player_id': test.player_id, 'actual': test.all_star, 'probability': prob, 'predicted': yp}).sort_values('player_id').to_csv(out / 'all_star_predictions.csv', index=False)",
+      "dependencies": {
+        "yp": 11,
+        "test": 7,
+        "prob": 10
+      },
+      "writes": [],
+      "outputs": [
+        "all_star_predictions.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "js(out / 'all_star_report.json', {'train_rows': len(train), 'test_rows': len(test), 'accuracy': accuracy_score(test.all_star, yp), 'precision': precision_score(test.all_star, yp, zero_division=0), 'recall': recall_score(test.all_star, yp, zero_division=0), 'f1': f1_score(test.all_star, yp, zero_division=0), 'roc_auc': roc_auc_score(test.all_star, prob)})",
+      "dependencies": {
+        "train": 7,
+        "yp": 11,
+        "test": 7,
+        "prob": 10
+      },
+      "writes": [],
+      "outputs": [
+        "all_star_report.json"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "stats = d.groupby('position', as_index=False).agg(player_count=('player_id', 'size'), all_star_rate=('all_star', 'mean'), mean_points=('points_per_game', 'mean'), mean_salary=('salary_millions', 'mean'))",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "stats"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "stats.to_csv(out / 'position_statistics.csv', index=False)",
+      "dependencies": {
+        "stats": 15
+      },
+      "writes": [],
+      "outputs": [
+        "position_statistics.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "js(out / 'position_report.json', {'positions': len(stats), 'players': int(stats.player_count.sum()), 'highest_all_star_rate_position': stats.sort_values(['all_star_rate', 'position'], ascending=[False, True]).iloc[0].position})",
+      "dependencies": {
+        "stats": 15
+      },
+      "writes": [],
+      "outputs": [
+        "position_report.json"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "chart = d.groupby('team', as_index=False).agg(player_count=('player_id', 'size'), all_star_count=('all_star', 'sum'), mean_points=('points_per_game', 'mean'), mean_salary=('salary_millions', 'mean')).sort_values('team')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "chart"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "chart.to_csv(out / 'team_chart_data.csv', index=False)",
+      "dependencies": {
+        "chart": 18
+      },
+      "writes": [],
+      "outputs": [
+        "team_chart_data.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "js(out / 'team_chart_report.json', {'teams': len(chart), 'players': int(chart.player_count.sum()), 'all_stars': int(chart.all_star_count.sum())})",
+      "dependencies": {
+        "chart": 18
+      },
+      "writes": [],
+      "outputs": [
+        "team_chart_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "pred_prepare": [
+      6
+    ],
+    "pred_model": [
+      12,
+      13,
+      14
+    ],
+    "stat_prepare": [
+      16
+    ],
+    "stat_report": [
+      17
+    ],
+    "chart_prepare": [
+      19
+    ],
+    "chart_report": [
+      20
+    ]
+  }
+}

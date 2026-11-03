@@ -1,0 +1,162 @@
+{
+  "status": "passed",
+  "scope": "Batch-20 references, recovery behavior, invariants, invalid-ID rejection, topology classification, graph consistency, and export allowlists; not Dagster execution",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "050_sports_visualization_integration_recovery_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_out",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "numeric_recovered.csv": "e728bcbb3cf35242088eeaf55e1245533d2431de07de3e64d91760d7cc6aca91",
+        "audited_players.csv": "fa3179b42b21397bf42a6870a72c73b01d5bf43c99f9815e9b1358e94135aff3",
+        "age_summary.csv": "cc9402f85bad093f4e572f6e99f6934b3899611b0e15988f316bce60f4acea60",
+        "team_summary.csv": "1d9e5c5a07d810b72ae95874d3a04c11168acc7d3471af1dcc950ebef66c4648",
+        "position_summary.csv": "a29aa9744fe4563497d807dbf0e908ba2e69b4a701d570b673b35a3c6a96ed7d",
+        "players_recovered.csv": "06df2a3820c8797273f0fb9935a7b7c43ec147bbc9a63450af496d5de889ba92"
+      }
+    },
+    {
+      "case": "050_sports_visualization_integration_recovery_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "052_sports_visualization_integration_validation_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "position_report.json": "3bbce79aaf81c4a78be66adabddff48e9dbaa5b324be46e90910ef9f86ec464c",
+        "position_summary.csv": "1f6f400bf566da5d17fcfd5d7bd95dff34e976db2a0466d4429e5c4ff7140937",
+        "players_clean.csv": "fc692ef1f9190bd7eb4792c6fe4ec027fae873b0bd1d18cc4cb7b5537bcb92c1",
+        "position_ranking.csv": "9847a42aae91a14e937f877e2269debecc2cfd132cc06416727d252cc5e316f6",
+        "player_features.csv": "11ae4d8c8fe89acf05a40f0a17d728e29cb20aea4341d94e1c00eb264fc2999e"
+      }
+    },
+    {
+      "case": "052_sports_visualization_integration_validation_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "074_transportation_prediction_validation_recovery",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in_fan_out",
+      "tasks": 11,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 2,
+        "splits": 2
+      },
+      "output_sha256": {
+        "weather_diagnostics.csv": "11e3a20788c779b08d7bb467c1d42e1ebb1e06c3348797a4481dec22cfa4925a",
+        "trips_recovered.csv": "ed1e2eeba5098575328bbed4c73d997886563a036215a6a2240314b886b97079",
+        "delay_model.pkl": "9410c24330c5d74cdc96284d5a22890be86601d3e11a7bc51c6abc65f12b1dd1",
+        "route_diagnostics.csv": "bb5ad0fb12b6c86114a1a93b4b12618284d4899a67d421afbc6664025f3a624b",
+        "recovery_audit.json": "4697656ad3409dfdeb1e23ee0d29d76867bdd4e801c9de41db7f969830f872d7",
+        "audited_trips.csv": "5317bc2da82b0a88bc72f66f1210ae2b36fc885165d5939a6450181e930e57c5",
+        "delay_metrics.json": "ec95203595fa5d9277c441f5f72181e5420be31e66a142fa02bec41f675977f7",
+        "context_features.csv": "7ab403a6380b46c436468772466268adb003fe3826958f11097cd2160bc2c98c",
+        "vehicle_diagnostics.csv": "c909a504b830992df73993e65e57b1a12df2209d9d78f270bd1f4e1f6e15c0a3",
+        "operational_features.csv": "efdfe5a72d444252ca201dfefec32a6399479dabe037893324a5394891107ee6",
+        "delay_predictions.csv": "55908f0393af71db8a08b9372c1daaa5071c1430d9ef38c9dc9e240290bed437",
+        "delay_report.json": "8079e39f7b655f345b7a67b8a303b64d87f2c99cdb3d778dcf98b4f2723a7612",
+        "model_data.csv": "93983c18e191c289f505b76a0b24acbb769ee06aa730693b301dd8a8e362f2bb"
+      }
+    },
+    {
+      "case": "074_transportation_prediction_validation_recovery",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "094_transportation_visualization_cleaning_validation_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_out",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "trips_prepared.csv": "9ccb49750a2a06f079ac09cd28bcabbaa1d00e9a36dc592115f010029c4d42fc",
+        "period_operations.csv": "0500f5ab9422d523f62edb508cb28cc62ae625d6537b7207120d74d8aafc909f",
+        "route_operations.csv": "c77d629bff3835997427fdece811d835d9a95d4d019aa036f468374f6e67eb2c",
+        "vehicle_operations.csv": "e3eda64482cb4126d24376e5eda9a78dc1aace1d42093c99f964f2b4ce328622"
+      }
+    },
+    {
+      "case": "094_transportation_visualization_cleaning_validation_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "098_transportation_visualization_integration_validation",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 3,
+        "sinks": 1,
+        "joins": 1,
+        "splits": 0
+      },
+      "output_sha256": {
+        "weather_operations.csv": "8e84b9c59001397983eb6bb8bd6af6b5dc6f1e36ef5572c52a3826ec381701eb",
+        "operations_report.json": "bacd658b3ef05df24658c4d10e368d96c2f94e0ac63b46c7aeb25e30133c1135",
+        "route_operations.csv": "5b63e40c5ca22594e39bdac692fc3cc8a5ea6941901c2f963ca5a37f9ec948e9",
+        "vehicle_operations.csv": "093128b489f186ad033f7ef34e53eae49f84e3b101bd649e323d74cb57c2384c"
+      }
+    },
+    {
+      "case": "098_transportation_visualization_integration_validation",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-20",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-20",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

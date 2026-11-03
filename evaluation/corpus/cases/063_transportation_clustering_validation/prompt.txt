@@ -1,0 +1,38 @@
+# Trip clustering with independent post-cluster validation views
+
+1. Objective
+
+Build a `linear_to_fan_out` DAG: validate trips, prepare clustering features, fit clusters, then fan out to three leaves. Require unique nonblank trip_id, finite numeric measures, and binary holiday/peak flags. Use ordered features departure_hour, distance_km, passengers, fare_amount, delay_minutes, is_holiday, peak_hour, avg_load_factor.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: trip_id, route, vehicle_type, departure_hour, distance_km, passengers, fare_amount, delay_minutes, day_of_week, is_holiday, weather_condition, peak_hour, avg_load_factor
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Fit StandardScaler and KMeans(k=5, seed 42, n_init=20, lloyd). Canonicalize labels by ascending standardized avg_load_factor, then delay_minutes, then raw ID. trip_clusters.csv retains all prepared fields with the canonical assignment. Profile leaf outputs count and mean distance/passengers/delay/load per cluster. Route-mix leaf outputs trip_count and within-route share by route/cluster. Validation leaf outputs trips, k, silhouette, inertia, and canonical cluster sizes. All leaves consume only artifacts produced by the cluster task; none rereads earlier stages or depends on another leaf.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `trips_clean.csv`
+- `clustering_features.csv`
+- `trip_clusters.csv`
+- `cluster_model.pkl`
+- `cluster_profiles.csv`
+- `route_cluster_mix.csv`
+- `cluster_validation.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without networks, prior-run outputs, fixed answers, or human intervention. Preserve the declared topology and artifact-backed dependencies; an alternative node decomposition is acceptable only when logical tasks, observable checkpoints, and dependency semantics remain equivalent. Write outputs below the run output directory. Numeric comparisons use atol=1e-6 and rtol=1e-6; JSON must be finite. Missing columns, invalid identifiers, broken bounds, and non-finite required values fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

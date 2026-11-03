@@ -1,0 +1,8 @@
+{
+  "quality": {
+    "input_rows": 619,
+    "valid_rows": 617,
+    "rejected_rows": 2
+  },
+  "earth_radius_km": 6371.0088
+}

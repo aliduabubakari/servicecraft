@@ -1,0 +1,270 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "base = ['trip_id', 'route', 'vehicle_type', 'distance_km', 'passengers', 'delay_minutes', 'weather_condition', 'on_time_pct', 'passenger_satisfaction']",
+      "dependencies": {},
+      "writes": [
+        "base"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "coords = ['origin_lat', 'origin_lon', 'dest_lat', 'dest_lon']",
+      "dependencies": {},
+      "writes": [
+        "coords"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "check(d, [*base, *coords], 'trip_id')",
+      "dependencies": {
+        "d": 0,
+        "coords": 2,
+        "base": 1
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "g = d[['trip_id', 'route', *coords, 'distance_km']].copy()",
+      "dependencies": {
+        "d": 3,
+        "coords": 2
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "lat1 = np.radians(g.origin_lat)",
+      "dependencies": {
+        "g": 4
+      },
+      "writes": [
+        "lat1"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "lat2 = np.radians(g.dest_lat)",
+      "dependencies": {
+        "g": 4
+      },
+      "writes": [
+        "lat2"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "dl = np.radians(g.dest_lon - g.origin_lon)",
+      "dependencies": {
+        "g": 4
+      },
+      "writes": [
+        "dl"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "dp = np.radians(g.dest_lat - g.origin_lat)",
+      "dependencies": {
+        "g": 4
+      },
+      "writes": [
+        "dp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "h = np.sin(dp / 2) ** 2 + np.cos(lat1) * np.cos(lat2) * np.sin(dl / 2) ** 2",
+      "dependencies": {
+        "lat2": 6,
+        "lat1": 5,
+        "dp": 8,
+        "dl": 7
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "g['great_circle_km'] = 2 * 6371.0088 * np.arcsin(np.sqrt(np.clip(h, 0, 1)))",
+      "dependencies": {
+        "g": 4,
+        "h": 9
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "g['distance_ratio'] = g.distance_km / g.great_circle_km.replace(0, np.nan)",
+      "dependencies": {
+        "g": 10
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "g.to_csv(out / 'trip_spatial_metrics.csv', index=False)",
+      "dependencies": {
+        "g": 11
+      },
+      "writes": [],
+      "outputs": [
+        "trip_spatial_metrics.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "route = g.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), mean_great_circle_km=('great_circle_km', 'mean'), mean_distance_ratio=('distance_ratio', 'mean')).sort_values('route')",
+      "dependencies": {
+        "g": 11
+      },
+      "writes": [
+        "route"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "route.to_csv(out / 'route_spatial_summary.csv', index=False)",
+      "dependencies": {
+        "route": 13
+      },
+      "writes": [],
+      "outputs": [
+        "route_spatial_summary.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "js(out / 'spatial_report.json', {'trips': len(g), 'routes': len(route), 'earth_radius_km': 6371.0088, 'mean_great_circle_km': g.great_circle_km.mean()})",
+      "dependencies": {
+        "g": 11,
+        "route": 13
+      },
+      "writes": [],
+      "outputs": [
+        "spatial_report.json"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "s = d[base].copy()",
+      "dependencies": {
+        "d": 3,
+        "base": 1
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "s['service_score'] = (s.on_time_pct + s.passenger_satisfaction / 5) / 2",
+      "dependencies": {
+        "s": 16
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "s.to_csv(out / 'trip_service_metrics.csv', index=False)",
+      "dependencies": {
+        "s": 17
+      },
+      "writes": [],
+      "outputs": [
+        "trip_service_metrics.csv"
+      ]
+    },
+    {
+      "index": 19,
+      "source": "summary = s.groupby(['vehicle_type', 'weather_condition'], as_index=False).agg(trip_count=('trip_id', 'size'), mean_service_score=('service_score', 'mean'), mean_delay=('delay_minutes', 'mean'), mean_passengers=('passengers', 'mean')).sort_values(['vehicle_type', 'weather_condition'])",
+      "dependencies": {
+        "s": 17
+      },
+      "writes": [
+        "summary"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "summary.to_csv(out / 'service_group_summary.csv', index=False)",
+      "dependencies": {
+        "summary": 19
+      },
+      "writes": [],
+      "outputs": [
+        "service_group_summary.csv"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "js(out / 'service_report.json', {'trips': len(s), 'groups': len(summary), 'mean_service_score': s.service_score.mean()})",
+      "dependencies": {
+        "summary": 19,
+        "s": 17
+      },
+      "writes": [],
+      "outputs": [
+        "service_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "spatial": [
+      12
+    ],
+    "spatial_routes": [
+      14
+    ],
+    "spatial_report": [
+      15
+    ],
+    "service": [
+      18
+    ],
+    "service_groups": [
+      20
+    ],
+    "service_report": [
+      21
+    ]
+  }
+}

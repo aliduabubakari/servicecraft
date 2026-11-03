@@ -1,0 +1,9 @@
+{
+  "players": 588,
+  "regression_test_rows": 118,
+  "classification_test_rows": 147,
+  "models": [
+    "market_value_ridge",
+    "all_star_logistic"
+  ]
+}

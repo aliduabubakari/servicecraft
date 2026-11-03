@@ -1,0 +1,11 @@
+{
+  "input_rows": 606,
+  "output_rows": 606,
+  "imputed_numeric": {
+    "passengers": 1,
+    "fare_amount": 1,
+    "delay_minutes": 1
+  },
+  "unknown_vehicle_type": 1,
+  "unknown_weather_condition": 1
+}

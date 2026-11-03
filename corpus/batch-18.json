@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-18",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "046_sports_visualization_cleaning_recovery_v2",
+      "title": "Linear audited player recovery and team reporting",
+      "domain": "sports",
+      "family_id": "audited_numeric_categorical_recovery_v2",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "049_sports_visualization_integration_recovery",
+      "title": "Recovered players fanning out to three cohort summaries",
+      "domain": "sports",
+      "family_id": "player_recovery_cohort_fanout",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "073_transportation_prediction_validation",
+      "title": "Parallel delay classification and cancellation-risk regression",
+      "domain": "transportation",
+      "family_id": "parallel_delay_risk_models_v4",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "078_transportation_prediction_visualization_integration_v2",
+      "title": "Delay modeling with convergent features and multiview diagnostics",
+      "domain": "transportation",
+      "family_id": "delay_model_multiview_fanin_fanout_v2",
+      "topology": "fan_in_fan_out",
+      "task_count": 10,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "092_transportation_visualization_cleaning_integration",
+      "title": "Prepared trips fanning out to route, vehicle, and period views",
+      "domain": "transportation",
+      "family_id": "trip_route_vehicle_period_fanout_v3",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

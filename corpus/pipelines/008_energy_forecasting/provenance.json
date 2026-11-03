@@ -1,0 +1,17 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "source_pipeline": "008_energy_forecasting",
+  "change_kind": "new_behavioral_variant_not_equivalent_to_original",
+  "selection_reason": "The upstream target fallback can choose an unintended numeric column; random splitting and pre-split scaling weaken forecasting semantics.",
+  "input_modifications": [],
+  "source_input_sha256": {
+    "energy_consumption.csv": "b7ce6ca3f742e57835b999885e6fc396fe76da001b785329c94ad8a7932d3c49",
+    "weather.csv": "fd72ad94e9fdd8cce25a85d7e6527d81dee40b6503c082fbb673911af5b1b47c"
+  },
+  "pilot_input_sha256": {
+    "energy_consumption.csv": "b7ce6ca3f742e57835b999885e6fc396fe76da001b785329c94ad8a7932d3c49",
+    "weather.csv": "fd72ad94e9fdd8cce25a85d7e6527d81dee40b6503c082fbb673911af5b1b47c"
+  },
+  "review_status": "author_review_pending"
+}

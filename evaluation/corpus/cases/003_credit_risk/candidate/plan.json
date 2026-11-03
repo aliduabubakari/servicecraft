@@ -1,0 +1,457 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "apps = pd.read_csv(data / 'applications.csv')",
+      "dependencies": {},
+      "writes": [
+        "apps"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "bureau = pd.read_csv(data / 'bureau_data.csv')",
+      "dependencies": {},
+      "writes": [
+        "bureau"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "history = pd.read_csv(data / 'credit_history.csv')",
+      "dependencies": {},
+      "writes": [
+        "history"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "ac = ['application_id', 'annual_income', 'loan_amount', 'dti_ratio', 'age', 'months_at_address', 'default_flag']",
+      "dependencies": {},
+      "writes": [
+        "ac"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "bc = ['application_id', 'fico_score', 'total_accounts', 'delinquencies_2yrs', 'inquiries_6mo', 'public_records', 'revolving_utilization', 'credit_age_months']",
+      "dependencies": {},
+      "writes": [
+        "bc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "hc = ['application_id', 'account_status', 'balance', 'utilization_pct']",
+      "dependencies": {},
+      "writes": [
+        "hc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "require(apps, ac, 'applications.csv')",
+      "dependencies": {
+        "apps": 0,
+        "ac": 3
+      },
+      "writes": [
+        "apps"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "require(bureau, bc, 'bureau_data.csv')",
+      "dependencies": {
+        "bc": 4,
+        "bureau": 1
+      },
+      "writes": [
+        "bureau"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "require(history, hc, 'credit_history.csv')",
+      "dependencies": {
+        "hc": 5,
+        "history": 2
+      },
+      "writes": [
+        "history"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "if not apps.application_id.is_unique or not bureau.application_id.is_unique or apps.application_id.astype(str).str.strip().eq('').any() or bureau.application_id.astype(str).str.strip().eq('').any():\n    raise ValueError('application_id must be unique in application and bureau sources')",
+      "dependencies": {
+        "apps": 6,
+        "bureau": 7
+      },
+      "writes": [
+        "apps",
+        "bureau"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "if set(apps.application_id) != set(bureau.application_id) or not set(history.application_id) <= set(apps.application_id):\n    raise ValueError('application source keys do not reconcile')",
+      "dependencies": {
+        "history": 8,
+        "bureau": 9,
+        "apps": 9
+      },
+      "writes": [
+        "apps",
+        "bureau",
+        "history"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "finite(apps, ac[1:], 'applications.csv')",
+      "dependencies": {
+        "apps": 10,
+        "ac": 3
+      },
+      "writes": [
+        "apps"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "finite(bureau, bc[1:], 'bureau_data.csv')",
+      "dependencies": {
+        "bc": 4,
+        "bureau": 10
+      },
+      "writes": [
+        "bureau"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "finite(history, ['balance', 'utilization_pct'], 'credit_history.csv')",
+      "dependencies": {
+        "history": 10
+      },
+      "writes": [
+        "history"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "if not set(apps.default_flag.unique()) <= {0, 1}:\n    raise ValueError('default_flag must be binary')",
+      "dependencies": {
+        "apps": 11
+      },
+      "writes": [
+        "apps"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "history = history.assign(is_current=(history.account_status == 'Current').astype(int))",
+      "dependencies": {
+        "history": 13
+      },
+      "writes": [
+        "history"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "summary = history.groupby('application_id', as_index=False).agg(history_record_count=('account_status', 'size'), history_mean_utilization_pct=('utilization_pct', 'mean'), history_max_balance=('balance', 'max'), history_current_account_count=('is_current', 'sum'))",
+      "dependencies": {
+        "history": 15
+      },
+      "writes": [
+        "summary"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "integrated = apps[ac].merge(bureau[bc], on='application_id', validate='one_to_one').merge(summary, on='application_id', how='left', validate='one_to_one')",
+      "dependencies": {
+        "summary": 16,
+        "ac": 3,
+        "bureau": 12,
+        "apps": 14,
+        "bc": 4
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "integrated = integrated.sort_values('application_id').reset_index(drop=True)",
+      "dependencies": {
+        "integrated": 17
+      },
+      "writes": [
+        "integrated"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "integrated.to_csv(out / 'integrated.csv', index=False)",
+      "dependencies": {
+        "integrated": 18
+      },
+      "writes": [],
+      "outputs": [
+        "integrated.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "features = [c for c in integrated.columns if c not in {'application_id', 'default_flag'}]",
+      "dependencies": {
+        "integrated": 18
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "train, test = train_test_split(integrated, test_size=0.25, random_state=42, stratify=integrated.default_flag)",
+      "dependencies": {
+        "integrated": 18
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "train = train.sort_values('application_id').reset_index(drop=True)",
+      "dependencies": {
+        "train": 21
+      },
+      "writes": [
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "test = test.sort_values('application_id').reset_index(drop=True)",
+      "dependencies": {
+        "test": 21
+      },
+      "writes": [
+        "test"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "train.to_csv(out / 'train.csv', index=False)",
+      "dependencies": {
+        "train": 22
+      },
+      "writes": [],
+      "outputs": [
+        "train.csv"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "test.to_csv(out / 'test.csv', index=False)",
+      "dependencies": {
+        "test": 23
+      },
+      "writes": [],
+      "outputs": [
+        "test.csv"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', LogisticRegression(C=1.0, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "model.fit(train[features], train.default_flag)",
+      "dependencies": {
+        "model": 26,
+        "features": 20,
+        "train": 22
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "probability = model.predict_proba(test[features])[:, 1]",
+      "dependencies": {
+        "model": 27,
+        "features": 20,
+        "test": 23
+      },
+      "writes": [
+        "probability"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 29,
+      "source": "predicted = (probability >= 0.5).astype(int)",
+      "dependencies": {
+        "probability": 28
+      },
+      "writes": [
+        "predicted"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "predictions = pd.DataFrame({'application_id': test.application_id, 'actual_default': test.default_flag, 'default_probability': probability, 'predicted_default': predicted})",
+      "dependencies": {
+        "predicted": 29,
+        "test": 23,
+        "probability": 28
+      },
+      "writes": [
+        "predictions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 31,
+      "source": "predictions.to_csv(out / 'predictions.csv', index=False)",
+      "dependencies": {
+        "predictions": 30
+      },
+      "writes": [],
+      "outputs": [
+        "predictions.csv"
+      ]
+    },
+    {
+      "index": 32,
+      "source": "with (out / 'model.pkl').open('wb') as handle:\n    pickle.dump(model, handle)",
+      "dependencies": {
+        "model": 27
+      },
+      "writes": [
+        "handle"
+      ],
+      "outputs": [
+        "model.pkl"
+      ]
+    },
+    {
+      "index": 33,
+      "source": "metadata = {'train_rows': len(train), 'test_rows': len(test), 'features': features, 'test_fraction': 0.25, 'random_state': 42, 'threshold': 0.5}",
+      "dependencies": {
+        "test": 23,
+        "features": 20,
+        "train": 22
+      },
+      "writes": [
+        "metadata"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 34,
+      "source": "write_json(out / 'fit_metadata.json', metadata)",
+      "dependencies": {
+        "metadata": 33
+      },
+      "writes": [],
+      "outputs": [
+        "fit_metadata.json"
+      ]
+    },
+    {
+      "index": 35,
+      "source": "metrics = {**metadata, 'accuracy': accuracy_score(test.default_flag, predicted), 'precision': precision_score(test.default_flag, predicted, zero_division=0), 'recall': recall_score(test.default_flag, predicted, zero_division=0), 'f1': f1_score(test.default_flag, predicted, zero_division=0), 'roc_auc': roc_auc_score(test.default_flag, probability)}",
+      "dependencies": {
+        "predicted": 29,
+        "probability": 28,
+        "metadata": 33,
+        "test": 23
+      },
+      "writes": [
+        "metrics"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 36,
+      "source": "write_json(out / 'metrics.json', metrics)",
+      "dependencies": {
+        "metrics": 35
+      },
+      "writes": [],
+      "outputs": [
+        "metrics.json"
+      ]
+    },
+    {
+      "index": 37,
+      "source": "write_json(out / 'credit_report.json', metrics)",
+      "dependencies": {
+        "metrics": 35
+      },
+      "writes": [],
+      "outputs": [
+        "credit_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "integrate": [
+      19
+    ],
+    "split": [
+      24,
+      25
+    ],
+    "fit_predict": [
+      31,
+      32,
+      34
+    ],
+    "evaluate": [
+      36
+    ],
+    "report": [
+      37
+    ]
+  }
+}

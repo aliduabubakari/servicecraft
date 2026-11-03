@@ -1,0 +1,300 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition', 'is_delayed', 'cancellation_risk', 'origin_lat', 'origin_lon', 'dest_lat', 'dest_lon']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prep(d, cols, 'trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "assert set(d.is_delayed.unique()) <= {0, 1}",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "assert d.origin_lat.between(-90, 90).all() and d.dest_lat.between(-90, 90).all() and d.origin_lon.between(-180, 180).all() and d.dest_lon.between(-180, 180).all()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "nums = ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'is_holiday', 'cancellation_risk']",
+      "dependencies": {},
+      "writes": [
+        "nums"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "cats = ['route', 'vehicle_type', 'day_of_week', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cats"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "model_data = d[['trip_id', 'is_delayed', *nums, *cats]].sort_values('trip_id')",
+      "dependencies": {
+        "cats": 6,
+        "d": 4,
+        "nums": 5
+      },
+      "writes": [
+        "model_data"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "model_data.to_csv(out / 'delay_model_data.csv', index=False)",
+      "dependencies": {
+        "model_data": 7
+      },
+      "writes": [],
+      "outputs": [
+        "delay_model_data.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "tr, te = train_test_split(model_data, test_size=0.25, random_state=42, stratify=model_data.is_delayed)",
+      "dependencies": {
+        "model_data": 7
+      },
+      "writes": [
+        "te",
+        "tr"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "pipe = Pipeline([('features', ColumnTransformer([('numeric', StandardScaler(), nums), ('categorical', OneHotEncoder(handle_unknown='ignore'), cats)])), ('model', LogisticRegression(C=1, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {
+        "cats": 6,
+        "nums": 5
+      },
+      "writes": [
+        "pipe"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "pipe.fit(tr[nums + cats], tr.is_delayed)",
+      "dependencies": {
+        "cats": 6,
+        "pipe": 10,
+        "tr": 9,
+        "nums": 5
+      },
+      "writes": [
+        "pipe"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "prob = pipe.predict_proba(te[nums + cats])[:, 1]",
+      "dependencies": {
+        "te": 9,
+        "cats": 6,
+        "pipe": 11,
+        "nums": 5
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "yp = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 12
+      },
+      "writes": [
+        "yp"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "with (out / 'delay_model.pkl').open('wb') as h:\n    pickle.dump(pipe, h)",
+      "dependencies": {
+        "pipe": 11
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "delay_model.pkl"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "pd.DataFrame({'trip_id': te.trip_id, 'actual_is_delayed': te.is_delayed, 'probability': prob, 'predicted_is_delayed': yp}).sort_values('trip_id').to_csv(out / 'delay_predictions.csv', index=False)",
+      "dependencies": {
+        "te": 9,
+        "prob": 12,
+        "yp": 13
+      },
+      "writes": [],
+      "outputs": [
+        "delay_predictions.csv"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "js(out / 'delay_metrics.json', {'train_rows': len(tr), 'test_rows': len(te), 'accuracy': accuracy_score(te.is_delayed, yp), 'precision': precision_score(te.is_delayed, yp, zero_division=0), 'recall': recall_score(te.is_delayed, yp, zero_division=0), 'f1': f1_score(te.is_delayed, yp, zero_division=0), 'roc_auc': roc_auc_score(te.is_delayed, prob)})",
+      "dependencies": {
+        "yp": 13,
+        "te": 9,
+        "tr": 9,
+        "prob": 12
+      },
+      "writes": [],
+      "outputs": [
+        "delay_metrics.json"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "geo = d[['trip_id', 'route', 'passengers', 'origin_lat', 'origin_lon', 'dest_lat', 'dest_lon']].copy()",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "geo"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "geo['geodesic_km'] = haversine(geo.origin_lat, geo.origin_lon, geo.dest_lat, geo.dest_lon)",
+      "dependencies": {
+        "geo": 17
+      },
+      "writes": [
+        "geo"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "geo['passenger_geodesic_km'] = geo.geodesic_km * geo.passengers",
+      "dependencies": {
+        "geo": 18
+      },
+      "writes": [
+        "geo"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "geo.sort_values('trip_id').to_csv(out / 'trip_geography.csv', index=False)",
+      "dependencies": {
+        "geo": 19
+      },
+      "writes": [],
+      "outputs": [
+        "trip_geography.csv"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "routes = geo.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), mean_geodesic_km=('geodesic_km', 'mean'), total_passenger_geodesic_km=('passenger_geodesic_km', 'sum')).sort_values('route')",
+      "dependencies": {
+        "geo": 19
+      },
+      "writes": [
+        "routes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "routes.to_csv(out / 'route_geography.csv', index=False)",
+      "dependencies": {
+        "routes": 21
+      },
+      "writes": [],
+      "outputs": [
+        "route_geography.csv"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "js(out / 'geography_report.json', {'trips': len(geo), 'routes': len(routes), 'total_passenger_geodesic_km': routes.total_passenger_geodesic_km.sum()})",
+      "dependencies": {
+        "geo": 19,
+        "routes": 21
+      },
+      "writes": [],
+      "outputs": [
+        "geography_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "delay_prepare": [
+      8
+    ],
+    "delay_fit": [
+      14,
+      15
+    ],
+    "delay_evaluate": [
+      16
+    ],
+    "geo_prepare": [
+      20
+    ],
+    "geo_aggregate": [
+      22
+    ],
+    "geo_report": [
+      23
+    ]
+  }
+}

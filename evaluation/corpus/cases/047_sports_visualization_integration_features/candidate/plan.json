@@ -1,0 +1,195 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'player_id', ['team', 'position'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "clean = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "clean.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "f = clean.copy()",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "f['production_index'] = f.points_per_game + f.assists_per_game + f.rebounds_per_game",
+      "dependencies": {
+        "f": 5
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "f['production_per_minute'] = np.where(f.minutes_per_game > 0, f.production_index / f.minutes_per_game, 0)",
+      "dependencies": {
+        "f": 6
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "f['value_index'] = f.production_index / (f.salary_millions + 1)",
+      "dependencies": {
+        "f": 7
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "f.to_csv(out / 'player_features.csv', index=False)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [],
+      "outputs": [
+        "player_features.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "s = f.groupby('position', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_per_minute=('production_per_minute', 'mean'), mean_value=('value_index', 'mean'), mean_experience=('experience_years', 'mean')).sort_values('position')",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [
+        "s"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "s.to_csv(out / 'position_summary.csv', index=False)",
+      "dependencies": {
+        "s": 10
+      },
+      "writes": [],
+      "outputs": [
+        "position_summary.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "rank = s.sort_values(['mean_production', 'mean_value', 'position'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "s": 10
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "rank.insert(1, 'rank', np.arange(1, len(rank) + 1))",
+      "dependencies": {
+        "rank": 12
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "rank.to_csv(out / 'position_ranking.csv', index=False)",
+      "dependencies": {
+        "rank": 13
+      },
+      "writes": [],
+      "outputs": [
+        "position_ranking.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "js(out / 'position_report.json', {'players': int(rank.player_count.sum()), 'positions': len(rank), 'top_position': rank.iloc[0].position, 'top_mean_production': rank.iloc[0].mean_production})",
+      "dependencies": {
+        "rank": 13
+      },
+      "writes": [],
+      "outputs": [
+        "position_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      4
+    ],
+    "features": [
+      9
+    ],
+    "summarize": [
+      11
+    ],
+    "rank": [
+      14
+    ],
+    "report": [
+      15
+    ]
+  }
+}

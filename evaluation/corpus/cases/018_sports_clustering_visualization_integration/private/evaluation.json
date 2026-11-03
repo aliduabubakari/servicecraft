@@ -1,0 +1,199 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "018_sports_clustering_visualization_integration",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "validate",
+    "features",
+    "cluster",
+    "profiles",
+    "team_mix",
+    "plot_data"
+  ],
+  "expected_edges": [
+    [
+      "validate",
+      "features"
+    ],
+    [
+      "features",
+      "cluster"
+    ],
+    [
+      "cluster",
+      "profiles"
+    ],
+    [
+      "cluster",
+      "team_mix"
+    ],
+    [
+      "cluster",
+      "plot_data"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "player_clusters.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "cluster"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_model.pkl",
+      "format": "file",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_profiles.csv",
+      "format": "csv",
+      "required_columns": [
+        "cluster",
+        "player_count"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "team_cluster_mix.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "cluster",
+        "player_count",
+        "team_share"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "cluster_plot_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "cluster",
+        "pc1",
+        "pc2"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "players_clean.csv",
+      "artifact": "players_clean.csv",
+      "kind": "csv_equals",
+      "reference": "expected/players_clean.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "cluster_features.csv",
+      "artifact": "cluster_features.csv",
+      "kind": "csv_equals",
+      "reference": "expected/cluster_features.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "player_clusters.csv",
+      "artifact": "player_clusters.csv",
+      "kind": "csv_equals",
+      "reference": "expected/player_clusters.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "cluster_profiles.csv",
+      "artifact": "cluster_profiles.csv",
+      "kind": "csv_equals",
+      "reference": "expected/cluster_profiles.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "team_cluster_mix.csv",
+      "artifact": "team_cluster_mix.csv",
+      "kind": "csv_equals",
+      "reference": "expected/team_cluster_mix.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "cluster_plot_data.csv",
+      "artifact": "cluster_plot_data.csv",
+      "kind": "csv_equals",
+      "reference": "expected/cluster_plot_data.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

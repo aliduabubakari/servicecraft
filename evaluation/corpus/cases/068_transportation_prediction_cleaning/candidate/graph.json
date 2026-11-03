@@ -1,0 +1,252 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "068_transportation_prediction_cleaning",
+  "benchmark_revision": "batch-11",
+  "review_status": "author_review_pending",
+  "title": "Parallel delay classification and cancellation-risk regression",
+  "domain": "transportation",
+  "family_id": "parallel_delay_risk_models",
+  "topology": "parallel",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition",
+        "is_delayed",
+        "cancellation_risk"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "delay_prepare",
+      "name": "Prepare delay data",
+      "operation": "model_data_preparation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "delay_model_data.csv"
+      ],
+      "requirements": [
+        "Validate binary target and predictors."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "delay_fit",
+      "name": "Fit delay classifier",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "delay_model_data.csv"
+      ],
+      "outputs": [
+        "delay_model.pkl",
+        "delay_predictions.csv"
+      ],
+      "requirements": [
+        "Use fixed split, preprocessing, model, threshold."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "delay_evaluate",
+      "name": "Evaluate delay model",
+      "operation": "classification_evaluation",
+      "required": true,
+      "inputs": [
+        "delay_predictions.csv"
+      ],
+      "outputs": [
+        "delay_metrics.json"
+      ],
+      "requirements": [
+        "Compute five held-out metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "risk_prepare",
+      "name": "Prepare cancellation-risk data",
+      "operation": "model_data_preparation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "risk_model_data.csv"
+      ],
+      "requirements": [
+        "Validate continuous target and predictors."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "risk_fit",
+      "name": "Fit cancellation-risk model",
+      "operation": "ridge_regression",
+      "required": true,
+      "inputs": [
+        "risk_model_data.csv"
+      ],
+      "outputs": [
+        "risk_model.pkl",
+        "risk_predictions.csv"
+      ],
+      "requirements": [
+        "Use fixed split, preprocessing, and Ridge."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "risk_evaluate",
+      "name": "Evaluate risk model",
+      "operation": "regression_evaluation",
+      "required": true,
+      "inputs": [
+        "risk_predictions.csv"
+      ],
+      "outputs": [
+        "risk_metrics.json"
+      ],
+      "requirements": [
+        "Compute held-out MAE, RMSE, and R2."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "delay_model_data.csv",
+      "path": "delay_model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "is_delayed"
+      ]
+    },
+    {
+      "id": "delay_model.pkl",
+      "path": "delay_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "delay_predictions.csv",
+      "path": "delay_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "actual_is_delayed",
+        "probability",
+        "predicted_is_delayed"
+      ]
+    },
+    {
+      "id": "delay_metrics.json",
+      "path": "delay_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "risk_model_data.csv",
+      "path": "risk_model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "cancellation_risk"
+      ]
+    },
+    {
+      "id": "risk_model.pkl",
+      "path": "risk_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "risk_predictions.csv",
+      "path": "risk_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "actual_cancellation_risk",
+        "predicted_cancellation_risk"
+      ]
+    },
+    {
+      "id": "risk_metrics.json",
+      "path": "risk_metrics.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "delay_prepare",
+      "target": "delay_fit",
+      "kind": "data",
+      "artifacts": [
+        "delay_model_data.csv"
+      ]
+    },
+    {
+      "source": "delay_fit",
+      "target": "delay_evaluate",
+      "kind": "data",
+      "artifacts": [
+        "delay_predictions.csv"
+      ]
+    },
+    {
+      "source": "risk_prepare",
+      "target": "risk_fit",
+      "kind": "data",
+      "artifacts": [
+        "risk_model_data.csv"
+      ]
+    },
+    {
+      "source": "risk_fit",
+      "target": "risk_evaluate",
+      "kind": "data",
+      "artifacts": [
+        "risk_predictions.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "delay_prepare": "prediction_parallel",
+      "delay_fit": "prediction_parallel",
+      "delay_evaluate": "prediction_parallel",
+      "risk_prepare": "prediction_parallel",
+      "risk_fit": "prediction_parallel",
+      "risk_evaluate": "prediction_parallel"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

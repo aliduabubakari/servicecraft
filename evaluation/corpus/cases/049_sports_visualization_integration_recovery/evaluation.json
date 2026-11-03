@@ -1,0 +1,198 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "049_sports_visualization_integration_recovery",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "audit",
+    "numeric",
+    "categorical",
+    "teams",
+    "positions",
+    "ages"
+  ],
+  "expected_edges": [
+    [
+      "audit",
+      "numeric"
+    ],
+    [
+      "numeric",
+      "categorical"
+    ],
+    [
+      "categorical",
+      "teams"
+    ],
+    [
+      "categorical",
+      "positions"
+    ],
+    [
+      "categorical",
+      "ages"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "audited_players.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "missing_points_input",
+        "missing_salary_input",
+        "missing_team_input",
+        "missing_position_input"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "numeric_recovered.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "points_per_game",
+        "salary_millions"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "players_recovered.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "age_band"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "team_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "recovered_points",
+        "recovered_team"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "position_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "player_count",
+        "recovered_salary",
+        "recovered_position"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "age_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "age_band",
+        "player_count",
+        "mean_points"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "audited_players.csv",
+      "artifact": "audited_players.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/audited_players.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "numeric_recovered.csv",
+      "artifact": "numeric_recovered.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/numeric_recovered.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "players_recovered.csv",
+      "artifact": "players_recovered.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/players_recovered.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "team_summary.csv",
+      "artifact": "team_summary.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/team_summary.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "position_summary.csv",
+      "artifact": "position_summary.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/position_summary.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    },
+    {
+      "id": "age_summary.csv",
+      "artifact": "age_summary.csv",
+      "kind": "csv_equals",
+      "reference": "private/expected/age_summary.csv",
+      "atol": 1e-06,
+      "rtol": 1e-06
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "private/oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "sha256:901f77e385f0e1f989909d6ff0d8978f016cd457e2633e3bc9d27e73eff243cb",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

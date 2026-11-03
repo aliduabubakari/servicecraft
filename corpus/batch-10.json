@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-10",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "016_sports_clustering_prediction_visualization",
+      "title": "Player-style clustering with convergent features and multiview diagnostics",
+      "domain": "sports",
+      "family_id": "player_style_cluster_fanin_fanout_v2",
+      "topology": "fan_in_fan_out",
+      "task_count": 9,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "034_sports_statistical_cleaning_integration_v4",
+      "title": "Linear shooting-efficiency and player-value ranking",
+      "domain": "sports",
+      "family_id": "shooting_value_ranking_v4",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "060_transportation_cleaning_integration_validation",
+      "title": "Validated trips fanning out to operational summaries",
+      "domain": "transportation",
+      "family_id": "trip_operations_fanout_v3",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "076_transportation_prediction_visualization_geospatial",
+      "title": "Parallel delay classification and geospatial route analysis",
+      "domain": "transportation",
+      "family_id": "parallel_delay_geospatial_analysis",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "086_transportation_statistical_geospatial_validation",
+      "title": "Geographic and service route summaries converging for ranking",
+      "domain": "transportation",
+      "family_id": "route_geo_service_fanin_scoring",
+      "topology": "linear_to_fan_in",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

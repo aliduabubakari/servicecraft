@@ -1,0 +1,24 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "004_customer_churn",
+  "selection_reason": "The upstream sixteen-step modeling playbook obscures a strong, directly testable relational aggregation problem and leaves model choice underspecified.",
+  "input_transformations": [
+    {
+      "source": "customers.csv",
+      "benchmark_file": "customers.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "transactions.json",
+      "benchmark_file": "transactions.csv",
+      "conversion": "json_to_csv"
+    }
+  ],
+  "pilot_input_sha256": {
+    "customers.csv": "9a7680884494176809cdf7599862333ba468df5a7a3657b67f572ac229e6c303",
+    "transactions.csv": "57c908e5aa00f4d7507e8571b2807b12c66480dfa407cbec4b539988934d70f8"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

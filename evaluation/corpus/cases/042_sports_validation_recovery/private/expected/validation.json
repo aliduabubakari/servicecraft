@@ -1,0 +1,10 @@
+{
+  "input_rows": 508,
+  "eligible_rows": 505,
+  "rejected_rows": 3,
+  "rejection_counts": {
+    "invalid_games_played": 1,
+    "missing_player_id": 1,
+    "duplicate_player_id": 1
+  }
+}

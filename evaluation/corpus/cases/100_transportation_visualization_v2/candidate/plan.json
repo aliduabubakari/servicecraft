@@ -1,0 +1,257 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "if set(cols) - set(d):\n    raise ValueError('columns')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "cols",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "if not d.trip_id.is_unique or d.trip_id.astype(str).str.strip().eq('').any():\n    raise ValueError('id')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "for c in ['route', 'vehicle_type', 'day_of_week', 'weather_condition']:\n    if d[c].isna().any() or d[c].astype(str).str.strip().eq('').any():\n        raise ValueError('category')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "c",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "nums = [c for c in cols if c not in {'trip_id', 'route', 'vehicle_type', 'day_of_week', 'weather_condition'}]",
+      "dependencies": {
+        "cols": 2
+      },
+      "writes": [
+        "nums"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "for c in nums:\n    d[c] = pd.to_numeric(d[c], errors='coerce')",
+      "dependencies": {
+        "d": 4,
+        "nums": 5,
+        "c": 4
+      },
+      "writes": [
+        "c",
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "if not np.isfinite(d[nums].to_numpy(float)).all():\n    raise ValueError('nonfinite')",
+      "dependencies": {
+        "nums": 5,
+        "d": 6
+      },
+      "writes": [
+        "d",
+        "nums"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "x = d[cols].sort_values('trip_id').copy()",
+      "dependencies": {
+        "cols": 2,
+        "d": 7
+      },
+      "writes": [
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "x['passenger_km'] = x.distance_km * x.passengers",
+      "dependencies": {
+        "x": 8
+      },
+      "writes": [
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "x['on_time'] = (x.delay_minutes <= 5).astype(int)",
+      "dependencies": {
+        "x": 9
+      },
+      "writes": [
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "x.to_csv(out / 'trips_prepared.csv', index=False)",
+      "dependencies": {
+        "x": 10
+      },
+      "writes": [],
+      "outputs": [
+        "trips_prepared.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "routes = x.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), total_passenger_km=('passenger_km', 'sum'), mean_passengers=('passengers', 'mean'), mean_fare=('fare_amount', 'mean'), mean_delay=('delay_minutes', 'mean'), on_time_rate=('on_time', 'mean')).sort_values('route')",
+      "dependencies": {
+        "x": 10
+      },
+      "writes": [
+        "routes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "routes.to_csv(out / 'route_summary.csv', index=False)",
+      "dependencies": {
+        "routes": 12
+      },
+      "writes": [],
+      "outputs": [
+        "route_summary.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "rank = routes.sort_values(['total_passenger_km', 'on_time_rate', 'route'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "routes": 12
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "rank.insert(1, 'rank', np.arange(1, len(rank) + 1))",
+      "dependencies": {
+        "rank": 14
+      },
+      "writes": [
+        "rank"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "rank.to_csv(out / 'route_ranking.csv', index=False)",
+      "dependencies": {
+        "rank": 15
+      },
+      "writes": [],
+      "outputs": [
+        "route_ranking.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "chart = rank[['route', 'rank', 'trip_count', 'total_passenger_km', 'mean_delay', 'on_time_rate']].copy()",
+      "dependencies": {
+        "rank": 15
+      },
+      "writes": [
+        "chart"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "chart['passenger_km_label'] = chart.total_passenger_km.round(2).astype(str)",
+      "dependencies": {
+        "chart": 17
+      },
+      "writes": [
+        "chart"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "chart.to_csv(out / 'route_chart_data.csv', index=False)",
+      "dependencies": {
+        "chart": 18
+      },
+      "writes": [],
+      "outputs": [
+        "route_chart_data.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "js(out / 'route_report.json', {'trips': int(rank.trip_count.sum()), 'routes': len(rank), 'top_route': rank.iloc[0].route, 'top_total_passenger_km': rank.iloc[0].total_passenger_km})",
+      "dependencies": {
+        "rank": 15
+      },
+      "writes": [],
+      "outputs": [
+        "route_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare": [
+      11
+    ],
+    "summarize": [
+      13
+    ],
+    "rank": [
+      16
+    ],
+    "chart": [
+      19
+    ],
+    "report": [
+      20
+    ]
+  }
+}

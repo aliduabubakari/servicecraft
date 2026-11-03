@@ -1,0 +1,30 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "003_credit_risk",
+  "selection_reason": "The upstream sixteen-step narrative mixes profiling, compliance, fairness, explainability, and several models without a single auditable target procedure.",
+  "input_transformations": [
+    {
+      "source": "applications.csv",
+      "benchmark_file": "applications.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "bureau_data.xlsx",
+      "benchmark_file": "bureau_data.csv",
+      "conversion": "xlsx_to_csv"
+    },
+    {
+      "source": "credit_history.json",
+      "benchmark_file": "credit_history.csv",
+      "conversion": "json_to_csv"
+    }
+  ],
+  "pilot_input_sha256": {
+    "applications.csv": "93942252a810ab1f2df8bbb442dfb0ac94b4fc1d1a0153328e7482c0ec38f986",
+    "bureau_data.csv": "356d891a58fa7142787b0d16eef610742babddbd0cb9a9f6fc0780d1f24a7b92",
+    "credit_history.csv": "6fd4365d04d5f39191734977c7a0108e98cbacb78de7a6a61da02eb025fa1788"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

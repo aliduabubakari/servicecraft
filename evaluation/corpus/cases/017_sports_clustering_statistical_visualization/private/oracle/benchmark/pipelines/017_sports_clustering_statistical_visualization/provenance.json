@@ -1,0 +1,19 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "017_sports_clustering_statistical_visualization",
+  "selection_reason": "Shooting and playmaking features are independently derived, converge for clustering, then feed three analyses that reconverge.",
+  "input_transformations": [
+    {
+      "source": "data.csv",
+      "benchmark_file": "data.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "input_modifications": [],
+  "pilot_input_sha256": {
+    "data.csv": "9e9e7edf8c6d0435a1639e9f7c3afe0fe7110b53ca9ee074b5c6652abe4d5434"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

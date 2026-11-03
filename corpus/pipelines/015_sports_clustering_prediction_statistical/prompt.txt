@@ -1,0 +1,42 @@
+# Independent player clustering and All-Star prediction
+
+1. Objective
+
+Build two disconnected three-task components (`parallel` topology) over the player input. Both validate unique nonblank player_id and finite required values, but neither may consume artifacts from the other.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: player_id, team, position, games_played, points_per_game, assists_per_game, rebounds_per_game, minutes_per_game, age, experience_years, salary_millions, play_style_score, efficiency_rating, usage_rate, all_star, injury_games_missed, contract_year, field_goal_pct, three_point_pct, free_throw_pct
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Clustering component prepares player/team/position and exactly seven ordered style/performance features. Fit StandardScaler and KMeans(k=4, seed 42, n_init=20, lloyd). Canonicalize raw labels by ascending standardized centroid efficiency_rating, then usage_rate, then raw ID. Emit assignments/model, then profiles with cluster size and mean points/assists/rebounds/efficiency/usage plus a report containing player count, k, and silhouette score.
+
+Prediction component prepares all_star plus the fourteen declared numeric predictors. Use a 75/25 stratified split with seed 42, train-only StandardScaler, LogisticRegression(C=1, liblinear, max_iter=1000, seed 42), and threshold 0.5. Emit model and held-out predictions, then accuracy, precision, recall, F1, and ROC AUC. No cluster label or clustering artifact may be used by prediction.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `clustering_features.csv`
+- `player_clusters.csv`
+- `cluster_model.pkl`
+- `cluster_profiles.csv`
+- `cluster_report.json`
+- `prediction_features.csv`
+- `all_star_model.pkl`
+- `all_star_predictions.csv`
+- `all_star_metrics.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without network services, prior-run outputs, fixed analytical answers, or human intervention. The declared topology is a scored semantic property: preserve independent branches and every artifact-backed join. Alternative Dagster decomposition is allowed only when logical requirements, dependencies, topology, and observable checkpoints remain equivalent. Write outputs beneath the run output directory. Preserve numeric precision; comparisons use atol=1e-6 and rtol=1e-6. JSON must be finite. Missing columns, invalid identifiers/dates, broken relationships, and non-finite required values must fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

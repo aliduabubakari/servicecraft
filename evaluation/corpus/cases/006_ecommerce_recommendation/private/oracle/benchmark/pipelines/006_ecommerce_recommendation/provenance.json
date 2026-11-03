@@ -1,0 +1,30 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "006_ecommerce_recommendation",
+  "selection_reason": "The upstream recommendation pipeline clusters customer demographics and does not use order-product interactions to create recommendations.",
+  "input_transformations": [
+    {
+      "source": "customers.csv",
+      "benchmark_file": "customers.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "products.csv",
+      "benchmark_file": "products.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "orders.json",
+      "benchmark_file": "orders.csv",
+      "conversion": "json_to_csv"
+    }
+  ],
+  "pilot_input_sha256": {
+    "customers.csv": "6a5a6184eb0b0803b38f17c2d29828957b1c26a67f9980f5f97bf49b331897e3",
+    "orders.csv": "8d739d7c5cc37653c6a08574608d0de3e31292ceebaca91d0730bbe907d31cd5",
+    "products.csv": "fcc49c42908a84118c7e6c31d9399c749805b4152c2ed14e7a9eab76b84c6433"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

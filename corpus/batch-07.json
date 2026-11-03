@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-07",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "018_sports_clustering_visualization_integration",
+      "title": "Player clustering with three post-cluster views",
+      "domain": "sports",
+      "family_id": "player_cluster_multiview",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "021_sports_prediction_statistical_visualization_v2",
+      "title": "Convergent All-Star feature branches with diagnostic fan-out",
+      "domain": "sports",
+      "family_id": "allstar_multibranch_diagnostics",
+      "topology": "fan_in_fan_out",
+      "task_count": 9,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "031_sports_statistical_cleaning_integration",
+      "title": "Independent sports summaries converging into one report",
+      "domain": "sports",
+      "family_id": "sports_descriptive_fanin",
+      "topology": "fan_in",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "057_transportation_cleaning_integration",
+      "title": "Linear route performance ranking",
+      "domain": "transportation",
+      "family_id": "route_performance_ranking",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "085_transportation_statistical_geospatial",
+      "title": "Parallel spatial and service-quality transportation analyses",
+      "domain": "transportation",
+      "family_id": "parallel_spatial_service_analysis",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

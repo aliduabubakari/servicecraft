@@ -1,0 +1,179 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "096_transportation_visualization_integration",
+  "benchmark_revision": "batch-17",
+  "review_status": "author_review_pending",
+  "title": "Independent operational summaries converging into a report",
+  "domain": "transportation",
+  "family_id": "transport_operations_fanin",
+  "topology": "fan_in",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "weather_condition"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "routes",
+      "name": "Summarize route operations",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_operations.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate routes."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Summarize vehicle operations",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "vehicle_operations.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate vehicles."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "weather",
+      "name": "Summarize weather operations",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "weather_operations.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate weather."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Reconcile operational summaries",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "route_operations.csv",
+        "vehicle_operations.csv",
+        "weather_operations.csv"
+      ],
+      "outputs": [
+        "operations_report.json"
+      ],
+      "requirements": [
+        "Reconcile totals and group counts."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "route_operations.csv",
+      "path": "route_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_km"
+      ]
+    },
+    {
+      "id": "vehicle_operations.csv",
+      "path": "vehicle_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_passengers"
+      ]
+    },
+    {
+      "id": "weather_operations.csv",
+      "path": "weather_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "on_time_rate"
+      ]
+    },
+    {
+      "id": "operations_report.json",
+      "path": "operations_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "routes",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "route_operations.csv"
+      ]
+    },
+    {
+      "source": "vehicles",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "vehicle_operations.csv"
+      ]
+    },
+    {
+      "source": "weather",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "weather_operations.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "routes": "operations_fanin",
+      "vehicles": "operations_fanin",
+      "weather": "operations_fanin",
+      "report": "operations_fanin"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

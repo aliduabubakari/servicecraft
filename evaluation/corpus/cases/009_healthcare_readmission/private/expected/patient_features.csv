@@ -1,0 +1,501 @@
+patient_id,age,gender,race,conditions,has_diabetes,has_heart_condition,bmi,smoker,insurance_type,n_conditions,readmitted_30d,admission_count,total_length_of_stay,mean_length_of_stay,icu_admission_count,total_procedures,er_admission_count,lab_count,abnormal_lab_count,mean_test_value,medication_record_count,unique_medications
+PAT_00001,76,Female,Black,Diabetes|Heart Failure,1,1,28.5,1,Medicare,2,1,2,11,5.5,0,2,2,12,4,107.10000000000001,9,8
+PAT_00002,84,Male,White,Heart Failure|Stroke|AMI,0,1,27.0,0,Medicaid,3,0,2,7,3.5,1,3,1,8,0,104.3375,10,8
+PAT_00003,42,Female,Asian,Hypertension|Stroke|Heart Failure,0,1,25.3,0,Private,3,0,1,5,5.0,0,1,1,3,1,88.2,6,5
+PAT_00004,87,Female,White,Pneumonia|Cancer|Diabetes|COPD,1,0,37.1,0,Medicare,4,0,4,14,3.5,0,6,3,21,6,98.48571428571428,20,11
+PAT_00005,65,Male,White,Heart Failure,0,1,23.0,1,Private,1,0,2,6,3.0,1,1,2,8,2,114.125,9,6
+PAT_00006,58,Male,White,CKD|Heart Failure|Pneumonia|Hypertension,0,1,26.1,0,Medicare,4,0,1,4,4.0,0,0,1,5,1,121.0,5,5
+PAT_00007,51,Female,White,Stroke,0,0,33.2,0,Uninsured,1,1,4,20,5.0,1,1,2,20,6,97.625,19,9
+PAT_00008,83,Female,Hispanic,Heart Failure|COPD|Cancer,0,1,41.7,0,Private,3,0,1,5,5.0,1,0,0,6,2,104.81666666666666,2,2
+PAT_00009,27,Male,White,Hypertension|Heart Failure,0,1,27.9,0,Medicare,2,1,3,15,5.0,1,6,1,11,0,98.35454545454546,15,7
+PAT_00010,83,Female,White,Pneumonia,0,0,18.0,0,Private,1,0,2,5,2.5,0,0,1,9,3,88.1,10,7
+PAT_00011,79,Female,White,Asthma|Heart Failure|Cancer|CKD,0,1,28.1,0,Private,4,0,3,11,3.6666666666666665,1,5,2,25,7,97.516,13,6
+PAT_00012,76,Female,White,Hypertension|Stroke|AMI|Cancer|Diabetes,1,1,25.8,1,Uninsured,5,1,1,3,3.0,0,1,1,9,4,89.62222222222222,7,7
+PAT_00013,61,Female,White,CKD|Stroke|AMI|Heart Failure|Hypertension,0,1,31.4,1,Medicare,5,0,1,3,3.0,1,0,0,5,0,109.6,6,5
+PAT_00014,78,Male,Other,Stroke|Heart Failure,0,1,27.0,0,Medicare,2,1,4,15,3.75,0,7,2,22,5,97.10454545454546,18,11
+PAT_00015,46,Male,Other,CKD|Heart Failure|Asthma|Stroke|Cancer,0,1,27.3,1,Uninsured,5,0,3,11,3.6666666666666665,0,3,1,16,5,96.80625,13,8
+PAT_00016,87,Male,White,Diabetes|Pneumonia,1,0,32.4,0,Private,2,1,2,10,5.0,1,1,0,12,3,98.23333333333333,9,7
+PAT_00017,47,Male,White,Hypertension|Stroke|AMI|Pneumonia|Diabetes,1,1,31.1,1,Private,5,0,3,5,1.6666666666666667,1,4,2,14,4,98.74285714285715,16,9
+PAT_00018,40,Male,Hispanic,AMI,0,1,51.1,1,Private,1,1,3,16,5.333333333333333,0,2,0,18,3,106.76111111111112,10,8
+PAT_00019,82,Male,White,Hypertension|Heart Failure|COPD,0,1,25.7,0,Private,3,1,2,10,5.0,1,2,1,9,3,78.32222222222222,7,7
+PAT_00020,64,Female,Other,Pneumonia|Diabetes|Asthma,1,0,30.6,0,Medicaid,3,1,4,19,4.75,1,2,2,25,3,100.248,19,10
+PAT_00021,82,Female,White,Heart Failure|Stroke,0,1,20.0,0,Medicare,2,0,3,8,2.6666666666666665,1,2,1,16,2,110.55,17,10
+PAT_00022,81,Male,White,Cancer,0,0,39.1,0,Medicare,1,1,2,4,2.0,0,1,0,13,1,101.9923076923077,14,10
+PAT_00023,34,Female,Hispanic,Hypertension|Heart Failure,0,1,28.4,1,Private,2,0,4,12,3.0,1,2,2,24,5,94.41666666666667,20,11
+PAT_00024,74,Female,White,CKD|AMI|Stroke|Pneumonia|Cancer,0,1,25.7,0,Medicare,5,0,2,6,3.0,1,1,2,11,4,103.56363636363636,11,7
+PAT_00025,31,Male,Black,Hypertension|Stroke|Heart Failure|Pneumonia|CKD,0,1,24.0,1,Private,5,0,1,1,1.0,0,2,0,7,1,109.57142857142857,3,3
+PAT_00026,79,Female,Hispanic,Heart Failure,0,1,35.0,0,Uninsured,1,0,3,9,3.0,0,3,1,19,4,84.20526315789475,16,9
+PAT_00027,43,Male,White,Heart Failure|Stroke|Diabetes|Cancer|CKD,1,1,27.9,0,Medicaid,5,0,2,6,3.0,1,1,1,11,3,104.84545454545454,7,6
+PAT_00028,29,Female,White,AMI|CKD|Pneumonia|Diabetes|Stroke,1,1,22.6,0,Private,5,0,4,17,4.25,2,1,2,25,6,102.14399999999999,20,11
+PAT_00029,89,Female,White,Diabetes|AMI|Pneumonia|Cancer,1,1,26.2,0,Medicare,4,1,2,14,7.0,1,1,0,9,2,87.33333333333333,10,7
+PAT_00030,85,Female,Black,CKD|COPD|Pneumonia,0,0,28.0,1,Private,3,1,4,14,3.5,1,4,2,28,6,101.89999999999999,21,12
+PAT_00031,71,Female,White,Hypertension|Cancer,0,0,40.9,0,Uninsured,2,0,3,16,5.333333333333333,0,4,1,19,6,93.76315789473684,14,9
+PAT_00032,81,Female,Asian,Diabetes,1,0,23.4,0,Private,1,0,4,13,3.25,2,7,1,24,8,90.72916666666667,16,9
+PAT_00033,65,Male,White,Heart Failure,0,1,20.1,1,Private,1,1,4,17,4.25,0,2,3,27,5,104.6148148148148,17,13
+PAT_00034,29,Male,White,Cancer|Heart Failure|Pneumonia,0,1,39.0,0,Medicare,3,0,1,4,4.0,0,0,1,5,1,96.14,7,7
+PAT_00035,45,Male,Hispanic,Stroke|Cancer|Asthma|Heart Failure|Pneumonia,0,1,7.1,1,Medicare,5,0,3,11,3.6666666666666665,1,5,2,14,4,101.57857142857144,16,9
+PAT_00036,89,Female,Black,Diabetes|Asthma|Pneumonia,1,0,26.4,0,Uninsured,3,1,2,10,5.0,0,4,0,7,2,97.31428571428572,9,6
+PAT_00037,74,Female,White,Pneumonia|Hypertension|Asthma|Stroke,0,0,30.8,0,Medicare,4,0,1,4,4.0,1,2,0,7,0,110.71428571428571,2,2
+PAT_00038,30,Female,White,Heart Failure|Stroke|Diabetes,1,1,31.5,1,Medicaid,3,1,3,11,3.6666666666666665,0,2,2,20,4,100.45,13,8
+PAT_00039,56,Male,White,Cancer,0,0,19.4,0,Medicaid,1,0,2,7,3.5,0,1,2,10,3,107.87,10,8
+PAT_00040,69,Male,White,Heart Failure|CKD|Stroke|Hypertension,0,1,26.9,0,Medicaid,4,1,2,9,4.5,0,0,1,11,4,111.12727272727274,8,6
+PAT_00041,52,Male,White,Pneumonia|Heart Failure,0,1,37.1,0,Medicare,2,0,1,7,7.0,0,1,0,9,2,105.56666666666666,4,4
+PAT_00042,52,Male,White,Cancer|Stroke,0,0,13.3,0,Medicare,2,0,4,13,3.25,1,5,1,18,6,103.97777777777777,24,12
+PAT_00043,58,Female,Black,Hypertension|CKD|Asthma,0,0,24.1,0,Medicare,3,0,2,6,3.0,0,1,0,10,2,88.19,10,8
+PAT_00044,48,Female,White,CKD|AMI|Stroke|Asthma,0,1,25.1,1,Private,4,0,2,5,2.5,0,1,2,15,3,107.83999999999999,9,6
+PAT_00045,32,Male,Hispanic,COPD|Stroke|Cancer|AMI,0,1,32.6,0,Private,4,0,4,17,4.25,1,4,4,26,4,94.35,17,10
+PAT_00046,30,Male,White,Hypertension,0,0,28.1,0,Medicaid,1,1,1,2,2.0,1,1,0,8,2,107.925,3,2
+PAT_00047,59,Male,Asian,CKD|AMI|Asthma,0,1,27.3,1,Medicare,3,1,4,11,2.75,0,5,1,13,1,104.54615384615384,21,11
+PAT_00048,54,Female,White,AMI|Pneumonia|Cancer|Diabetes,1,1,28.7,0,Medicaid,4,1,4,19,4.75,0,5,1,22,8,112.06363636363636,15,8
+PAT_00049,49,Male,White,Diabetes|Heart Failure,1,1,22.7,1,Medicaid,2,0,2,9,4.5,0,1,0,12,2,99.31666666666666,7,6
+PAT_00050,51,Female,White,Asthma|COPD,0,0,31.1,1,Medicare,2,0,1,4,4.0,0,1,0,9,2,112.34444444444443,3,2
+PAT_00051,37,Male,Hispanic,COPD,0,0,36.3,0,Medicare,1,0,1,3,3.0,0,1,1,8,4,116.38749999999999,7,6
+PAT_00052,44,Male,Asian,AMI|CKD|Pneumonia,0,1,34.1,0,Uninsured,3,0,1,4,4.0,0,2,1,7,4,107.65714285714286,3,3
+PAT_00053,29,Female,Black,Pneumonia|Cancer,0,0,26.0,0,Medicare,2,0,4,22,5.5,1,3,2,31,5,99.86451612903227,19,11
+PAT_00054,81,Male,White,CKD|COPD|Stroke,0,0,25.2,0,Medicaid,3,0,2,11,5.5,1,1,1,15,3,102.88666666666667,9,7
+PAT_00055,62,Male,White,Heart Failure|Asthma|CKD,0,1,23.7,0,Medicare,3,0,2,9,4.5,0,2,0,12,3,101.05833333333334,9,7
+PAT_00056,73,Male,Asian,Asthma|Heart Failure,0,1,33.4,0,Medicare,2,1,2,10,5.0,0,0,1,17,4,101.70588235294117,10,6
+PAT_00057,69,Male,Hispanic,COPD|Cancer|CKD,0,0,25.9,1,Uninsured,3,0,1,2,2.0,0,3,1,8,1,101.6625,5,5
+PAT_00058,56,Male,Hispanic,Stroke|Diabetes|Heart Failure|Pneumonia|AMI,1,1,25.8,1,Medicare,5,0,3,11,3.6666666666666665,1,3,0,18,2,102.19999999999999,12,9
+PAT_00059,32,Male,White,Cancer|Pneumonia|Stroke|COPD|AMI,0,1,18.0,1,Private,5,0,3,16,5.333333333333333,3,2,0,23,3,87.09130434782608,16,12
+PAT_00060,44,Male,Hispanic,COPD|Asthma,0,0,38.6,0,Uninsured,2,0,1,5,5.0,0,1,0,8,3,89.15,6,4
+PAT_00061,48,Male,Black,AMI|Hypertension|Pneumonia,0,1,31.7,0,Medicare,3,1,2,12,6.0,0,3,0,9,2,93.47777777777777,6,5
+PAT_00062,53,Male,White,Hypertension,0,0,20.8,0,Private,1,0,1,4,4.0,0,2,1,9,2,100.85555555555555,2,1
+PAT_00063,51,Female,Hispanic,COPD|Asthma|Hypertension|Cancer,0,0,26.6,1,Private,4,0,3,13,4.333333333333333,1,2,0,21,1,96.08571428571429,16,12
+PAT_00064,78,Male,Black,CKD|AMI|Stroke|Heart Failure,0,1,35.2,0,Private,4,1,3,9,3.0,1,2,1,12,2,102.46666666666665,16,9
+PAT_00065,64,Female,White,Diabetes|Cancer|Stroke,1,0,26.2,1,Uninsured,3,1,4,12,3.0,0,1,1,27,9,92.8851851851852,19,9
+PAT_00066,41,Female,White,Pneumonia|Heart Failure,0,1,24.0,0,Uninsured,2,1,3,9,3.0,1,1,0,20,6,99.15,15,10
+PAT_00067,36,Male,Other,COPD|Cancer,0,0,30.7,1,Uninsured,2,1,2,10,5.0,0,1,1,11,2,105.71818181818183,8,6
+PAT_00068,63,Male,White,Diabetes|Stroke|Cancer|CKD,1,0,26.7,0,Private,4,0,3,13,4.333333333333333,1,2,0,19,4,110.35263157894735,16,8
+PAT_00069,49,Female,White,Diabetes|Stroke|Pneumonia|Hypertension,1,0,35.3,0,Medicaid,4,1,2,7,3.5,0,3,1,8,0,119.9125,5,4
+PAT_00070,81,Female,White,Hypertension|Heart Failure,0,1,23.9,0,Private,2,1,2,9,4.5,0,2,0,8,3,107.05,9,8
+PAT_00071,42,Male,White,Stroke,0,0,31.4,1,Private,1,0,2,7,3.5,0,1,2,11,2,87.22727272727273,5,4
+PAT_00072,35,Female,Other,Hypertension|Heart Failure,0,1,18.8,0,Medicare,2,0,3,7,2.3333333333333335,1,1,0,14,4,104.10000000000001,14,10
+PAT_00073,65,Male,Hispanic,AMI|Asthma,0,1,36.5,0,Medicare,2,0,2,10,5.0,1,4,0,16,3,97.05,12,7
+PAT_00074,56,Male,Black,Cancer|Asthma,0,0,24.6,0,Private,2,0,1,5,5.0,0,2,1,5,1,95.42,3,3
+PAT_00075,66,Female,Black,CKD|Diabetes,1,0,32.2,0,Private,2,0,2,9,4.5,0,1,1,10,0,99.4,11,9
+PAT_00076,64,Female,White,Heart Failure|CKD|Stroke|AMI|Hypertension,0,1,21.6,1,Private,5,0,1,1,1.0,1,1,0,6,3,104.98333333333333,2,2
+PAT_00077,66,Male,Black,COPD|Diabetes|Hypertension|Cancer,1,0,26.6,0,Private,4,0,3,9,3.0,0,1,1,18,5,103.63333333333334,15,10
+PAT_00078,41,Male,White,Cancer,0,0,28.0,0,Medicare,1,0,2,9,4.5,0,2,1,16,6,104.10625,10,9
+PAT_00079,61,Male,Asian,AMI|COPD,0,1,24.6,1,Medicare,2,1,2,7,3.5,0,2,1,9,0,110.06666666666666,6,6
+PAT_00080,35,Female,White,Hypertension|Cancer|CKD,0,0,30.3,0,Private,3,0,1,6,6.0,0,1,1,4,0,119.175,4,4
+PAT_00081,56,Male,Black,Heart Failure|Hypertension|CKD|Diabetes,1,1,21.3,0,Private,4,0,1,1,1.0,0,0,1,7,2,90.61428571428571,7,3
+PAT_00082,59,Male,Black,Hypertension|Asthma|Stroke|Pneumonia|Heart Failure,0,1,21.0,1,Medicare,5,1,5,17,3.4,1,6,2,32,11,102.846875,21,11
+PAT_00083,48,Female,Black,AMI|Heart Failure|COPD,0,1,18.5,1,Medicare,3,1,7,29,4.142857142857143,0,12,4,34,8,96.41176470588235,28,12
+PAT_00084,45,Male,White,CKD|Cancer|AMI,0,1,31.4,0,Medicare,3,0,4,11,2.75,0,8,0,23,5,98.4695652173913,17,10
+PAT_00085,70,Male,White,Pneumonia|COPD|Stroke|Hypertension,0,0,26.9,0,Private,4,1,4,18,4.5,1,2,1,24,4,91.675,17,9
+PAT_00086,70,Female,Hispanic,CKD,0,0,23.6,0,Private,1,1,6,24,4.0,2,6,1,37,8,102.28108108108108,30,12
+PAT_00087,65,Female,Hispanic,AMI|Diabetes|Hypertension|COPD|CKD,1,1,38.4,0,Medicare,5,0,2,8,4.0,0,1,1,11,3,113.43636363636364,9,5
+PAT_00088,36,Male,Hispanic,Diabetes|Stroke|Asthma,1,0,29.2,0,Medicare,3,1,1,2,2.0,1,0,1,8,1,104.6375,6,5
+PAT_00089,80,Female,Black,Cancer|Hypertension|Heart Failure,0,1,30.3,0,Private,3,0,3,6,2.0,0,2,2,23,1,104.72608695652173,12,7
+PAT_00090,84,Male,Hispanic,Diabetes|Cancer|CKD|AMI,1,1,34.2,0,Medicare,4,0,5,15,3.0,2,6,2,32,7,99.93125,18,8
+PAT_00091,42,Female,Black,Diabetes,1,0,29.9,0,Medicare,1,0,7,19,2.7142857142857144,0,6,3,40,15,104.8575,28,12
+PAT_00092,84,Male,Black,Stroke|AMI|CKD,0,1,26.3,0,Private,3,1,2,10,5.0,0,2,1,13,0,103.24615384615385,7,5
+PAT_00093,60,Female,White,Heart Failure|CKD,0,1,25.9,0,Private,2,0,3,14,4.666666666666667,1,1,0,13,2,101.62307692307692,14,10
+PAT_00094,61,Female,Black,COPD|Cancer|CKD|Asthma,0,0,25.9,0,Medicare,4,0,4,23,5.75,1,7,2,24,9,106.46666666666665,16,9
+PAT_00095,83,Male,White,Cancer,0,0,33.5,0,Medicaid,1,0,3,13,4.333333333333333,1,5,0,22,8,102.97727272727273,12,9
+PAT_00096,74,Male,White,CKD,0,0,30.1,0,Medicare,1,0,4,23,5.75,0,4,2,16,6,85.34375,15,10
+PAT_00097,71,Female,Hispanic,AMI|Heart Failure|CKD|COPD|Asthma,0,1,31.0,0,Medicare,5,0,3,6,2.0,0,3,2,17,4,92.20588235294117,13,10
+PAT_00098,88,Male,Other,Diabetes|Cancer|COPD|Hypertension|Asthma,1,0,33.9,1,Private,5,0,2,10,5.0,0,2,1,14,4,105.56428571428572,9,5
+PAT_00099,47,Male,Hispanic,Hypertension,0,0,22.7,0,Medicare,1,0,3,17,5.666666666666667,0,5,1,20,3,105.45,15,8
+PAT_00100,59,Male,White,Asthma|CKD|Hypertension|Diabetes,1,0,37.3,0,Medicare,4,0,2,9,4.5,1,1,1,12,3,124.77499999999999,9,5
+PAT_00101,72,Female,White,Stroke|Heart Failure|Diabetes|COPD|Pneumonia,1,1,26.9,0,Medicaid,5,1,2,5,2.5,1,3,0,9,2,89.8111111111111,10,6
+PAT_00102,76,Female,Asian,COPD|Stroke|CKD,0,0,31.3,0,Private,3,1,2,7,3.5,0,5,1,12,3,105.925,11,8
+PAT_00103,63,Female,Black,COPD,0,0,29.5,0,Private,1,0,3,13,4.333333333333333,0,2,1,19,2,106.42631578947368,14,8
+PAT_00104,39,Female,White,Asthma|Diabetes|Cancer|CKD,1,0,41.5,0,Private,4,1,2,7,3.5,1,0,2,10,2,82.28,9,7
+PAT_00105,79,Female,White,Stroke|Cancer|Asthma|Diabetes,1,0,27.5,1,Medicare,4,1,3,12,4.0,0,5,1,13,3,91.84615384615384,8,5
+PAT_00106,42,Male,White,Hypertension|Asthma|Diabetes|CKD,1,0,43.5,0,Medicaid,4,0,2,6,3.0,0,3,1,8,2,83.2375,8,5
+PAT_00107,65,Female,White,Hypertension|Asthma|CKD,0,0,19.0,1,Medicaid,3,0,2,10,5.0,1,0,2,13,5,94.83076923076922,12,9
+PAT_00108,32,Female,White,Stroke|Heart Failure|COPD|AMI,0,1,20.0,0,Medicare,4,0,2,7,3.5,0,1,1,17,4,115.85882352941177,7,7
+PAT_00109,29,Female,Hispanic,Asthma|COPD|Hypertension,0,0,21.6,0,Medicare,3,0,2,8,4.0,0,3,0,9,3,105.07777777777777,9,7
+PAT_00110,89,Male,White,Hypertension|COPD|Asthma|CKD,0,0,22.7,0,Private,4,0,5,19,3.8,1,9,0,26,7,97.47307692307693,20,13
+PAT_00111,54,Female,White,Diabetes|Stroke|Pneumonia,1,0,28.7,0,Medicare,3,0,1,7,7.0,0,2,0,5,1,101.05999999999999,5,4
+PAT_00112,38,Male,Hispanic,Hypertension|COPD|CKD|Stroke|Asthma,0,0,32.3,0,Medicaid,5,0,2,7,3.5,0,2,0,15,1,93.29333333333334,12,8
+PAT_00113,84,Female,White,Diabetes,1,0,27.5,1,Private,1,1,4,16,4.0,1,3,3,30,8,101.45333333333333,12,7
+PAT_00114,33,Male,White,Cancer|Heart Failure,0,1,19.1,0,Private,2,0,4,27,6.75,2,5,2,29,6,100.79655172413793,20,12
+PAT_00115,74,Male,Hispanic,COPD|Pneumonia,0,0,24.6,0,Private,2,0,2,8,4.0,0,1,0,14,2,90.85000000000001,9,5
+PAT_00116,45,Female,White,COPD|Stroke,0,0,25.7,0,Medicare,2,0,2,8,4.0,0,1,1,14,7,111.35714285714286,7,6
+PAT_00117,84,Female,White,AMI|Stroke,0,1,26.2,1,Medicare,2,1,2,8,4.0,1,4,2,11,0,107.56363636363636,11,8
+PAT_00118,88,Female,White,Diabetes|Cancer|Stroke,1,0,34.2,0,Medicaid,3,1,4,13,3.25,1,3,2,19,1,107.46315789473684,19,12
+PAT_00119,73,Female,White,Heart Failure|Hypertension,0,1,19.9,0,Private,2,0,2,5,2.5,0,4,1,8,4,104.8875,10,7
+PAT_00120,31,Female,White,COPD|Cancer|Heart Failure|AMI,0,1,22.2,0,Medicare,4,0,3,15,5.0,1,0,1,18,6,87.67222222222222,16,10
+PAT_00121,65,Female,White,Diabetes|Asthma|COPD,1,0,31.3,0,Medicare,3,0,2,5,2.5,0,2,2,16,4,105.18125,9,9
+PAT_00122,83,Female,White,Heart Failure|CKD,0,1,26.7,0,Medicare,2,0,2,12,6.0,0,1,0,14,5,99.85714285714286,10,7
+PAT_00123,63,Female,Asian,Diabetes|AMI|Heart Failure,1,1,30.4,1,Medicare,3,0,2,8,4.0,1,3,0,14,3,86.32857142857142,9,6
+PAT_00124,47,Female,Black,Heart Failure|Asthma|Cancer|Hypertension,0,1,24.1,0,Private,4,1,2,7,3.5,0,4,1,9,2,111.62222222222222,12,9
+PAT_00125,25,Female,Hispanic,Cancer|CKD,0,0,37.3,0,Medicaid,2,0,2,8,4.0,1,3,2,9,2,106.76666666666667,10,7
+PAT_00126,60,Male,Hispanic,Cancer,0,0,33.7,0,Private,1,1,1,2,2.0,1,1,0,3,0,112.86666666666667,3,3
+PAT_00127,82,Male,White,Hypertension|COPD|Diabetes|Asthma|Pneumonia,1,0,29.1,0,Private,5,1,1,4,4.0,0,1,0,3,0,106.3,4,3
+PAT_00128,82,Female,Black,Hypertension|Cancer|Heart Failure|Pneumonia,0,1,23.0,0,Private,4,0,3,13,4.333333333333333,0,1,1,22,8,115.14545454545454,16,11
+PAT_00129,88,Female,White,Hypertension,0,0,21.9,0,Private,1,0,2,5,2.5,1,1,2,12,1,108.175,13,11
+PAT_00130,39,Male,Hispanic,Stroke|Asthma|Cancer,0,0,39.1,0,Private,3,0,3,14,4.666666666666667,1,0,1,17,4,93.8529411764706,12,8
+PAT_00131,75,Female,White,COPD|Asthma|CKD|Stroke,0,0,26.4,1,Medicaid,4,0,3,11,3.6666666666666665,0,2,1,21,3,87.32857142857144,17,10
+PAT_00132,54,Male,White,Hypertension,0,0,22.0,0,Private,1,0,2,11,5.5,0,2,0,16,6,105.28125,13,7
+PAT_00133,68,Male,Hispanic,Cancer,0,0,29.5,0,Uninsured,1,0,2,7,3.5,0,3,1,15,2,111.26,9,6
+PAT_00134,66,Female,Hispanic,Hypertension|Heart Failure|Pneumonia|Asthma,0,1,28.5,1,Medicare,4,1,2,13,6.5,1,2,0,10,4,106.32000000000001,8,5
+PAT_00135,57,Male,White,CKD|Asthma|COPD,0,0,29.4,0,Medicare,3,1,4,20,5.0,0,7,1,17,5,110.37647058823529,19,11
+PAT_00136,89,Male,White,AMI|Diabetes|Heart Failure,1,1,36.6,0,Private,3,0,1,3,3.0,0,0,0,3,2,89.96666666666665,3,3
+PAT_00137,88,Male,Hispanic,Hypertension|Diabetes|COPD|Heart Failure,1,1,29.9,1,Medicare,4,1,2,10,5.0,0,2,2,12,2,88.03333333333335,9,7
+PAT_00138,49,Male,White,Cancer|Hypertension,0,0,27.8,0,Medicare,2,0,4,15,3.75,0,0,0,20,3,98.69500000000001,17,10
+PAT_00139,36,Female,White,Diabetes|AMI|COPD|Asthma|Stroke,1,1,26.0,0,Private,5,0,4,15,3.75,1,4,1,19,5,81.88947368421053,17,13
+PAT_00140,72,Male,White,COPD|Pneumonia,0,0,25.6,0,Uninsured,2,1,4,13,3.25,1,6,1,26,6,87.76538461538462,14,10
+PAT_00141,83,Male,White,Stroke|Hypertension|Heart Failure|CKD|Diabetes,1,1,29.7,1,Uninsured,5,1,2,10,5.0,2,1,0,8,3,83.7375,12,9
+PAT_00142,27,Female,White,Cancer|Stroke,0,0,25.4,0,Private,2,0,1,3,3.0,0,1,0,6,2,115.64999999999999,5,5
+PAT_00143,47,Female,White,Cancer|Hypertension|AMI|CKD|Diabetes,1,1,33.2,0,Medicare,5,1,1,5,5.0,0,0,1,9,5,95.30000000000001,4,4
+PAT_00144,45,Male,White,Asthma|AMI|Pneumonia|Heart Failure|Hypertension,0,1,25.7,0,Medicare,5,1,5,20,4.0,1,3,2,29,9,101.56896551724138,18,12
+PAT_00145,86,Male,Other,Asthma,0,0,31.2,1,Uninsured,1,1,2,6,3.0,1,1,1,16,0,93.2125,4,4
+PAT_00146,87,Female,Black,COPD|Heart Failure|Asthma|Hypertension,0,1,33.3,0,Private,4,1,2,9,4.5,0,1,1,11,2,114.57272727272726,9,5
+PAT_00147,77,Male,White,Hypertension|Stroke,0,0,27.4,1,Medicare,2,0,3,16,5.333333333333333,1,3,0,24,5,100.93333333333334,9,8
+PAT_00148,59,Male,Hispanic,Heart Failure|Hypertension|Cancer,0,1,27.0,0,Private,3,0,3,10,3.3333333333333335,1,3,0,16,5,100.925,9,7
+PAT_00149,89,Male,Black,Asthma,0,0,36.6,0,Private,1,1,2,5,2.5,2,3,2,12,2,109.29166666666667,6,5
+PAT_00150,52,Male,Hispanic,Pneumonia|COPD|AMI,0,1,26.4,0,Medicare,3,0,2,7,3.5,1,3,0,10,0,102.22,8,8
+PAT_00151,32,Male,White,Asthma|Hypertension|CKD,0,0,25.1,0,Medicaid,3,0,2,12,6.0,0,3,2,18,5,114.25555555555555,11,8
+PAT_00152,88,Female,White,Heart Failure|Asthma|Pneumonia,0,1,32.7,0,Private,3,0,3,8,2.6666666666666665,0,3,0,19,4,83.5578947368421,13,10
+PAT_00153,43,Male,Asian,Asthma|Heart Failure,0,1,34.3,1,Private,2,0,2,14,7.0,0,1,1,16,6,90.55625,13,8
+PAT_00154,49,Female,White,Stroke|AMI,0,1,22.1,0,Medicaid,2,0,2,10,5.0,2,1,0,12,3,101.60833333333333,7,5
+PAT_00155,39,Female,White,AMI|CKD|Heart Failure|Hypertension|Asthma,0,1,29.3,1,Uninsured,5,0,2,9,4.5,0,4,1,13,3,93.84615384615384,8,6
+PAT_00156,26,Male,White,Pneumonia|Heart Failure|Cancer,0,1,38.1,1,Private,3,0,4,14,3.5,0,9,1,22,7,96.7,11,9
+PAT_00157,42,Male,White,AMI|Stroke|Heart Failure|CKD,0,1,37.5,0,Medicare,4,0,1,6,6.0,0,2,0,8,1,84.925,7,6
+PAT_00158,80,Male,Black,Hypertension,0,0,32.7,0,Medicare,1,0,2,8,4.0,0,4,2,12,6,106.39166666666667,9,8
+PAT_00159,35,Male,Black,COPD|Cancer|Asthma,0,0,28.0,1,Medicare,3,1,2,13,6.5,1,2,0,17,6,93.4470588235294,8,5
+PAT_00160,51,Male,Asian,Stroke|COPD|Diabetes,1,0,25.1,1,Private,3,0,2,10,5.0,1,2,0,9,3,98.17777777777778,10,7
+PAT_00161,53,Male,Asian,COPD|Asthma|Stroke,0,0,31.9,0,Private,3,0,2,8,4.0,0,2,1,12,4,113.94166666666666,11,8
+PAT_00162,75,Male,White,CKD|Heart Failure|Stroke,0,1,25.1,0,Medicaid,3,1,2,10,5.0,1,4,1,9,3,110.35555555555555,6,6
+PAT_00163,41,Female,White,COPD|Asthma|Heart Failure,0,1,29.5,0,Medicare,3,0,4,20,5.0,0,5,2,29,3,94.27931034482758,15,11
+PAT_00164,71,Female,White,COPD|CKD,0,0,21.9,1,Medicaid,2,0,1,2,2.0,0,1,1,5,0,89.52000000000001,4,4
+PAT_00165,76,Female,Black,Heart Failure|AMI,0,1,34.3,1,Medicaid,2,1,1,3,3.0,0,1,0,4,0,113.30000000000001,7,7
+PAT_00166,75,Female,Black,Heart Failure|Pneumonia|CKD|AMI,0,1,29.3,1,Medicare,4,1,2,8,4.0,0,7,0,15,5,104.45333333333333,13,8
+PAT_00167,46,Female,Black,Pneumonia|Asthma,0,0,24.8,0,Private,2,0,1,3,3.0,0,0,0,5,1,101.06,6,5
+PAT_00168,49,Female,White,Hypertension,0,0,33.1,0,Medicaid,1,1,2,8,4.0,2,0,2,16,9,107.25625,8,5
+PAT_00169,70,Male,Black,Hypertension,0,0,28.2,0,Medicare,1,1,4,10,2.5,1,3,1,26,10,102.57692307692308,27,13
+PAT_00170,58,Female,Black,Diabetes,1,0,31.7,0,Medicare,1,1,1,7,7.0,0,1,1,6,1,99.88333333333333,7,5
+PAT_00171,79,Female,White,Heart Failure|Pneumonia,0,1,9.9,0,Private,2,0,2,6,3.0,0,2,1,9,2,111.34444444444445,6,4
+PAT_00172,76,Female,White,Heart Failure|Asthma,0,1,29.1,0,Medicaid,2,0,2,9,4.5,1,3,0,9,3,110.32222222222222,7,6
+PAT_00173,55,Male,White,Cancer|COPD,0,0,33.3,0,Medicaid,2,0,5,16,3.2,1,7,2,31,5,99.6516129032258,22,11
+PAT_00174,30,Male,Black,CKD|Cancer,0,0,29.3,1,Medicaid,2,0,4,14,3.5,2,3,2,24,5,100.47083333333335,14,7
+PAT_00175,80,Female,White,Asthma|Pneumonia|Diabetes,1,0,28.5,0,Medicare,3,0,2,10,5.0,0,1,0,17,6,82.02941176470588,9,6
+PAT_00176,36,Female,White,Hypertension|Stroke|Asthma|AMI,0,1,29.2,1,Private,4,0,2,9,4.5,0,0,1,11,1,119.23636363636363,8,7
+PAT_00177,40,Male,Hispanic,Diabetes|Stroke|AMI|COPD|Heart Failure,1,1,28.8,0,Private,5,0,3,10,3.3333333333333335,1,5,1,21,7,93.5142857142857,15,11
+PAT_00178,45,Male,White,COPD,0,0,26.0,0,Medicare,1,0,2,6,3.0,1,1,1,15,4,92.96000000000001,11,9
+PAT_00179,38,Male,White,COPD|Stroke|Diabetes,1,0,17.8,0,Medicare,3,0,2,9,4.5,1,3,1,9,2,88.58888888888889,9,9
+PAT_00180,51,Female,White,Hypertension|COPD|Stroke,0,0,26.0,0,Medicare,3,0,1,4,4.0,0,2,0,5,2,105.67999999999999,3,3
+PAT_00181,31,Female,Black,Hypertension|CKD|Heart Failure|Asthma,0,1,38.0,0,Medicare,4,0,4,17,4.25,1,6,1,29,10,110.46551724137932,13,9
+PAT_00182,33,Male,White,Pneumonia|AMI|COPD|Stroke|Hypertension,0,1,27.4,0,Uninsured,5,0,3,17,5.666666666666667,1,2,2,18,5,102.03888888888889,15,9
+PAT_00183,52,Female,Hispanic,Stroke|COPD|CKD|Pneumonia,0,0,27.4,0,Private,4,0,1,2,2.0,1,2,1,3,0,65.63333333333334,6,5
+PAT_00184,85,Female,Asian,Heart Failure|Hypertension|Diabetes|CKD|Asthma,1,1,24.7,1,Private,5,0,2,5,2.5,0,5,1,12,4,94.54166666666667,9,6
+PAT_00185,35,Male,Black,Stroke,0,0,40.1,0,Private,1,0,2,5,2.5,1,0,1,9,1,105.91111111111111,5,5
+PAT_00186,50,Male,Hispanic,Cancer|Diabetes|Stroke|COPD,1,0,19.8,0,Private,4,0,1,5,5.0,1,0,1,9,2,87.6,7,7
+PAT_00187,68,Male,White,CKD|Asthma|Diabetes,1,0,27.9,0,Medicare,3,1,2,10,5.0,0,2,0,13,1,99.77692307692307,9,7
+PAT_00188,33,Male,Other,Heart Failure|Cancer|Diabetes|CKD,1,1,25.1,0,Medicare,4,1,2,7,3.5,0,4,2,12,3,103.18333333333334,10,7
+PAT_00189,42,Female,White,Cancer|COPD|Pneumonia|CKD|Stroke,0,0,18.8,0,Medicaid,5,0,3,15,5.0,2,1,2,15,5,101.7,11,6
+PAT_00190,50,Female,White,COPD|Stroke|AMI|Diabetes,1,1,39.9,0,Medicare,4,0,2,8,4.0,1,3,0,11,5,94.10909090909091,10,7
+PAT_00191,70,Male,White,Stroke,0,0,32.1,0,Private,1,0,3,11,3.6666666666666665,0,3,1,17,5,114.85882352941177,12,10
+PAT_00192,77,Male,White,COPD,0,0,35.2,0,Medicare,1,0,4,15,3.75,0,6,0,27,9,102.21111111111111,16,11
+PAT_00193,62,Male,White,Heart Failure|Cancer,0,1,33.1,1,Medicare,2,1,5,18,3.6,1,6,1,33,11,106.3030303030303,23,12
+PAT_00194,75,Male,White,Asthma|Pneumonia|AMI|Stroke|COPD,0,1,29.4,0,Uninsured,5,0,2,10,5.0,0,2,0,16,4,115.4375,6,5
+PAT_00195,34,Female,White,Heart Failure|Asthma|Hypertension,0,1,20.8,0,Medicare,3,0,4,19,4.75,0,5,2,31,8,93.44193548387096,24,10
+PAT_00196,25,Male,White,Heart Failure|COPD|Diabetes,1,1,26.9,0,Private,3,0,2,8,4.0,1,0,0,10,5,92.12,9,6
+PAT_00197,71,Male,White,Cancer|AMI|Hypertension,0,1,34.5,0,Private,3,0,3,13,4.333333333333333,0,2,3,21,6,98.9904761904762,11,7
+PAT_00198,53,Female,White,Heart Failure|Asthma,0,1,30.2,1,Medicare,2,1,3,19,6.333333333333333,0,1,2,17,2,98.62352941176471,12,9
+PAT_00199,68,Male,Hispanic,Pneumonia|AMI|Diabetes,1,1,27.7,0,Medicaid,3,1,5,20,4.0,0,8,2,30,4,99.12333333333332,24,13
+PAT_00200,30,Male,Black,CKD|Pneumonia,0,0,26.6,0,Uninsured,2,1,1,4,4.0,1,2,0,8,4,92.4625,5,5
+PAT_00201,37,Female,Black,Hypertension,0,0,30.1,0,Medicaid,1,0,3,12,4.0,1,6,1,16,3,91.03125,13,9
+PAT_00202,41,Male,White,Heart Failure|Stroke|AMI,0,1,27.7,0,Medicaid,3,1,1,3,3.0,1,1,0,6,1,100.93333333333334,6,4
+PAT_00203,26,Male,Black,CKD|Heart Failure|Cancer,0,1,28.7,0,Private,3,0,3,9,3.0,1,3,1,20,5,95.175,10,6
+PAT_00204,30,Male,Black,Cancer|CKD|Stroke,0,0,22.7,0,Medicare,3,0,3,10,3.3333333333333335,1,4,1,17,5,94.69411764705882,18,10
+PAT_00205,75,Female,White,AMI|Heart Failure|Stroke|COPD,0,1,34.7,0,Private,4,0,1,2,2.0,0,1,0,5,1,89.28,4,3
+PAT_00206,72,Female,White,Stroke|Asthma|Cancer|Heart Failure,0,1,26.0,0,Medicaid,4,1,2,8,4.0,1,1,0,15,6,100.42666666666668,10,7
+PAT_00207,65,Male,Black,COPD,0,0,22.2,0,Private,1,0,4,17,4.25,0,2,2,20,3,112.21,22,12
+PAT_00208,40,Male,Asian,AMI|Cancer|Pneumonia|Heart Failure|Hypertension,0,1,16.7,1,Private,5,0,5,17,3.4,1,3,2,31,7,96.3225806451613,25,12
+PAT_00209,63,Male,White,Asthma|CKD|AMI|Diabetes|COPD,1,1,28.0,1,Private,5,0,1,3,3.0,0,2,1,6,1,121.89999999999999,4,4
+PAT_00210,28,Female,White,Cancer|AMI,0,1,11.8,0,Medicare,2,0,4,14,3.5,1,6,4,27,12,95.22962962962963,19,11
+PAT_00211,29,Female,Asian,Stroke|COPD|Asthma|Pneumonia|Heart Failure,0,1,31.3,1,Medicare,5,1,8,21,2.625,1,3,5,48,8,98.575,44,14
+PAT_00212,73,Female,Asian,Asthma|Pneumonia,0,0,26.5,1,Medicare,2,0,3,9,3.0,0,3,2,17,5,86.99411764705883,12,10
+PAT_00213,54,Male,Black,Asthma|COPD,0,0,20.5,0,Medicare,2,0,3,10,3.3333333333333335,2,1,2,19,8,101.96315789473684,11,8
+PAT_00214,56,Female,White,Stroke|Cancer,0,0,28.3,0,Medicare,2,0,3,13,4.333333333333333,0,7,1,16,6,115.39375,15,9
+PAT_00215,39,Female,Black,Cancer|Pneumonia|Stroke|Hypertension|COPD,0,0,31.3,0,Private,5,0,3,7,2.3333333333333335,0,1,0,18,0,104.03333333333333,17,9
+PAT_00216,88,Female,White,Stroke|Pneumonia|AMI,0,1,41.3,0,Private,3,1,2,12,6.0,0,0,0,6,1,100.18333333333334,10,7
+PAT_00217,49,Female,White,Pneumonia|COPD|Asthma|Heart Failure,0,1,25.7,0,Medicaid,4,0,1,3,3.0,0,0,0,7,0,112.07142857142857,2,2
+PAT_00218,43,Female,Hispanic,AMI|Stroke,0,1,24.0,1,Medicare,2,1,2,9,4.5,1,0,1,18,4,99.27777777777777,8,6
+PAT_00219,81,Female,White,Diabetes|Pneumonia|Heart Failure,1,1,38.6,0,Private,3,1,5,16,3.2,2,3,1,26,6,102.08076923076922,20,11
+PAT_00220,54,Male,Black,COPD|AMI,0,1,26.3,0,Medicare,2,0,1,4,4.0,0,0,0,8,2,98.0375,2,2
+PAT_00221,82,Female,White,Pneumonia|Cancer|CKD,0,0,28.8,1,Medicare,3,1,3,11,3.6666666666666665,1,3,1,19,3,98.9421052631579,11,8
+PAT_00222,85,Female,White,AMI|Diabetes,1,1,35.0,0,Private,2,1,6,30,5.0,0,5,0,35,4,104.31714285714285,27,11
+PAT_00223,74,Male,Hispanic,Cancer|Pneumonia|CKD|Heart Failure,0,1,31.6,0,Private,4,0,1,6,6.0,1,2,1,6,1,80.56666666666666,6,6
+PAT_00224,46,Male,Hispanic,Heart Failure|Pneumonia|COPD|Hypertension|Asthma,0,1,22.3,0,Medicare,5,0,2,12,6.0,1,1,1,13,2,104.3076923076923,12,9
+PAT_00225,74,Female,White,Hypertension|Diabetes,1,0,23.8,0,Uninsured,2,1,4,20,5.0,1,3,0,27,6,95.81851851851852,15,11
+PAT_00226,67,Female,Hispanic,CKD|Heart Failure,0,1,28.8,0,Medicare,2,0,5,12,2.4,0,8,3,25,7,80.628,25,13
+PAT_00227,72,Male,White,Asthma,0,0,17.5,0,Medicare,1,0,2,10,5.0,1,1,0,12,5,108.27499999999999,7,5
+PAT_00228,53,Female,White,AMI|Pneumonia|Diabetes,1,1,18.8,0,Uninsured,3,0,2,7,3.5,0,3,1,16,2,95.96875,12,8
+PAT_00229,36,Female,Hispanic,Hypertension|Asthma|Diabetes|Pneumonia|AMI,1,1,34.7,0,Medicare,5,0,1,3,3.0,0,1,0,7,2,112.04285714285713,6,6
+PAT_00230,89,Female,Black,Cancer|COPD,0,0,34.5,0,Medicare,2,0,2,9,4.5,0,2,2,12,4,103.26666666666667,12,8
+PAT_00231,36,Male,Black,Diabetes|Hypertension|Heart Failure|CKD|AMI,1,1,29.2,0,Private,5,0,3,9,3.0,2,2,1,13,2,93.17692307692307,12,8
+PAT_00232,31,Female,Other,CKD|Cancer|Asthma|Hypertension|Stroke,0,0,32.4,1,Medicare,5,0,1,4,4.0,0,1,1,5,1,89.42,2,1
+PAT_00233,77,Female,Hispanic,Diabetes|Cancer|AMI,1,1,35.4,1,Medicare,3,1,4,17,4.25,2,3,2,25,10,94.10799999999999,18,12
+PAT_00234,64,Male,White,COPD|Heart Failure,0,1,12.8,1,Medicare,2,0,4,18,4.5,0,2,2,24,6,107.04583333333333,19,10
+PAT_00235,88,Male,Other,Hypertension|Diabetes,1,0,27.5,0,Private,2,1,4,15,3.75,0,5,1,23,7,97.02173913043478,19,8
+PAT_00236,77,Male,White,Cancer|Stroke|COPD|Heart Failure|Pneumonia,0,1,23.0,0,Private,5,1,5,19,3.8,1,2,1,31,5,101.06774193548387,23,12
+PAT_00237,87,Female,Black,AMI|Stroke,0,1,29.6,0,Medicaid,2,0,1,4,4.0,0,1,0,9,2,92.92222222222223,5,4
+PAT_00238,78,Male,Black,Heart Failure|Diabetes|CKD,1,1,20.5,0,Uninsured,3,1,5,23,4.6,1,4,3,24,6,108.41666666666667,15,8
+PAT_00239,62,Female,Black,Heart Failure|AMI,0,1,24.8,0,Medicare,2,0,4,15,3.75,0,8,3,24,7,108.55416666666667,20,10
+PAT_00240,46,Female,Black,Heart Failure|CKD,0,1,30.9,0,Medicare,2,0,2,8,4.0,1,4,2,9,2,100.28888888888889,8,7
+PAT_00241,47,Male,White,Pneumonia|Cancer|Asthma,0,0,35.0,0,Medicare,3,1,5,15,3.0,2,4,1,27,6,102.66666666666667,21,13
+PAT_00242,45,Male,Black,COPD|Heart Failure|Hypertension,0,1,25.8,1,Private,3,0,1,5,5.0,0,0,1,8,3,111.02499999999999,4,4
+PAT_00243,33,Male,White,Hypertension|Asthma|Pneumonia,0,0,23.6,0,Private,3,0,2,10,5.0,1,3,0,12,7,87.95833333333333,8,5
+PAT_00244,47,Female,White,Heart Failure|AMI|Asthma,0,1,32.5,1,Private,3,0,4,20,5.0,1,2,0,27,4,102.05185185185185,23,13
+PAT_00245,52,Female,Black,Hypertension|Diabetes,1,0,33.3,1,Medicare,2,1,2,10,5.0,1,1,0,7,2,130.31428571428572,5,5
+PAT_00246,80,Male,White,AMI|Asthma|CKD|Cancer,0,1,36.8,0,Medicaid,4,1,1,6,6.0,1,0,0,4,1,96.225,7,6
+PAT_00247,58,Male,White,CKD,0,0,22.3,0,Private,1,0,3,10,3.3333333333333335,1,4,0,16,2,93.5125,19,11
+PAT_00248,36,Female,White,Asthma|Hypertension|Stroke,0,0,38.5,0,Medicare,3,0,3,7,2.3333333333333335,0,0,2,19,6,109.17894736842106,12,7
+PAT_00249,39,Female,White,AMI|Asthma|Hypertension|Heart Failure,0,1,28.4,0,Medicaid,4,0,2,8,4.0,0,1,1,10,1,84.47999999999999,12,7
+PAT_00250,34,Male,White,Heart Failure|Hypertension|Pneumonia,0,1,34.5,0,Private,3,0,2,8,4.0,0,1,1,12,8,93.425,10,6
+PAT_00251,84,Female,Hispanic,Diabetes|Asthma|COPD|Pneumonia,1,0,25.5,0,Private,4,0,2,9,4.5,1,2,2,10,1,93.27000000000001,13,10
+PAT_00252,89,Male,Black,Asthma|AMI|Pneumonia,0,1,39.3,0,Medicaid,3,0,3,14,4.666666666666667,1,4,1,16,5,93.4125,19,9
+PAT_00253,69,Female,White,CKD|Asthma|Stroke|Heart Failure,0,1,39.0,1,Medicare,4,0,3,9,3.0,1,1,1,16,4,95.325,14,10
+PAT_00254,30,Male,Black,Heart Failure|Stroke|AMI|Diabetes,1,1,19.4,0,Private,4,1,1,6,6.0,0,0,0,8,1,115.4,4,3
+PAT_00255,72,Male,White,Diabetes|Heart Failure|COPD|Hypertension|Pneumonia,1,1,20.8,1,Private,5,0,3,10,3.3333333333333335,2,2,1,16,4,84.78125,15,11
+PAT_00256,32,Female,Black,Pneumonia|Asthma|Diabetes|AMI|CKD,1,1,26.2,0,Private,5,0,3,16,5.333333333333333,1,4,3,21,7,96.14761904761905,17,10
+PAT_00257,67,Female,Black,Diabetes,1,0,17.7,1,Medicare,1,1,3,14,4.666666666666667,2,2,1,12,3,84.925,9,8
+PAT_00258,87,Male,White,AMI|CKD|Heart Failure|Pneumonia|Diabetes,1,1,30.2,0,Medicaid,5,1,2,7,3.5,0,3,1,11,1,87.43636363636364,7,6
+PAT_00259,27,Female,White,Diabetes|Cancer|Pneumonia,1,0,25.3,0,Medicaid,3,1,2,4,2.0,1,4,1,16,7,95.075,7,6
+PAT_00260,82,Male,Hispanic,Stroke,0,0,30.0,1,Uninsured,1,1,5,16,3.2,2,5,2,31,10,98.37741935483871,25,12
+PAT_00261,88,Male,White,Pneumonia,0,0,23.9,0,Private,1,0,2,4,2.0,1,0,0,16,2,91.7125,14,8
+PAT_00262,84,Male,Other,COPD|Heart Failure|Diabetes,1,1,34.3,0,Medicare,3,1,2,8,4.0,0,2,1,17,3,103.86470588235295,8,5
+PAT_00263,60,Female,Asian,Pneumonia,0,0,10.6,0,Medicare,1,0,2,6,3.0,0,4,0,13,4,106.06923076923077,4,4
+PAT_00264,70,Female,White,Stroke|COPD,0,0,25.8,0,Medicare,2,0,2,12,6.0,1,4,0,15,3,99.68666666666667,8,7
+PAT_00265,54,Male,Black,Heart Failure|AMI,0,1,33.2,1,Medicare,2,0,5,19,3.8,0,3,3,39,10,95.3,23,12
+PAT_00266,56,Female,White,COPD|Hypertension,0,0,30.0,0,Medicaid,2,0,2,4,2.0,0,1,0,13,2,103.1923076923077,9,7
+PAT_00267,43,Male,White,Stroke|Cancer|CKD|COPD|AMI,0,1,29.3,1,Medicare,5,0,4,19,4.75,0,9,0,28,8,93.02857142857144,18,10
+PAT_00268,74,Male,White,Asthma|Diabetes,1,0,35.7,1,Private,2,0,2,9,4.5,1,1,0,9,3,93.53333333333333,11,8
+PAT_00269,36,Male,Hispanic,Cancer|COPD|CKD,0,0,35.0,0,Medicare,3,1,3,8,2.6666666666666665,0,2,1,14,3,104.39285714285714,15,10
+PAT_00270,46,Male,Black,COPD,0,0,20.4,0,Medicare,1,0,3,13,4.333333333333333,0,3,1,25,4,103.30799999999999,10,9
+PAT_00271,44,Female,Hispanic,Diabetes|COPD|CKD|Asthma|Stroke,1,0,30.3,0,Private,5,0,1,2,2.0,0,2,1,7,3,89.82857142857142,7,6
+PAT_00272,69,Male,White,Heart Failure|CKD|Diabetes|Cancer|Hypertension,1,1,29.9,1,Medicare,5,1,3,9,3.0,0,2,1,21,8,86.26190476190476,16,8
+PAT_00273,70,Male,White,Heart Failure|AMI|Asthma|Diabetes,1,1,31.5,0,Medicare,4,1,3,9,3.0,0,1,2,19,3,98.55263157894737,11,7
+PAT_00274,56,Female,Asian,Asthma|Cancer|Diabetes,1,0,16.6,0,Medicare,3,1,3,15,5.0,0,0,2,21,2,109.48095238095237,16,9
+PAT_00275,63,Female,White,Cancer|Hypertension|COPD|Stroke|CKD,0,0,22.5,0,Private,5,0,2,7,3.5,0,0,1,18,3,99.22777777777777,12,8
+PAT_00276,44,Female,Hispanic,CKD|Diabetes|COPD|Heart Failure,1,1,30.0,0,Private,4,0,2,9,4.5,0,1,1,12,4,91.28333333333335,6,6
+PAT_00277,50,Male,White,Hypertension|AMI|Diabetes|Cancer|Pneumonia,1,1,21.4,1,Medicare,5,0,2,7,3.5,0,1,0,17,4,101.75294117647059,10,8
+PAT_00278,85,Female,Black,Pneumonia|COPD|Heart Failure|Stroke,0,1,28.8,0,Private,4,1,5,15,3.0,2,7,1,31,6,101.85161290322581,20,10
+PAT_00279,73,Female,White,CKD|Cancer|Heart Failure|Pneumonia,0,1,28.0,0,Medicare,4,0,2,5,2.5,0,5,1,15,7,94.59333333333333,6,5
+PAT_00280,69,Male,Hispanic,Hypertension|CKD|AMI,0,1,23.7,1,Medicare,3,1,3,10,3.3333333333333335,1,4,2,21,7,99.82380952380953,19,10
+PAT_00281,34,Male,White,COPD,0,0,41.0,1,Private,1,0,1,7,7.0,0,0,0,4,2,117.1,4,3
+PAT_00282,48,Female,White,Asthma,0,0,35.1,0,Private,1,1,3,15,5.0,1,2,1,23,4,101.7695652173913,16,9
+PAT_00283,63,Female,Hispanic,Hypertension|CKD|COPD,0,0,37.3,1,Medicaid,3,0,2,11,5.5,0,1,2,12,0,81.55,9,7
+PAT_00284,42,Female,Asian,CKD|Asthma|Heart Failure|COPD|Diabetes,1,1,18.5,0,Private,5,1,4,22,5.5,0,5,2,30,4,92.19666666666667,21,10
+PAT_00285,68,Male,Black,Cancer|Stroke|AMI,0,1,35.6,0,Private,3,1,3,6,2.0,2,5,1,18,8,91.58333333333333,11,8
+PAT_00286,81,Male,White,Pneumonia|Asthma|Hypertension,0,0,29.3,1,Medicare,3,1,3,12,4.0,0,4,0,15,4,103.35333333333332,17,9
+PAT_00287,83,Male,Black,Diabetes,1,0,10.4,0,Private,1,1,2,8,4.0,0,1,1,13,5,86.96923076923076,10,8
+PAT_00288,71,Female,White,Heart Failure,0,1,40.3,0,Medicare,1,0,2,3,1.5,0,1,2,14,2,101.84285714285714,6,4
+PAT_00289,65,Female,White,COPD|Stroke|AMI,0,1,28.3,0,Medicare,3,0,2,10,5.0,1,4,0,7,1,77.82857142857142,9,7
+PAT_00290,67,Female,Black,Stroke,0,0,21.6,0,Medicare,1,0,3,9,3.0,0,2,2,12,1,97.68333333333334,15,9
+PAT_00291,50,Female,Black,COPD|Diabetes,1,0,26.0,1,Medicaid,2,0,4,11,2.75,0,5,2,23,0,93.59565217391304,16,9
+PAT_00292,79,Female,Other,Asthma|Pneumonia|AMI|Heart Failure,0,1,23.5,0,Private,4,0,1,4,4.0,0,0,0,7,1,111.57142857142857,6,5
+PAT_00293,43,Female,White,Diabetes|Heart Failure|COPD|Asthma,1,1,31.1,0,Medicare,4,0,1,3,3.0,1,0,0,9,4,89.98888888888888,5,4
+PAT_00294,89,Male,White,Cancer|Stroke|Heart Failure|Pneumonia|Hypertension,0,1,37.8,0,Medicare,5,1,2,9,4.5,0,2,1,15,5,97.42666666666668,10,8
+PAT_00295,66,Male,White,Pneumonia|Heart Failure|Stroke|COPD,0,1,38.9,0,Medicare,4,0,1,3,3.0,0,1,0,3,0,126.09999999999998,6,5
+PAT_00296,65,Female,White,Pneumonia|Asthma,0,0,19.2,0,Medicare,2,0,3,15,5.0,1,0,0,16,1,101.3625,18,11
+PAT_00297,59,Female,White,CKD,0,0,29.9,0,Medicare,1,1,3,14,4.666666666666667,1,2,1,16,5,93.675,15,10
+PAT_00298,58,Male,Hispanic,Hypertension|CKD|Pneumonia,0,0,29.2,0,Medicare,3,0,1,7,7.0,0,0,0,4,1,75.5,7,6
+PAT_00299,39,Male,Hispanic,Cancer|Heart Failure,0,1,28.4,0,Private,2,0,2,7,3.5,0,3,1,11,2,99.91818181818184,4,4
+PAT_00300,85,Male,Hispanic,CKD,0,0,28.4,0,Private,1,0,3,13,4.333333333333333,0,2,2,20,4,95.795,13,8
+PAT_00301,76,Female,Black,Cancer|Stroke|Hypertension|Pneumonia,0,0,39.6,0,Medicare,4,1,6,27,4.5,0,3,1,37,10,94.83783783783784,28,10
+PAT_00302,88,Female,White,Heart Failure,0,1,21.7,0,Private,1,1,2,12,6.0,0,3,0,12,1,108.04166666666667,10,6
+PAT_00303,31,Male,Hispanic,CKD|Cancer|Asthma|Hypertension,0,0,24.6,0,Uninsured,4,0,3,13,4.333333333333333,2,2,1,18,6,103.5611111111111,18,8
+PAT_00304,53,Male,White,CKD|Pneumonia|Diabetes,1,0,30.5,0,Private,3,0,3,15,5.0,0,3,0,13,2,102.94615384615385,16,10
+PAT_00305,75,Female,White,Asthma|Heart Failure,0,1,32.8,1,Medicare,2,1,4,19,4.75,0,5,1,27,6,104.2925925925926,25,13
+PAT_00306,68,Male,Hispanic,CKD|Asthma|Heart Failure|Stroke,0,1,25.4,1,Private,4,1,5,15,3.0,0,5,0,21,3,106.41904761904763,24,13
+PAT_00307,85,Male,Hispanic,Diabetes|Pneumonia,1,0,32.6,0,Private,2,1,3,10,3.3333333333333335,1,3,2,14,5,100.29285714285713,12,8
+PAT_00308,85,Male,White,Pneumonia|COPD|Cancer|Diabetes,1,0,21.8,1,Medicare,4,1,2,9,4.5,0,1,0,15,2,89.46666666666667,6,6
+PAT_00309,80,Female,White,COPD|Diabetes|Hypertension|Stroke|Cancer,1,0,28.0,1,Medicare,5,0,3,13,4.333333333333333,1,3,1,16,4,110.3875,17,10
+PAT_00310,61,Male,White,Asthma|AMI,0,1,28.1,0,Private,2,0,2,4,2.0,0,2,0,13,7,97.4923076923077,8,5
+PAT_00311,89,Male,Black,Asthma|Stroke,0,0,32.7,0,Medicaid,2,1,5,20,4.0,2,8,3,31,9,105.48387096774194,27,13
+PAT_00312,67,Female,White,Diabetes|CKD|Stroke,1,0,19.4,0,Private,3,0,2,12,6.0,0,3,0,14,3,76.61428571428571,9,6
+PAT_00313,73,Female,White,Diabetes|Heart Failure|CKD,1,1,28.7,0,Medicaid,3,1,3,7,2.3333333333333335,0,3,1,20,5,104.715,14,8
+PAT_00314,81,Male,White,Pneumonia|COPD|AMI|Hypertension|Cancer,0,1,21.3,0,Private,5,0,4,10,2.5,1,2,1,21,3,99.56666666666668,18,10
+PAT_00315,80,Male,Black,Hypertension,0,0,31.5,0,Private,1,1,4,23,5.75,1,4,2,29,6,98.41034482758621,17,10
+PAT_00316,64,Male,White,COPD|Stroke|Diabetes,1,0,25.5,1,Medicaid,3,1,2,10,5.0,0,2,0,11,3,106.28181818181817,10,6
+PAT_00317,43,Female,White,Cancer|Asthma|Pneumonia|Hypertension,0,0,23.9,1,Private,4,0,1,3,3.0,0,1,1,4,1,95.9,6,6
+PAT_00318,60,Male,White,Pneumonia|Hypertension,0,0,23.1,0,Private,2,0,1,2,2.0,0,1,1,9,4,99.94444444444444,2,2
+PAT_00319,65,Female,Black,COPD|Hypertension|Cancer|Diabetes|CKD,1,0,28.4,0,Uninsured,5,0,2,7,3.5,1,2,0,15,4,78.02666666666667,4,4
+PAT_00320,65,Female,Hispanic,Stroke|Cancer|Diabetes,1,0,29.3,0,Medicare,3,0,3,13,4.333333333333333,0,4,1,15,2,102.42,12,9
+PAT_00321,49,Female,White,COPD|Pneumonia,0,0,25.8,1,Medicare,2,0,2,7,3.5,0,4,1,10,3,98.69,10,9
+PAT_00322,64,Female,White,COPD|Stroke,0,0,23.6,0,Private,2,0,2,11,5.5,0,2,1,8,3,103.5875,9,6
+PAT_00323,28,Female,Black,Stroke|Cancer|Asthma,0,0,32.4,1,Medicare,3,0,2,10,5.0,0,2,1,8,2,95.8875,9,7
+PAT_00324,66,Female,White,Stroke|Cancer,0,0,19.6,0,Private,2,0,1,5,5.0,1,2,1,6,3,111.05,5,5
+PAT_00325,40,Male,Black,Heart Failure|Diabetes,1,1,26.0,0,Medicaid,2,1,1,6,6.0,0,0,1,3,2,119.09999999999998,2,2
+PAT_00326,69,Male,White,COPD|Hypertension|Cancer,0,0,26.5,0,Medicare,3,1,2,11,5.5,1,1,1,11,3,95.0909090909091,11,7
+PAT_00327,47,Male,White,Diabetes|Asthma|Hypertension|Cancer|CKD,1,0,34.0,0,Medicare,5,0,4,13,3.25,0,2,3,18,4,95.67777777777778,13,8
+PAT_00328,72,Female,White,Hypertension|Pneumonia,0,0,24.7,0,Private,2,0,4,17,4.25,0,3,3,25,8,106.58,14,10
+PAT_00329,41,Female,Black,Cancer|COPD|AMI|Diabetes|Heart Failure,1,1,28.8,1,Medicaid,5,1,3,8,2.6666666666666665,2,2,1,19,2,101.61578947368422,12,8
+PAT_00330,28,Male,Black,Hypertension|Pneumonia|Asthma|CKD,0,0,26.9,0,Medicaid,4,0,4,16,4.0,1,6,1,15,3,91.87333333333332,14,11
+PAT_00331,35,Male,Black,COPD|Diabetes|CKD|Hypertension,1,0,26.5,0,Private,4,0,2,9,4.5,0,1,0,16,2,93.85,6,6
+PAT_00332,62,Male,White,CKD|AMI|Asthma,0,1,33.2,0,Medicare,3,0,4,17,4.25,0,5,0,17,5,84.65882352941176,25,10
+PAT_00333,63,Female,White,AMI,0,1,22.1,0,Medicare,1,0,1,5,5.0,0,2,1,9,2,106.53333333333335,7,6
+PAT_00334,55,Male,White,Diabetes|CKD|Hypertension,1,0,29.2,0,Private,3,0,2,10,5.0,1,2,2,13,1,94.88461538461539,5,5
+PAT_00335,54,Male,White,Diabetes|Cancer|Pneumonia|CKD|Hypertension,1,0,22.3,0,Medicaid,5,0,3,10,3.3333333333333335,1,5,1,17,5,104.80588235294118,16,9
+PAT_00336,50,Female,White,CKD|Diabetes|COPD|Hypertension,1,0,26.8,0,Private,4,0,1,5,5.0,0,0,0,7,3,96.14285714285714,5,5
+PAT_00337,40,Male,Black,CKD|Hypertension,0,0,29.1,0,Medicare,2,0,1,5,5.0,0,1,0,7,1,126.54285714285713,5,4
+PAT_00338,89,Male,Black,Heart Failure|Asthma|Pneumonia|Stroke,0,1,29.8,0,Medicare,4,0,3,17,5.666666666666667,1,8,0,15,6,95.55999999999999,10,7
+PAT_00339,33,Female,Asian,Diabetes|Hypertension|Pneumonia,1,0,20.5,0,Uninsured,3,0,3,11,3.6666666666666665,0,5,2,15,7,85.50666666666666,13,7
+PAT_00340,75,Male,Hispanic,Diabetes|AMI,1,1,31.4,0,Uninsured,2,1,3,12,4.0,2,4,1,14,5,94.85714285714286,11,8
+PAT_00341,60,Female,Black,COPD|Cancer|Diabetes|Stroke|Asthma,1,0,20.4,0,Medicare,5,0,3,12,4.0,1,4,1,21,6,93.73809523809524,13,9
+PAT_00342,59,Female,Black,Heart Failure,0,1,27.4,0,Private,1,0,3,15,5.0,1,5,1,20,3,90.785,8,7
+PAT_00343,55,Female,White,AMI|Diabetes|Heart Failure|COPD,1,1,23.4,0,Medicaid,4,0,1,5,5.0,1,2,1,6,0,113.83333333333333,6,6
+PAT_00344,68,Male,Hispanic,Pneumonia|Stroke,0,0,27.8,0,Medicare,2,0,2,10,5.0,1,1,1,16,2,95.34375,5,3
+PAT_00345,60,Male,Hispanic,Diabetes|Hypertension,1,0,20.0,1,Medicaid,2,0,4,13,3.25,0,2,2,26,7,97.13461538461539,17,10
+PAT_00346,84,Female,White,Heart Failure,0,1,27.6,1,Medicare,1,1,3,18,6.0,0,3,1,15,1,99.18666666666667,14,8
+PAT_00347,76,Female,White,Asthma,0,0,17.8,0,Private,1,1,3,16,5.333333333333333,2,6,1,19,6,102.6842105263158,16,12
+PAT_00348,25,Female,White,COPD|Heart Failure,0,1,43.8,0,Medicare,2,0,2,6,3.0,0,1,1,17,3,103.94117647058823,10,6
+PAT_00349,81,Male,White,Pneumonia|CKD,0,0,27.5,0,Medicare,2,1,3,10,3.3333333333333335,2,4,2,15,4,100.48,10,6
+PAT_00350,43,Female,White,Hypertension|AMI|Cancer,0,1,34.5,1,Uninsured,3,1,1,2,2.0,0,1,1,7,1,94.82857142857144,5,4
+PAT_00351,63,Male,White,Pneumonia|CKD|Asthma|Diabetes|Hypertension,1,0,29.1,1,Medicare,5,1,3,10,3.3333333333333335,1,4,1,24,8,96.05833333333334,14,10
+PAT_00352,44,Male,White,AMI|Diabetes,1,1,15.4,1,Medicare,2,1,3,9,3.0,0,5,1,17,6,94.63529411764705,14,10
+PAT_00353,78,Female,Black,AMI|Pneumonia,0,1,32.6,1,Medicaid,2,0,2,6,3.0,0,0,1,9,1,103.1,9,6
+PAT_00354,46,Male,White,COPD|AMI,0,1,26.2,0,Medicare,2,0,1,1,1.0,0,0,1,4,2,113.02499999999999,2,2
+PAT_00355,36,Female,Hispanic,CKD|Cancer|Diabetes|AMI,1,1,23.7,0,Private,4,0,1,2,2.0,0,1,1,7,2,112.38571428571429,7,4
+PAT_00356,56,Male,White,Stroke|Cancer,0,0,18.8,0,Medicaid,2,0,2,7,3.5,0,5,1,16,2,113.0625,11,7
+PAT_00357,33,Male,White,Asthma|Heart Failure|AMI|Hypertension|Diabetes,1,1,21.4,0,Private,5,0,2,7,3.5,2,1,2,17,4,108.93529411764706,8,6
+PAT_00358,26,Male,White,Cancer|Stroke|Diabetes|AMI,1,1,31.0,1,Medicare,4,0,2,7,3.5,1,2,0,13,3,76.00769230769231,9,7
+PAT_00359,81,Female,Black,Pneumonia|Diabetes|CKD,1,0,39.7,0,Medicare,3,1,2,8,4.0,0,2,1,11,1,89.54545454545455,5,5
+PAT_00360,65,Male,Black,Pneumonia,0,0,34.2,0,Private,1,0,3,13,4.333333333333333,0,2,1,12,7,99.84166666666665,15,8
+PAT_00361,26,Female,Black,Hypertension|CKD,0,0,28.0,0,Medicare,2,0,3,20,6.666666666666667,0,3,0,18,5,102.19999999999999,19,10
+PAT_00362,72,Female,White,Asthma,0,0,34.7,0,Private,1,0,2,9,4.5,1,1,1,9,2,103.8111111111111,8,7
+PAT_00363,69,Female,Black,Asthma|Cancer|Diabetes,1,0,30.8,0,Uninsured,3,0,3,12,4.0,1,5,2,16,3,96.125,13,7
+PAT_00364,78,Female,White,CKD|AMI|Asthma,0,1,9.7,1,Uninsured,3,1,4,17,4.25,0,2,1,23,8,96.9913043478261,16,11
+PAT_00365,60,Female,Black,Heart Failure|Cancer,0,1,35.2,1,Medicaid,2,1,1,5,5.0,0,1,1,3,0,106.2,3,3
+PAT_00366,85,Female,White,CKD|Hypertension|Pneumonia,0,0,30.1,0,Medicare,3,0,2,6,3.0,0,5,1,14,3,94.77142857142857,9,8
+PAT_00367,50,Male,White,Cancer|Stroke,0,0,28.0,0,Medicare,2,0,3,13,4.333333333333333,0,0,1,13,2,98.01538461538462,14,11
+PAT_00368,35,Male,White,COPD|Hypertension|CKD,0,0,38.4,0,Private,3,0,3,7,2.3333333333333335,2,4,3,17,4,98.91176470588235,10,6
+PAT_00369,34,Female,White,COPD|Cancer,0,0,24.8,0,Private,2,0,4,13,3.25,1,3,2,22,2,90.96363636363637,17,10
+PAT_00370,53,Female,Black,AMI|Cancer|Asthma|Diabetes,1,1,34.0,0,Medicare,4,0,4,19,4.75,1,4,2,20,5,95.535,17,7
+PAT_00371,66,Male,White,Heart Failure|COPD|Asthma|Hypertension|Diabetes,1,1,20.8,0,Medicare,5,1,1,7,7.0,1,1,0,4,0,107.9,2,2
+PAT_00372,88,Female,Asian,CKD|AMI,0,1,29.7,0,Private,2,1,2,7,3.5,0,3,2,12,3,81.68333333333334,9,6
+PAT_00373,35,Female,White,Cancer|Stroke|Pneumonia|AMI,0,1,31.0,0,Private,4,0,2,13,6.5,0,6,0,10,5,106.62,9,6
+PAT_00374,56,Female,White,AMI|Hypertension|Asthma|COPD,0,1,26.2,0,Medicare,4,0,1,2,2.0,0,0,1,3,2,86.33333333333333,5,5
+PAT_00375,77,Female,White,CKD|Diabetes,1,0,33.8,0,Private,2,0,2,10,5.0,0,1,1,9,4,101.1888888888889,8,7
+PAT_00376,73,Male,Black,Asthma|AMI|Hypertension|CKD|Stroke,0,1,27.3,0,Medicaid,5,1,2,3,1.5,0,3,1,9,5,96.94444444444444,10,8
+PAT_00377,38,Male,White,COPD|AMI|CKD|Heart Failure,0,1,29.4,0,Medicare,4,0,1,3,3.0,0,0,1,6,1,97.31666666666666,5,5
+PAT_00378,66,Male,White,Cancer|Diabetes,1,0,32.3,0,Uninsured,2,1,4,14,3.5,0,2,0,23,6,89.96521739130434,12,9
+PAT_00379,44,Female,Other,COPD|Cancer,0,0,25.0,0,Medicare,2,0,4,13,3.25,0,6,2,27,6,98.8851851851852,11,7
+PAT_00380,27,Male,White,CKD,0,0,22.9,0,Medicare,1,0,2,7,3.5,1,2,1,14,3,105.21428571428571,8,6
+PAT_00381,26,Male,White,Diabetes,1,0,28.0,0,Private,1,0,2,8,4.0,1,1,1,12,4,88.93333333333334,8,6
+PAT_00382,37,Male,Black,Stroke|Hypertension|Cancer,0,0,37.9,0,Medicare,3,0,6,24,4.0,2,8,3,33,6,108.67272727272727,30,13
+PAT_00383,68,Female,White,Hypertension|AMI|Stroke,0,1,36.7,0,Medicare,3,0,2,5,2.5,1,2,1,13,4,104.28461538461539,9,7
+PAT_00384,64,Female,White,Pneumonia|Heart Failure,0,1,24.9,1,Private,2,1,4,20,5.0,1,4,0,23,6,89.03478260869565,23,11
+PAT_00385,36,Male,White,Heart Failure,0,1,28.7,0,Uninsured,1,0,2,11,5.5,0,0,1,10,0,102.85999999999999,11,8
+PAT_00386,63,Female,White,COPD,0,0,26.5,0,Private,1,1,3,10,3.3333333333333335,1,4,1,15,0,104.16666666666667,14,10
+PAT_00387,41,Male,White,Asthma|Hypertension|Pneumonia|AMI|Diabetes,1,1,24.6,0,Medicaid,5,0,3,9,3.0,1,1,1,13,2,84.23846153846154,15,9
+PAT_00388,49,Female,Black,Pneumonia|Asthma|AMI,0,1,22.5,0,Private,3,1,2,7,3.5,1,2,0,9,3,96.80000000000001,5,4
+PAT_00389,35,Male,White,Pneumonia|Diabetes,1,0,30.7,0,Medicare,2,0,5,19,3.8,0,10,2,37,7,94.64054054054054,29,12
+PAT_00390,66,Female,White,AMI,0,1,30.3,0,Private,1,1,3,14,4.666666666666667,1,5,2,14,3,90.80714285714285,11,7
+PAT_00391,49,Male,White,CKD|Stroke|Asthma|Hypertension,0,0,24.3,1,Private,4,0,2,4,2.0,0,3,0,15,1,90.25333333333333,10,7
+PAT_00392,33,Female,White,CKD|Stroke|Asthma|Heart Failure,0,1,31.6,1,Private,4,1,3,18,6.0,1,5,2,14,3,102.77142857142857,14,10
+PAT_00393,45,Male,Asian,Heart Failure|Pneumonia|Asthma|AMI|CKD,0,1,29.7,0,Uninsured,5,1,3,11,3.6666666666666665,1,8,0,15,4,109.68666666666667,18,10
+PAT_00394,29,Female,White,Hypertension,0,0,33.7,0,Medicaid,1,0,3,9,3.0,0,3,1,23,5,92.92608695652174,16,12
+PAT_00395,40,Male,White,Diabetes|Stroke|COPD,1,0,24.0,0,Medicare,3,0,4,13,3.25,1,7,2,22,4,102.05454545454545,17,12
+PAT_00396,65,Female,Hispanic,Pneumonia|Stroke|Diabetes,1,0,32.3,0,Medicare,3,1,2,6,3.0,0,4,0,9,0,89.43333333333334,12,8
+PAT_00397,45,Female,White,COPD|AMI|Pneumonia|Hypertension|Asthma,0,1,44.5,0,Private,5,0,3,11,3.6666666666666665,0,7,3,20,6,103.025,13,8
+PAT_00398,58,Male,White,Hypertension|Stroke|AMI,0,1,26.2,0,Private,3,0,2,10,5.0,1,1,0,12,1,101.00833333333333,13,9
+PAT_00399,67,Male,White,COPD|Stroke,0,0,17.0,0,Uninsured,2,1,3,12,4.0,2,3,1,17,4,90.9235294117647,12,8
+PAT_00400,69,Female,White,Hypertension|Stroke|Diabetes|Pneumonia,1,0,27.4,0,Medicare,4,0,2,10,5.0,0,0,1,9,2,91.92222222222222,8,6
+PAT_00401,48,Female,Other,Diabetes|Stroke|CKD|AMI,1,1,28.3,0,Medicare,4,0,4,12,3.0,0,3,0,29,11,103.35172413793103,21,12
+PAT_00402,55,Female,White,Cancer|Diabetes|AMI,1,1,36.9,0,Uninsured,3,1,4,15,3.75,0,3,2,21,2,100.68095238095239,16,10
+PAT_00403,32,Female,Hispanic,Heart Failure|Cancer,0,1,28.3,0,Medicare,2,0,1,3,3.0,0,0,0,8,2,83.9125,5,5
+PAT_00404,34,Female,White,Hypertension|COPD,0,0,38.7,1,Medicare,2,0,2,8,4.0,1,4,1,17,2,105.58235294117648,13,9
+PAT_00405,82,Male,White,CKD|Asthma,0,0,33.2,0,Medicare,2,0,2,10,5.0,1,0,2,13,2,87.85384615384615,9,8
+PAT_00406,52,Male,White,CKD,0,0,17.9,0,Private,1,0,4,15,3.75,0,3,3,24,4,86.6125,16,11
+PAT_00407,71,Male,Black,Diabetes|Asthma,1,0,23.1,0,Medicare,2,0,5,21,4.2,0,3,1,29,5,98.66551724137932,24,13
+PAT_00408,77,Male,White,Cancer|Diabetes|Asthma,1,0,20.7,0,Uninsured,3,0,3,11,3.6666666666666665,0,6,2,17,5,106.58235294117648,12,7
+PAT_00409,49,Female,Asian,Heart Failure|Diabetes,1,1,38.0,1,Private,2,1,4,17,4.25,1,4,1,23,3,106.08695652173913,17,9
+PAT_00410,72,Male,White,AMI,0,1,29.8,0,Private,1,0,3,11,3.6666666666666665,0,1,2,16,4,98.06875,14,9
+PAT_00411,57,Female,White,Hypertension|Cancer,0,0,31.5,0,Medicaid,2,0,2,9,4.5,0,3,1,14,5,107.95714285714287,10,6
+PAT_00412,79,Female,Black,COPD|Hypertension|CKD|Heart Failure|Cancer,0,1,26.8,0,Medicare,5,0,1,4,4.0,0,0,1,7,0,104.14285714285714,2,2
+PAT_00413,59,Female,Black,Pneumonia|AMI|Asthma|Diabetes|Hypertension,1,1,29.0,0,Medicare,5,1,2,7,3.5,0,2,0,13,3,111.28461538461539,9,7
+PAT_00414,41,Female,White,Pneumonia|Asthma|COPD,0,0,45.1,0,Medicare,3,0,3,13,4.333333333333333,1,4,2,23,6,92.14347826086957,12,7
+PAT_00415,70,Male,Black,Diabetes|Cancer|COPD|Asthma,1,0,25.5,0,Medicare,4,1,6,22,3.6666666666666665,3,6,3,26,7,95.53461538461539,26,13
+PAT_00416,59,Female,Black,Hypertension|CKD|Pneumonia,0,0,25.3,0,Private,3,1,3,17,5.666666666666667,2,2,0,16,4,104.45625,12,8
+PAT_00417,86,Female,White,Stroke|Hypertension|COPD|Pneumonia,0,0,28.1,1,Private,4,0,3,11,3.6666666666666665,1,4,1,23,7,96.04782608695652,15,11
+PAT_00418,47,Female,Asian,CKD|Pneumonia,0,0,20.4,0,Private,2,1,1,6,6.0,0,1,0,6,1,99.71666666666668,2,2
+PAT_00419,62,Female,Other,AMI|CKD|Asthma,0,1,26.9,1,Medicaid,3,1,5,25,5.0,1,8,1,27,9,94.96666666666667,24,12
+PAT_00420,88,Female,White,Asthma|Heart Failure,0,1,35.0,0,Medicare,2,0,3,13,4.333333333333333,1,1,1,19,4,109.3842105263158,13,8
+PAT_00421,41,Male,White,Hypertension|Asthma|AMI|Cancer|Diabetes,1,1,35.8,0,Medicare,5,0,1,4,4.0,0,1,0,8,1,109.1625,7,7
+PAT_00422,55,Female,Hispanic,AMI|Diabetes|Heart Failure|CKD,1,1,24.9,0,Uninsured,4,0,2,10,5.0,0,4,0,14,4,98.42142857142858,13,8
+PAT_00423,57,Male,Black,Hypertension|Pneumonia|Heart Failure|Asthma,0,1,20.3,0,Uninsured,4,0,4,15,3.75,0,1,0,21,5,99.61904761904762,15,8
+PAT_00424,34,Female,Black,AMI|Asthma|Hypertension,0,1,23.0,0,Private,3,0,2,7,3.5,1,2,1,12,3,92.15833333333335,10,9
+PAT_00425,41,Male,White,Diabetes,1,0,31.9,0,Medicaid,1,0,3,13,4.333333333333333,1,2,1,23,8,94.40434782608696,16,11
+PAT_00426,73,Male,White,COPD|Hypertension|Cancer,0,0,27.9,0,Uninsured,3,1,3,11,3.6666666666666665,1,0,1,16,4,99.29375,14,10
+PAT_00427,48,Male,White,Pneumonia|Asthma|Hypertension|Cancer|Stroke,0,0,23.8,1,Medicare,5,0,1,3,3.0,0,2,0,7,3,96.82857142857142,6,5
+PAT_00428,61,Female,White,Pneumonia|Hypertension|Asthma|CKD|COPD,0,0,24.0,0,Private,5,0,1,1,1.0,0,3,0,3,1,118.16666666666667,5,4
+PAT_00429,82,Female,Black,Cancer|AMI|Asthma|Hypertension,0,1,43.3,0,Private,4,1,1,3,3.0,1,0,0,3,1,71.33333333333333,5,5
+PAT_00430,55,Male,White,Diabetes|COPD|Asthma|Cancer,1,0,31.9,0,Private,4,1,2,8,4.0,0,3,1,12,5,85.51666666666667,9,6
+PAT_00431,50,Female,White,Heart Failure,0,1,31.9,1,Medicaid,1,0,3,12,4.0,1,1,1,17,7,90.5764705882353,11,8
+PAT_00432,46,Male,White,Pneumonia,0,0,29.5,0,Uninsured,1,0,1,1,1.0,0,2,0,9,1,106.91111111111111,6,5
+PAT_00433,36,Male,Asian,Diabetes|AMI|Stroke|Pneumonia,1,1,26.9,1,Private,4,1,1,5,5.0,0,0,0,5,0,118.54,4,4
+PAT_00434,61,Male,White,CKD|Pneumonia|Diabetes,1,0,30.4,1,Medicare,3,1,3,17,5.666666666666667,1,2,1,10,2,106.04,13,8
+PAT_00435,62,Female,Black,Pneumonia|COPD|CKD,0,0,21.4,0,Private,3,0,1,3,3.0,0,1,0,8,2,105.125,2,2
+PAT_00436,80,Male,White,CKD|AMI|COPD|Stroke|Cancer,0,1,32.3,0,Medicare,5,0,2,5,2.5,0,2,2,12,3,102.15833333333335,10,7
+PAT_00437,29,Male,Black,COPD|Hypertension|Diabetes,1,0,33.3,1,Medicare,3,1,3,13,4.333333333333333,0,7,1,16,5,94.91250000000001,10,6
+PAT_00438,84,Male,Hispanic,Heart Failure|Pneumonia|Cancer,0,1,20.0,0,Medicaid,3,1,1,1,1.0,0,1,1,6,1,95.68333333333334,6,5
+PAT_00439,66,Male,White,Hypertension,0,0,25.1,1,Private,1,1,3,13,4.333333333333333,0,2,3,24,5,102.96666666666665,13,8
+PAT_00440,77,Male,White,Asthma|Hypertension|Cancer,0,0,19.6,0,Private,3,0,3,8,2.6666666666666665,0,4,2,19,3,98.63157894736842,12,8
+PAT_00441,61,Male,Black,AMI|Asthma,0,1,21.2,0,Private,2,0,2,7,3.5,1,2,1,9,3,79.16666666666667,7,6
+PAT_00442,42,Female,White,Asthma|Pneumonia,0,0,26.3,0,Private,2,0,2,6,3.0,1,1,1,15,3,101.42,13,8
+PAT_00443,81,Female,White,Cancer|COPD|AMI,0,1,37.7,0,Uninsured,3,1,2,5,2.5,1,3,1,16,3,102.7625,11,7
+PAT_00444,86,Female,Other,Diabetes|Asthma|Heart Failure,1,1,37.4,0,Medicare,3,0,2,7,3.5,0,1,1,10,2,93.17,9,7
+PAT_00445,34,Male,White,Stroke|AMI|COPD,0,1,23.1,0,Private,3,0,5,26,5.2,0,6,2,25,8,102.736,30,14
+PAT_00446,39,Male,Asian,Cancer|Asthma,0,0,25.8,0,Private,2,0,2,7,3.5,0,2,1,10,1,102.46,10,7
+PAT_00447,34,Female,Black,Hypertension|COPD,0,0,30.6,0,Medicaid,2,0,4,18,4.5,0,5,4,27,8,102.9074074074074,16,10
+PAT_00448,67,Female,Black,Hypertension|COPD,0,0,32.4,0,Medicare,2,0,2,4,2.0,0,2,1,15,3,105.89333333333335,12,7
+PAT_00449,62,Female,White,CKD|Cancer|AMI|Diabetes,1,1,34.6,0,Uninsured,4,0,1,5,5.0,0,2,1,9,1,95.26666666666667,6,5
+PAT_00450,50,Male,Hispanic,Cancer|Stroke|CKD,0,0,19.1,0,Medicare,3,0,3,5,1.6666666666666667,1,3,0,14,2,101.47142857142856,11,8
+PAT_00451,83,Male,White,AMI|Cancer|Stroke,0,1,22.1,0,Medicaid,3,0,2,6,3.0,0,2,1,13,3,90.0,11,7
+PAT_00452,53,Female,White,Asthma|Diabetes|Stroke|Cancer,1,0,25.6,0,Medicare,4,0,1,3,3.0,0,1,1,3,1,109.10000000000001,7,4
+PAT_00453,41,Female,White,Diabetes|Heart Failure,1,1,19.9,1,Medicare,2,0,2,6,3.0,0,3,1,10,1,113.95,9,7
+PAT_00454,76,Female,Black,COPD,0,0,38.6,0,Medicare,1,0,2,11,5.5,1,4,1,13,3,83.62307692307692,14,12
+PAT_00455,82,Female,White,Asthma|Cancer|COPD|Heart Failure,0,1,12.3,0,Private,4,0,4,15,3.75,0,7,2,17,3,97.88235294117646,23,10
+PAT_00456,40,Female,White,CKD|Heart Failure,0,1,20.3,0,Medicare,2,0,1,4,4.0,1,1,1,5,2,92.14,6,5
+PAT_00457,69,Female,White,CKD|Heart Failure,0,1,31.1,0,Medicare,2,1,1,3,3.0,0,1,0,7,2,123.84285714285714,4,4
+PAT_00458,44,Female,White,Heart Failure|CKD|COPD,0,1,31.7,0,Medicare,3,0,2,4,2.0,0,1,1,14,3,99.22857142857143,10,7
+PAT_00459,38,Female,White,Heart Failure|Stroke|Cancer|Pneumonia,0,1,23.5,0,Private,4,0,2,5,2.5,0,3,1,16,4,90.4875,9,8
+PAT_00460,63,Female,Black,Asthma,0,0,24.0,1,Private,1,1,1,6,6.0,0,1,0,9,1,114.27777777777777,7,6
+PAT_00461,79,Female,White,CKD|Heart Failure|COPD,0,1,31.6,0,Medicare,3,0,2,10,5.0,0,0,1,11,4,78.18181818181819,12,7
+PAT_00462,74,Female,White,Heart Failure|Pneumonia,0,1,18.7,0,Medicaid,2,0,2,7,3.5,0,1,1,10,2,84.86,8,6
+PAT_00463,74,Female,White,Diabetes|Pneumonia|Stroke,1,0,25.1,0,Private,3,0,4,18,4.5,2,3,2,30,8,98.35333333333332,12,10
+PAT_00464,87,Male,Hispanic,CKD,0,0,21.3,0,Private,1,0,2,7,3.5,0,2,2,15,4,93.58666666666666,7,6
+PAT_00465,35,Female,White,CKD,0,0,33.5,0,Medicare,1,0,3,13,4.333333333333333,1,2,1,15,3,104.50666666666666,15,9
+PAT_00466,77,Female,Other,Stroke|COPD,0,0,25.1,0,Private,2,0,5,20,4.0,1,4,3,28,7,99.42857142857143,27,12
+PAT_00467,76,Female,White,Asthma|Diabetes,1,0,27.0,0,Uninsured,2,0,2,12,6.0,0,0,0,14,2,101.81428571428572,4,3
+PAT_00468,54,Male,White,CKD|Hypertension|Cancer|Stroke|Heart Failure,0,1,26.0,0,Private,5,0,1,4,4.0,0,2,1,3,1,113.56666666666668,4,4
+PAT_00469,56,Female,White,Cancer|COPD|Asthma|CKD|Heart Failure,0,1,36.7,0,Medicare,5,1,3,17,5.666666666666667,0,4,1,17,4,109.62352941176471,16,11
+PAT_00470,80,Male,Hispanic,Diabetes|Hypertension|Stroke|CKD,1,0,33.6,0,Medicare,4,0,1,5,5.0,1,3,1,9,1,87.73333333333333,3,3
+PAT_00471,68,Male,White,AMI|CKD|COPD,0,1,35.7,0,Private,3,1,3,14,4.666666666666667,1,4,2,10,2,99.38000000000001,10,6
+PAT_00472,65,Male,White,Pneumonia|AMI|Cancer,0,1,6.8,0,Private,3,1,2,9,4.5,0,2,1,16,2,87.1125,6,6
+PAT_00473,76,Female,White,Heart Failure|Asthma,0,1,30.7,0,Medicaid,2,1,5,17,3.4,1,7,0,30,9,98.26333333333334,23,9
+PAT_00474,48,Female,White,Hypertension|Cancer|Stroke,0,0,28.3,0,Medicare,3,0,3,12,4.0,0,2,1,16,5,104.7,16,10
+PAT_00475,39,Female,Hispanic,Hypertension,0,0,30.4,1,Uninsured,1,0,2,3,1.5,1,1,0,10,4,87.39,9,6
+PAT_00476,74,Female,Black,Asthma|Pneumonia,0,0,25.4,0,Medicare,2,0,3,13,4.333333333333333,0,4,0,16,4,101.98125,10,8
+PAT_00477,55,Male,White,COPD|Hypertension|Diabetes,1,0,37.1,1,Private,3,0,1,6,6.0,0,0,0,7,1,91.82857142857142,4,3
+PAT_00478,49,Male,White,COPD|AMI,0,1,25.7,0,Private,2,0,5,18,3.6,1,6,2,32,5,109.725,17,10
+PAT_00479,27,Male,White,AMI|Cancer|COPD,0,1,33.8,0,Uninsured,3,0,3,12,4.0,0,3,1,23,4,102.18695652173913,9,6
+PAT_00480,39,Female,White,COPD,0,0,23.9,0,Private,1,0,4,16,4.0,1,5,2,25,5,94.84,16,10
+PAT_00481,85,Male,Hispanic,Diabetes|Pneumonia|Asthma,1,0,33.1,0,Uninsured,3,1,3,23,7.666666666666667,1,2,0,20,11,102.38000000000001,14,9
+PAT_00482,60,Female,White,Heart Failure|Diabetes,1,1,20.4,0,Medicare,2,0,3,13,4.333333333333333,2,0,1,16,3,85.4375,19,12
+PAT_00483,28,Male,Other,Pneumonia,0,0,35.1,0,Medicare,1,0,2,9,4.5,0,4,0,6,3,103.26666666666667,9,6
+PAT_00484,85,Female,White,CKD,0,0,28.8,0,Medicare,1,0,5,28,5.6,2,5,0,24,9,104.59583333333335,23,8
+PAT_00485,37,Female,White,Pneumonia|Stroke,0,0,39.2,0,Private,2,0,2,8,4.0,0,2,0,10,2,101.56,6,4
+PAT_00486,71,Female,Black,Pneumonia|AMI,0,1,22.3,0,Medicaid,2,0,2,9,4.5,0,2,0,8,3,93.775,12,9
+PAT_00487,83,Female,Other,Heart Failure|Stroke,0,1,32.8,0,Medicare,2,0,1,4,4.0,0,0,0,3,1,106.96666666666665,4,4
+PAT_00488,56,Female,White,Hypertension|Stroke|Heart Failure,0,1,30.5,1,Private,3,0,3,8,2.6666666666666665,1,4,0,15,4,99.8,15,8
+PAT_00489,25,Male,White,Heart Failure|CKD,0,1,24.2,0,Private,2,0,2,12,6.0,1,5,2,12,2,100.55,6,6
+PAT_00490,46,Female,Hispanic,Pneumonia|CKD,0,0,29.2,0,Medicare,2,0,1,5,5.0,0,1,1,6,1,97.31666666666666,5,4
+PAT_00491,89,Female,White,Heart Failure|Hypertension|CKD|AMI,0,1,13.0,0,Private,4,1,2,8,4.0,0,1,1,17,7,89.49411764705883,9,7
+PAT_00492,65,Female,White,Asthma|Hypertension,0,0,29.9,0,Private,2,0,3,8,2.6666666666666665,0,3,1,23,6,102.38695652173914,19,9
+PAT_00493,48,Female,Black,COPD|Heart Failure,0,1,29.0,1,Medicare,2,1,2,10,5.0,1,0,0,10,3,95.21000000000001,11,9
+PAT_00494,62,Female,Asian,Asthma|Hypertension|Stroke,0,0,12.6,0,Medicaid,3,0,3,8,2.6666666666666665,2,4,0,17,2,101.82941176470588,12,8
+PAT_00495,89,Female,White,Pneumonia|Asthma|CKD,0,0,26.6,0,Medicare,3,0,1,6,6.0,0,1,1,5,1,94.85999999999999,4,4
+PAT_00496,71,Male,White,COPD|Hypertension,0,0,34.9,1,Medicaid,2,0,4,16,4.0,0,1,1,20,7,97.89500000000001,12,8
+PAT_00497,41,Female,White,Cancer|CKD|Stroke|Heart Failure|Pneumonia,0,1,33.1,0,Private,5,0,3,15,5.0,2,3,1,14,4,111.48571428571428,16,8
+PAT_00498,79,Male,White,CKD|COPD|AMI|Hypertension,0,1,35.3,0,Private,4,0,3,17,5.666666666666667,1,2,1,21,3,99.95714285714286,18,11
+PAT_00499,83,Female,Black,Stroke|Cancer,0,0,31.0,1,Medicare,2,1,3,14,4.666666666666667,0,3,0,16,5,87.63125000000001,14,9
+PAT_00500,78,Male,White,Stroke|Cancer|Pneumonia|COPD,0,0,32.5,1,Private,4,1,4,14,3.5,1,5,2,21,6,103.16666666666667,17,11

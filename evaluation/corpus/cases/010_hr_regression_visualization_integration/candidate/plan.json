@@ -1,0 +1,350 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "employees = pd.read_csv(data / 'employees.csv')",
+      "dependencies": {},
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "departments = pd.read_csv(data / 'departments.csv')",
+      "dependencies": {},
+      "writes": [
+        "departments"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "ec = ['emp_id', 'department', 'role', 'experience_years', 'education', 'performance_score', 'age', 'gender', 'salary']",
+      "dependencies": {},
+      "writes": [
+        "ec"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "dc = ['department', 'headcount', 'budget_millions', 'location']",
+      "dependencies": {},
+      "writes": [
+        "dc"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "require(employees, ec, 'employees.csv')",
+      "dependencies": {
+        "employees": 0,
+        "ec": 2
+      },
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "require(departments, dc, 'departments.csv')",
+      "dependencies": {
+        "departments": 1,
+        "dc": 3
+      },
+      "writes": [
+        "departments"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "nonblank_unique(employees, ['emp_id'], 'employees.csv')",
+      "dependencies": {
+        "employees": 4
+      },
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "nonblank_unique(departments, ['department'], 'departments.csv')",
+      "dependencies": {
+        "departments": 5
+      },
+      "writes": [
+        "departments"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "if not set(employees.department) <= set(departments.department):\n    raise ValueError('unknown employee department')",
+      "dependencies": {
+        "employees": 6,
+        "departments": 7
+      },
+      "writes": [
+        "departments",
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "numeric(employees, ['experience_years', 'performance_score', 'age', 'salary'], 'employees.csv')",
+      "dependencies": {
+        "employees": 8
+      },
+      "writes": [
+        "employees"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "numeric(departments, ['headcount', 'budget_millions'], 'departments.csv')",
+      "dependencies": {
+        "departments": 8
+      },
+      "writes": [
+        "departments"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "workforce = employees[ec].merge(departments[dc], on='department', validate='many_to_one').sort_values('emp_id')",
+      "dependencies": {
+        "employees": 9,
+        "ec": 2,
+        "departments": 10,
+        "dc": 3
+      },
+      "writes": [
+        "workforce"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "workforce.to_csv(out / 'workforce.csv', index=False)",
+      "dependencies": {
+        "workforce": 11
+      },
+      "writes": [],
+      "outputs": [
+        "workforce.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "features = workforce.copy()",
+      "dependencies": {
+        "workforce": 11
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "features['salary_per_experience_year'] = features.salary / (features.experience_years + 1)",
+      "dependencies": {
+        "features": 13
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "features['budget_per_head_millions'] = features.budget_millions / features.headcount",
+      "dependencies": {
+        "features": 14
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "features.to_csv(out / 'workforce_features.csv', index=False)",
+      "dependencies": {
+        "features": 15
+      },
+      "writes": [],
+      "outputs": [
+        "workforce_features.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "model_features = ['experience_years', 'performance_score', 'age', 'headcount', 'budget_millions']",
+      "dependencies": {},
+      "writes": [
+        "model_features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "train, test = train_test_split(features, test_size=0.2, random_state=42)",
+      "dependencies": {
+        "features": 15
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "model = LinearRegression().fit(train[model_features], train.salary)",
+      "dependencies": {
+        "train": 18,
+        "model_features": 17
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "pred = model.predict(test[model_features])",
+      "dependencies": {
+        "model": 19,
+        "test": 18,
+        "model_features": 17
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "predictions = pd.DataFrame({'emp_id': test.emp_id, 'actual_salary': test.salary, 'predicted_salary': pred}).sort_values('emp_id')",
+      "dependencies": {
+        "test": 18,
+        "pred": 20
+      },
+      "writes": [
+        "predictions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "predictions.to_csv(out / 'salary_predictions.csv', index=False)",
+      "dependencies": {
+        "predictions": 21
+      },
+      "writes": [],
+      "outputs": [
+        "salary_predictions.csv"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "with (out / 'salary_model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 19
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "salary_model.pkl"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "write_json(out / 'salary_metrics.json', {'train_rows': len(train), 'test_rows': len(test), 'features': model_features, 'mae': mean_absolute_error(test.salary, pred), 'rmse': mean_squared_error(test.salary, pred) ** 0.5, 'r2': model.score(test[model_features], test.salary)})",
+      "dependencies": {
+        "model_features": 17,
+        "train": 18,
+        "model": 19,
+        "test": 18,
+        "pred": 20
+      },
+      "writes": [],
+      "outputs": [
+        "salary_metrics.json"
+      ]
+    },
+    {
+      "index": 25,
+      "source": "department = features.groupby('department', as_index=False).agg(employee_rows=('emp_id', 'size'), declared_headcount=('headcount', 'first'), budget_millions=('budget_millions', 'first'), mean_salary=('salary', 'mean'), mean_performance_score=('performance_score', 'mean')).sort_values('department')",
+      "dependencies": {
+        "features": 15
+      },
+      "writes": [
+        "department"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "department.to_csv(out / 'department_summary.csv', index=False)",
+      "dependencies": {
+        "department": 25
+      },
+      "writes": [],
+      "outputs": [
+        "department_summary.csv"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "gender = features.groupby('gender', as_index=False).agg(employee_count=('emp_id', 'size'), mean_salary=('salary', 'mean'), median_salary=('salary', 'median'), mean_experience_years=('experience_years', 'mean')).sort_values('gender')",
+      "dependencies": {
+        "features": 15
+      },
+      "writes": [
+        "gender"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "gender.to_csv(out / 'gender_pay_summary.csv', index=False)",
+      "dependencies": {
+        "gender": 27
+      },
+      "writes": [],
+      "outputs": [
+        "gender_pay_summary.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "integrate": [
+      12
+    ],
+    "features": [
+      16
+    ],
+    "salary_model": [
+      22,
+      23,
+      24
+    ],
+    "department_summary": [
+      26
+    ],
+    "gender_summary": [
+      28
+    ]
+  }
+}

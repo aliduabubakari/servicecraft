@@ -1,0 +1,9 @@
+supplier_name,rating,on_time_delivery_pct,avg_lead_time_days,minimum_order_qty,country,payment_terms
+GlobalSupply Co,3.9,71.6,10,10,USA,Prepaid
+FastShip Inc,4.9,94.5,10,100,Mexico,Net 60
+QualityParts Ltd,4.9,91.2,7,100,China,Net 30
+EcoSource,4.2,91.4,14,100,Mexico,Net 60
+PrimeDistributors,4.8,74.0,7,100,Vietnam,Net 60
+Metro Wholesale,2.5,83.2,7,100,USA,Prepaid
+Pacific Trading,2.8,81.8,10,50,China,Net 30
+Summit Logistics,2.4,85.8,3,50,Vietnam,Net 60

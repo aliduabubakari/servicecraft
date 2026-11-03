@@ -1,0 +1,167 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "100_transportation_visualization_v2",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "prepare",
+    "summarize",
+    "rank",
+    "chart",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "prepare",
+      "summarize"
+    ],
+    [
+      "summarize",
+      "rank"
+    ],
+    [
+      "rank",
+      "chart"
+    ],
+    [
+      "chart",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "trips_prepared.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "passenger_km",
+        "on_time"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_km",
+        "on_time_rate"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "total_passenger_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_chart_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "passenger_km_label"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "trips_prepared.csv",
+      "artifact": "trips_prepared.csv",
+      "kind": "csv_equals",
+      "reference": "expected/trips_prepared.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_summary.csv",
+      "artifact": "route_summary.csv",
+      "kind": "csv_equals",
+      "reference": "expected/route_summary.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_ranking.csv",
+      "artifact": "route_ranking.csv",
+      "kind": "csv_equals",
+      "reference": "expected/route_ranking.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_chart_data.csv",
+      "artifact": "route_chart_data.csv",
+      "kind": "csv_equals",
+      "reference": "expected/route_chart_data.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_report.json",
+      "artifact": "route_report.json",
+      "kind": "json_equals",
+      "reference": "expected/route_report.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

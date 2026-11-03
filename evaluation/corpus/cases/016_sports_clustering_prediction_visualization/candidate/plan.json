@@ -1,0 +1,366 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'play_style_score', 'efficiency_rating', 'usage_rate', 'all_star', 'injury_games_missed', 'contract_year']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prep(d, cols, 'player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "assert set(d.all_star.unique()) <= {0, 1}",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "d = d.sort_values('player_id')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "d.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 6,
+      "source": "performance = d[['player_id', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'efficiency_rating', 'usage_rate', 'play_style_score']].copy()",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "performance"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "performance['production_index'] = performance[['points_per_game', 'assists_per_game', 'rebounds_per_game']].sum(axis=1)",
+      "dependencies": {
+        "performance": 6
+      },
+      "writes": [
+        "performance"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "performance.to_csv(out / 'performance_features.csv', index=False)",
+      "dependencies": {
+        "performance": 7
+      },
+      "writes": [],
+      "outputs": [
+        "performance_features.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "context = d[['player_id', 'team', 'position', 'games_played', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'injury_games_missed', 'contract_year', 'all_star']].copy()",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "context"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "context['availability_rate'] = (context.games_played - context.injury_games_missed).clip(lower=0) / context.games_played",
+      "dependencies": {
+        "context": 9
+      },
+      "writes": [
+        "context"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "context.to_csv(out / 'context_features.csv', index=False)",
+      "dependencies": {
+        "context": 10
+      },
+      "writes": [],
+      "outputs": [
+        "context_features.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "m = performance.merge(context, on='player_id', validate='one_to_one')",
+      "dependencies": {
+        "performance": 7,
+        "context": 10
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "m.to_csv(out / 'model_features.csv', index=False)",
+      "dependencies": {
+        "m": 12
+      },
+      "writes": [],
+      "outputs": [
+        "model_features.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "features = ['production_index', 'efficiency_rating', 'usage_rate', 'play_style_score', 'availability_rate', 'minutes_per_game', 'age', 'experience_years', 'salary_millions']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "z = StandardScaler().fit_transform(m[features])",
+      "dependencies": {
+        "m": 12,
+        "features": 14
+      },
+      "writes": [
+        "z"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "km = KMeans(n_clusters=4, random_state=42, n_init=20).fit(z)",
+      "dependencies": {
+        "z": 15
+      },
+      "writes": [
+        "km"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "cent = pd.DataFrame(km.cluster_centers_, columns=features)",
+      "dependencies": {
+        "features": 14,
+        "km": 16
+      },
+      "writes": [
+        "cent"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "order = cent.sort_values(['production_index', 'efficiency_rating', 'usage_rate']).index",
+      "dependencies": {
+        "cent": 17
+      },
+      "writes": [
+        "order"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "mapping = {old: new for new, old in enumerate(order)}",
+      "dependencies": {
+        "order": 18
+      },
+      "writes": [
+        "mapping"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "m['cluster'] = [mapping[x] for x in km.labels_]",
+      "dependencies": {
+        "m": 12,
+        "km": 16,
+        "mapping": 19
+      },
+      "writes": [
+        "m"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "m.sort_values('player_id').to_csv(out / 'cluster_assignments.csv', index=False)",
+      "dependencies": {
+        "m": 20
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_assignments.csv"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "profiles = m.groupby('cluster', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_efficiency=('efficiency_rating', 'mean'), mean_usage=('usage_rate', 'mean'), mean_availability=('availability_rate', 'mean'), mean_salary=('salary_millions', 'mean')).sort_values('cluster')",
+      "dependencies": {
+        "m": 20
+      },
+      "writes": [
+        "profiles"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "profiles.to_csv(out / 'cluster_profiles.csv', index=False)",
+      "dependencies": {
+        "profiles": 22
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "mix = m.groupby(['team', 'cluster'], as_index=False).size().rename(columns={'size': 'player_count'})",
+      "dependencies": {
+        "m": 20
+      },
+      "writes": [
+        "mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "mix['team_share'] = mix.player_count / mix.groupby('team').player_count.transform('sum')",
+      "dependencies": {
+        "mix": 24
+      },
+      "writes": [
+        "mix"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "mix.to_csv(out / 'team_cluster_mix.csv', index=False)",
+      "dependencies": {
+        "mix": 25
+      },
+      "writes": [],
+      "outputs": [
+        "team_cluster_mix.csv"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "stars = m.groupby('cluster', as_index=False).agg(player_count=('player_id', 'size'), all_star_count=('all_star', 'sum'), all_star_rate=('all_star', 'mean'))",
+      "dependencies": {
+        "m": 20
+      },
+      "writes": [
+        "stars"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "stars.to_csv(out / 'cluster_allstar_rates.csv', index=False)",
+      "dependencies": {
+        "stars": 27
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_allstar_rates.csv"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "js(out / 'cluster_report.json', {'players': len(m), 'clusters': len(profiles), 'teams': mix.team.nunique(), 'profile_players': int(profiles.player_count.sum()), 'team_mix_players': int(mix.player_count.sum()), 'allstar_players': int(stars.player_count.sum())})",
+      "dependencies": {
+        "profiles": 22,
+        "m": 20,
+        "stars": 27,
+        "mix": 25
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      5
+    ],
+    "performance": [
+      8
+    ],
+    "context": [
+      11
+    ],
+    "integrate": [
+      13
+    ],
+    "cluster": [
+      21
+    ],
+    "profiles": [
+      23
+    ],
+    "teams": [
+      26
+    ],
+    "allstars": [
+      28
+    ],
+    "report": [
+      29
+    ]
+  }
+}

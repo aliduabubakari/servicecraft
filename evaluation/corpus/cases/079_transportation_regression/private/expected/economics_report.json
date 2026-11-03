@@ -1,0 +1,26 @@
+{
+  "trips": 766,
+  "total_revenue": 189999.38,
+  "total_cost": 43017.259999999995,
+  "total_profit": 146982.12,
+  "model": {
+    "train_rows": 612,
+    "test_rows": 154,
+    "features": [
+      "departure_hour",
+      "distance_km",
+      "passengers",
+      "fare_amount",
+      "delay_minutes",
+      "is_holiday",
+      "revenue_per_passenger",
+      "fare_revenue_gap",
+      "cost_per_km",
+      "cost_per_delay_minute"
+    ],
+    "mae": 13.999199460430756,
+    "rmse": 19.161995411899323,
+    "r2": 0.9780030269714832
+  },
+  "most_profitable_route": "Route_12"
+}

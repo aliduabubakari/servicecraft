@@ -1,0 +1,199 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'home_lat', 'home_lon', 'region']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'player_id', ['team', 'position', 'region'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "assert d.home_lat.between(-90, 90).all() and d.home_lon.between(-180, 180).all()",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "p = d[['player_id', 'team', 'position', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'salary_millions']].copy()",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "p['production_index'] = p.points_per_game + p.assists_per_game + p.rebounds_per_game",
+      "dependencies": {
+        "p": 4
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "p['production_per_minute'] = np.where(p.minutes_per_game > 0, p.production_index / p.minutes_per_game, 0)",
+      "dependencies": {
+        "p": 5
+      },
+      "writes": [
+        "p"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "p.sort_values('player_id').to_csv(out / 'player_performance.csv', index=False)",
+      "dependencies": {
+        "p": 6
+      },
+      "writes": [],
+      "outputs": [
+        "player_performance.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "team = p.groupby('team', as_index=False).agg(player_count=('player_id', 'size'), mean_production=('production_index', 'mean'), mean_per_minute=('production_per_minute', 'mean'), mean_salary=('salary_millions', 'mean')).sort_values('team')",
+      "dependencies": {
+        "p": 6
+      },
+      "writes": [
+        "team"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "team.to_csv(out / 'team_performance.csv', index=False)",
+      "dependencies": {
+        "team": 8
+      },
+      "writes": [],
+      "outputs": [
+        "team_performance.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "js(out / 'performance_report.json', {'players': len(p), 'teams': len(team), 'top_team': team.sort_values(['mean_production', 'team'], ascending=[False, True]).iloc[0].team})",
+      "dependencies": {
+        "team": 8,
+        "p": 6
+      },
+      "writes": [],
+      "outputs": [
+        "performance_report.json"
+      ]
+    },
+    {
+      "index": 11,
+      "source": "g = d[['player_id', 'region', 'home_lat', 'home_lon']].sort_values('player_id')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "g.to_csv(out / 'player_geography.csv', index=False)",
+      "dependencies": {
+        "g": 11
+      },
+      "writes": [],
+      "outputs": [
+        "player_geography.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "regions = g.groupby('region', as_index=False).agg(player_count=('player_id', 'size'), centroid_lat=('home_lat', 'mean'), centroid_lon=('home_lon', 'mean'), latitude_span=('home_lat', lambda x: x.max() - x.min()), longitude_span=('home_lon', lambda x: x.max() - x.min())).sort_values('region')",
+      "dependencies": {
+        "g": 11
+      },
+      "writes": [
+        "regions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "regions.to_csv(out / 'region_summary.csv', index=False)",
+      "dependencies": {
+        "regions": 13
+      },
+      "writes": [],
+      "outputs": [
+        "region_summary.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "js(out / 'geography_report.json', {'players': len(g), 'regions': len(regions), 'largest_region': regions.sort_values(['player_count', 'region'], ascending=[False, True]).iloc[0].region})",
+      "dependencies": {
+        "g": 11,
+        "regions": 13
+      },
+      "writes": [],
+      "outputs": [
+        "geography_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "performance_prepare": [
+      7
+    ],
+    "performance_aggregate": [
+      9
+    ],
+    "performance_report": [
+      10
+    ],
+    "geography_prepare": [
+      12
+    ],
+    "geography_aggregate": [
+      14
+    ],
+    "geography_report": [
+      15
+    ]
+  }
+}

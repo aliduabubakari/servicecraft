@@ -1,0 +1,189 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "081_transportation_regression_statistical_cleaning",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "validate",
+    "features",
+    "aggregate",
+    "profitability",
+    "service",
+    "tradeoffs"
+  ],
+  "expected_edges": [
+    [
+      "validate",
+      "features"
+    ],
+    [
+      "features",
+      "aggregate"
+    ],
+    [
+      "aggregate",
+      "profitability"
+    ],
+    [
+      "aggregate",
+      "service"
+    ],
+    [
+      "aggregate",
+      "tradeoffs"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "trip_economics.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "profit",
+        "profit_margin",
+        "service_score",
+        "passenger_km"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_metrics.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_profit",
+        "mean_service_score"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "profitability_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "profit_rank"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "service_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "service_rank"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "route_tradeoffs.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "trips_clean.csv",
+      "artifact": "trips_clean.csv",
+      "kind": "csv_equals",
+      "reference": "expected/trips_clean.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "trip_economics.csv",
+      "artifact": "trip_economics.csv",
+      "kind": "csv_equals",
+      "reference": "expected/trip_economics.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_metrics.csv",
+      "artifact": "route_metrics.csv",
+      "kind": "csv_equals",
+      "reference": "expected/route_metrics.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "profitability_ranking.csv",
+      "artifact": "profitability_ranking.csv",
+      "kind": "csv_equals",
+      "reference": "expected/profitability_ranking.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "service_ranking.csv",
+      "artifact": "service_ranking.csv",
+      "kind": "csv_equals",
+      "reference": "expected/service_ranking.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "route_tradeoffs.json",
+      "artifact": "route_tradeoffs.json",
+      "kind": "json_equals",
+      "reference": "expected/route_tradeoffs.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

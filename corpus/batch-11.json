@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-11",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "025_sports_regression_prediction_statistical_v2",
+      "title": "Shared player features feeding two models and a joint report",
+      "domain": "sports",
+      "family_id": "shared_feature_dual_model_fanin_fanout",
+      "topology": "fan_in_fan_out",
+      "task_count": 9,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "035_sports_statistical_cleaning_integration_v5",
+      "title": "Linear shooting and player-value ranking",
+      "domain": "sports",
+      "family_id": "shooting_value_ranking_v5",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "061_transportation_cleaning_v2",
+      "title": "Prepared trips fanning out to operational summaries",
+      "domain": "transportation",
+      "family_id": "trip_operations_fanout_v4",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "068_transportation_prediction_cleaning",
+      "title": "Parallel delay classification and cancellation-risk regression",
+      "domain": "transportation",
+      "family_id": "parallel_delay_risk_models",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "081_transportation_regression_statistical_cleaning",
+      "title": "Route economics and service metrics fanning out to three analyses",
+      "domain": "transportation",
+      "family_id": "route_economics_service_fanout",
+      "topology": "linear_to_fan_out",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

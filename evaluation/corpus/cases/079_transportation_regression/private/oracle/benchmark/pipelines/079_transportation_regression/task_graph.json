@@ -1,0 +1,331 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "079_transportation_regression",
+  "benchmark_revision": "batch-05",
+  "review_status": "author_review_pending",
+  "title": "Transportation economics with convergent feature branches",
+  "domain": "transportation",
+  "family_id": "trip_economics_modeling",
+  "topology": "fan_in_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition",
+        "revenue",
+        "operational_cost"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate trip economics records",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_clean.csv"
+      ],
+      "requirements": [
+        "Validate trip IDs and nonnegative measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "revenue",
+      "name": "Derive revenue features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "revenue_features.csv"
+      ],
+      "requirements": [
+        "Compute per-passenger revenue and fare-revenue gap."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "cost",
+      "name": "Derive cost features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "cost_features.csv"
+      ],
+      "requirements": [
+        "Compute per-distance and zero-safe per-delay costs."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate trip economics",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv",
+        "revenue_features.csv",
+        "cost_features.csv"
+      ],
+      "outputs": [
+        "trip_economics.csv"
+      ],
+      "requirements": [
+        "Join branches one-to-one and derive profit/margin."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "model",
+      "name": "Fit profit regression",
+      "operation": "supervised_regression",
+      "required": true,
+      "inputs": [
+        "trip_economics.csv"
+      ],
+      "outputs": [
+        "profit_model.pkl",
+        "profit_predictions.csv",
+        "profit_metrics.json"
+      ],
+      "requirements": [
+        "Apply fixed split, scaling, regression, predictions, and metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Summarize route profitability",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_economics.csv"
+      ],
+      "outputs": [
+        "route_profitability.csv"
+      ],
+      "requirements": [
+        "Compute declared route economics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Synthesize economics outputs",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "profit_metrics.json",
+        "route_profitability.csv"
+      ],
+      "outputs": [
+        "economics_report.json"
+      ],
+      "requirements": [
+        "Consume both analytical branches and publish global totals/ranking."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_clean.csv",
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "revenue",
+        "operational_cost"
+      ]
+    },
+    {
+      "id": "revenue_features.csv",
+      "path": "revenue_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "revenue_per_passenger",
+        "fare_revenue_gap"
+      ]
+    },
+    {
+      "id": "cost_features.csv",
+      "path": "cost_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "cost_per_km",
+        "cost_per_delay_minute"
+      ]
+    },
+    {
+      "id": "trip_economics.csv",
+      "path": "trip_economics.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "profit",
+        "profit_margin"
+      ]
+    },
+    {
+      "id": "profit_model.pkl",
+      "path": "profit_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "profit_predictions.csv",
+      "path": "profit_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "actual_profit",
+        "predicted_profit"
+      ]
+    },
+    {
+      "id": "profit_metrics.json",
+      "path": "profit_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "route_profitability.csv",
+      "path": "route_profitability.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_revenue",
+        "total_cost",
+        "total_profit",
+        "mean_profit_margin"
+      ]
+    },
+    {
+      "id": "economics_report.json",
+      "path": "economics_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "revenue",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "cost",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "cost",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "cost_features.csv"
+      ]
+    },
+    {
+      "source": "revenue",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "revenue_features.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "model",
+      "kind": "data",
+      "artifacts": [
+        "trip_economics.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "trip_economics.csv"
+      ]
+    },
+    {
+      "source": "model",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "profit_metrics.json"
+      ]
+    },
+    {
+      "source": "routes",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "route_profitability.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "economics",
+      "revenue": "economics",
+      "cost": "economics",
+      "integrate": "economics",
+      "model": "economics",
+      "routes": "economics",
+      "report": "economics"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

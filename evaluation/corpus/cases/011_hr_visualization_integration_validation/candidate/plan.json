@@ -1,0 +1,182 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'hr_data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['emp_id', 'department', 'status', 'tenure_years', 'salary', 'bonus', 'performance_score', 'gender', 'age']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "require(d, cols, 'hr_data.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "unique_nonblank(d, ['emp_id'], 'hr_data.csv')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "numeric(d, cols[3:7] + ['age'], 'hr_data.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if (d[['tenure_years', 'salary', 'bonus', 'age']] < 0).any().any() or not d.performance_score.between(1, 5).all():\n    raise ValueError('HR measures violate bounds')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean = d[cols].sort_values('emp_id').copy()",
+      "dependencies": {
+        "cols": 1,
+        "d": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean['total_compensation'] = clean.salary + clean.bonus",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "clean.to_csv(out / 'workforce_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 7
+      },
+      "writes": [],
+      "outputs": [
+        "workforce_clean.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "compensation = clean.groupby('department', as_index=False).agg(employee_count=('emp_id', 'size'), mean_salary=('salary', 'mean'), median_salary=('salary', 'median'), total_bonus=('bonus', 'sum'), mean_total_compensation=('total_compensation', 'mean')).sort_values('department')",
+      "dependencies": {
+        "clean": 7
+      },
+      "writes": [
+        "compensation"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "compensation.to_csv(out / 'compensation_by_department.csv', index=False)",
+      "dependencies": {
+        "compensation": 9
+      },
+      "writes": [],
+      "outputs": [
+        "compensation_by_department.csv"
+      ]
+    },
+    {
+      "index": 11,
+      "source": "performance = clean.assign(high_performer=(clean.performance_score >= 4).astype(int)).groupby('department', as_index=False).agg(employee_count=('emp_id', 'size'), mean_performance_score=('performance_score', 'mean'), high_performer_count=('high_performer', 'sum'), mean_tenure_years=('tenure_years', 'mean')).sort_values('department')",
+      "dependencies": {
+        "clean": 7
+      },
+      "writes": [
+        "performance"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "performance.to_csv(out / 'performance_by_department.csv', index=False)",
+      "dependencies": {
+        "performance": 11
+      },
+      "writes": [],
+      "outputs": [
+        "performance_by_department.csv"
+      ]
+    },
+    {
+      "index": 13,
+      "source": "composition = clean.groupby(['status', 'gender'], as_index=False).agg(employee_count=('emp_id', 'size'), mean_age=('age', 'mean'), mean_tenure_years=('tenure_years', 'mean')).sort_values(['status', 'gender'])",
+      "dependencies": {
+        "clean": 7
+      },
+      "writes": [
+        "composition"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "composition.to_csv(out / 'workforce_composition.csv', index=False)",
+      "dependencies": {
+        "composition": 13
+      },
+      "writes": [],
+      "outputs": [
+        "workforce_composition.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare": [
+      8
+    ],
+    "compensation": [
+      10
+    ],
+    "performance": [
+      12
+    ],
+    "composition": [
+      14
+    ]
+  }
+}

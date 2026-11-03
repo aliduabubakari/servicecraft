@@ -1,0 +1,184 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "064_transportation_integration",
+  "benchmark_revision": "batch-15",
+  "review_status": "author_review_pending",
+  "title": "Prepared trips fanning out to route, weekday, and weather summaries",
+  "domain": "transportation",
+  "family_id": "trip_route_weekday_weather_fanout_v2",
+  "topology": "fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "prepare",
+      "name": "Validate and prepare trips",
+      "operation": "source_validation_features",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_clean.csv"
+      ],
+      "requirements": [
+        "Validate and derive passenger-km/on-time."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Summarize routes",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "route_operations.csv"
+      ],
+      "requirements": [
+        "Compute route operations."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "weekdays",
+      "name": "Summarize weekdays",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "weekday_operations.csv"
+      ],
+      "requirements": [
+        "Compute weekday operations."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "weather",
+      "name": "Summarize weather",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "weather_operations.csv"
+      ],
+      "requirements": [
+        "Compute weather operations."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_clean.csv",
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "on_time"
+      ]
+    },
+    {
+      "id": "route_operations.csv",
+      "path": "route_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_km"
+      ]
+    },
+    {
+      "id": "weekday_operations.csv",
+      "path": "weekday_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "day_of_week",
+        "trip_count",
+        "mean_delay"
+      ]
+    },
+    {
+      "id": "weather_operations.csv",
+      "path": "weather_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "on_time_rate"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "prepare",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "weekdays",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "weather",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "prepare": "trip_fanout",
+      "routes": "trip_fanout",
+      "weekdays": "trip_fanout",
+      "weather": "trip_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

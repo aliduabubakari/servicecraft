@@ -1,0 +1,18 @@
+{
+  "quality": {
+    "input_rows": 619,
+    "valid_rows": 617,
+    "rejected_rows": 2
+  },
+  "earth_radius_km": 6371.0088,
+  "route_count": 20,
+  "total_passenger_km": 427590.5,
+  "mean_great_circle_km": 23.511436481116483,
+  "top_routes": [
+    "Route_5",
+    "Route_7",
+    "Route_20",
+    "Route_1",
+    "Route_19"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "013_predictive_maintenance",
+  "selection_reason": "Lag and expanding-baseline feature branches independently derive past-only features, converge, then feed two models and a risk summary that reconverge.",
+  "input_transformations": [
+    {
+      "source": "sensor_readings.csv",
+      "benchmark_file": "sensor_readings.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "sensor_readings.csv": "c0a1220f61e7a4527002d18ddc51debe09c12fb809e14aa6d8e6db87c0f8a8cf"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

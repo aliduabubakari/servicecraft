@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-04",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "011_hr_visualization_integration_validation",
+      "title": "Validated workforce data with independent analytical leaves",
+      "domain": "human_resources",
+      "family_id": "workforce_descriptive_fanout",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "012_insurance_claims",
+      "title": "Independent claims analyses converging into a portfolio report",
+      "domain": "insurance",
+      "family_id": "claims_descriptive_fanin",
+      "topology": "fan_in",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "013_predictive_maintenance",
+      "title": "Temporal maintenance features with dual-horizon failure models",
+      "domain": "manufacturing",
+      "family_id": "temporal_maintenance_multioutput",
+      "topology": "fan_in_fan_out",
+      "task_count": 8,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "015_sports_clustering_prediction_statistical",
+      "title": "Independent player clustering and All-Star prediction",
+      "domain": "sports",
+      "family_id": "parallel_unsupervised_supervised_analysis",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "055_transportation_analysis",
+      "title": "Linear transportation delay regression",
+      "domain": "transportation",
+      "family_id": "trip_delay_regression",
+      "topology": "linear",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+# Convergent player features feeding two supervised models
+
+1. Objective
+
+Build a nine-task fan-in/fan-out graph. Validate players; independently derive performance features (production and per-minute production) and context/availability features; join one-to-one. Fan the joined table to market-value Ridge regression (80/20 seed-42 split, alpha=1, train-only scaling) and All-Star logistic classification (stratified 75/25 seed-42 split, C=1, liblinear, threshold 0.5, train-only scaling). Evaluate regression with MAE/RMSE/R2 and classification with accuracy/precision/recall/F1/ROC AUC, then reconverge both metric artifacts into one report.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: player_id, team, position, games_played, points_per_game, assists_per_game, rebounds_per_game, minutes_per_game, age, experience_years, salary_millions, all_star, injury_games_missed, contract_year, market_value, win_shares
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Apply all processing requirements in the objective above. Retain its specified transformations, parameters, validation policies and ordering.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `players_clean.csv`
+- `performance_features.csv`
+- `context_features.csv`
+- `model_data.csv`
+- `market_model.pkl`
+- `market_predictions.csv`
+- `market_metrics.json`
+- `allstar_model.pkl`
+- `allstar_predictions.csv`
+- `allstar_metrics.json`
+- `dual_model_report.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without networks, prior outputs, fixed answers, or human intervention. Preserve the declared artifact-backed topology and write beneath the run output directory. Numeric comparisons use atol=1e-6 and rtol=1e-6; JSON must contain only finite values. Reject missing required columns, blank or duplicate identifiers, and non-finite required numeric values.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

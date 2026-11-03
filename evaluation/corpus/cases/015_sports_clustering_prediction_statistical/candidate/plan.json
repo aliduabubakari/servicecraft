@@ -1,0 +1,412 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cluster_features = ['points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'play_style_score', 'efficiency_rating', 'usage_rate']",
+      "dependencies": {},
+      "writes": [
+        "cluster_features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prediction_features = ['games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'efficiency_rating', 'usage_rate', 'injury_games_missed', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "prediction_features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "require(d, ['player_id', 'team', 'position', 'all_star', *set(cluster_features + prediction_features)], 'data.csv')",
+      "dependencies": {
+        "prediction_features": 2,
+        "d": 0,
+        "cluster_features": 1
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "unique_nonblank(d, ['player_id'], 'data.csv')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "numeric(d, [*set(cluster_features + prediction_features), 'all_star'], 'data.csv')",
+      "dependencies": {
+        "prediction_features": 2,
+        "d": 4,
+        "cluster_features": 1
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "if not set(d.all_star.unique()) <= {0, 1}:\n    raise ValueError('all_star must be binary')",
+      "dependencies": {
+        "d": 5
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "cluster_data = d[['player_id', 'team', 'position', *cluster_features]].sort_values('player_id')",
+      "dependencies": {
+        "cluster_features": 1,
+        "d": 6
+      },
+      "writes": [
+        "cluster_data"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "cluster_data.to_csv(out / 'clustering_features.csv', index=False)",
+      "dependencies": {
+        "cluster_data": 7
+      },
+      "writes": [],
+      "outputs": [
+        "clustering_features.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "scaler = StandardScaler()",
+      "dependencies": {},
+      "writes": [
+        "scaler"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "x = scaler.fit_transform(cluster_data[cluster_features])",
+      "dependencies": {
+        "cluster_features": 1,
+        "scaler": 9,
+        "cluster_data": 7
+      },
+      "writes": [
+        "scaler",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "model = KMeans(n_clusters=4, random_state=42, n_init=20, algorithm='lloyd').fit(x)",
+      "dependencies": {
+        "x": 10
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "order = np.lexsort((np.arange(4), model.cluster_centers_[:, cluster_features.index('usage_rate')], model.cluster_centers_[:, cluster_features.index('efficiency_rating')]))",
+      "dependencies": {
+        "cluster_features": 1,
+        "model": 11
+      },
+      "writes": [
+        "order"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "mapping = {int(raw): int(label) for label, raw in enumerate(order)}",
+      "dependencies": {
+        "order": 12
+      },
+      "writes": [
+        "mapping"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "assigned = cluster_data.copy()",
+      "dependencies": {
+        "cluster_data": 7
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "assigned['cluster'] = [mapping[int(v)] for v in model.labels_]",
+      "dependencies": {
+        "mapping": 13,
+        "assigned": 14,
+        "model": 11
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "assigned.to_csv(out / 'player_clusters.csv', index=False)",
+      "dependencies": {
+        "assigned": 15
+      },
+      "writes": [],
+      "outputs": [
+        "player_clusters.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "with (out / 'cluster_model.pkl').open('wb') as h:\n    pickle.dump({'scaler': scaler, 'model': model, 'mapping': mapping, 'features': cluster_features}, h)",
+      "dependencies": {
+        "mapping": 13,
+        "scaler": 10,
+        "model": 11,
+        "cluster_features": 1
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "profile = assigned.groupby('cluster', as_index=False).agg(player_count=('player_id', 'size'), mean_points=('points_per_game', 'mean'), mean_assists=('assists_per_game', 'mean'), mean_rebounds=('rebounds_per_game', 'mean'), mean_efficiency=('efficiency_rating', 'mean'), mean_usage=('usage_rate', 'mean')).sort_values('cluster')",
+      "dependencies": {
+        "assigned": 15
+      },
+      "writes": [
+        "profile"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "profile.to_csv(out / 'cluster_profiles.csv', index=False)",
+      "dependencies": {
+        "profile": 18
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "write_json(out / 'cluster_report.json', {'players': len(assigned), 'clusters': 4, 'silhouette_score': silhouette_score(x, model.labels_)})",
+      "dependencies": {
+        "x": 10,
+        "assigned": 15,
+        "model": 11
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_report.json"
+      ]
+    },
+    {
+      "index": 21,
+      "source": "prediction = d[['player_id', 'all_star', *prediction_features]].sort_values('player_id')",
+      "dependencies": {
+        "prediction_features": 2,
+        "d": 6
+      },
+      "writes": [
+        "prediction"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "prediction.to_csv(out / 'prediction_features.csv', index=False)",
+      "dependencies": {
+        "prediction": 21
+      },
+      "writes": [],
+      "outputs": [
+        "prediction_features.csv"
+      ]
+    },
+    {
+      "index": 23,
+      "source": "train, test = train_test_split(prediction, test_size=0.25, random_state=42, stratify=prediction.all_star)",
+      "dependencies": {
+        "prediction": 21
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "model2 = Pipeline([('scale', StandardScaler()), ('model', LogisticRegression(C=1.0, solver='liblinear', max_iter=1000, random_state=42))])",
+      "dependencies": {},
+      "writes": [
+        "model2"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "model2.fit(train[prediction_features], train.all_star)",
+      "dependencies": {
+        "train": 23,
+        "prediction_features": 2,
+        "model2": 24
+      },
+      "writes": [
+        "model2"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 26,
+      "source": "prob = model2.predict_proba(test[prediction_features])[:, 1]",
+      "dependencies": {
+        "test": 23,
+        "model2": 25,
+        "prediction_features": 2
+      },
+      "writes": [
+        "prob"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 27,
+      "source": "pred = (prob >= 0.5).astype(int)",
+      "dependencies": {
+        "prob": 26
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "with (out / 'all_star_model.pkl').open('wb') as h:\n    pickle.dump(model2, h)",
+      "dependencies": {
+        "model2": 25
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "all_star_model.pkl"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "predictions = pd.DataFrame({'player_id': test.player_id, 'actual_all_star': test.all_star, 'probability': prob, 'predicted_all_star': pred}).sort_values('player_id')",
+      "dependencies": {
+        "pred": 27,
+        "test": 23,
+        "prob": 26
+      },
+      "writes": [
+        "predictions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "predictions.to_csv(out / 'all_star_predictions.csv', index=False)",
+      "dependencies": {
+        "predictions": 29
+      },
+      "writes": [],
+      "outputs": [
+        "all_star_predictions.csv"
+      ]
+    },
+    {
+      "index": 31,
+      "source": "metrics = {'train_rows': len(train), 'test_rows': len(test), 'features': prediction_features, 'accuracy': accuracy_score(test.all_star, pred), 'precision': precision_score(test.all_star, pred, zero_division=0), 'recall': recall_score(test.all_star, pred, zero_division=0), 'f1': f1_score(test.all_star, pred, zero_division=0), 'roc_auc': roc_auc_score(test.all_star, prob)}",
+      "dependencies": {
+        "train": 23,
+        "prediction_features": 2,
+        "test": 23,
+        "prob": 26,
+        "pred": 27
+      },
+      "writes": [
+        "metrics"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 32,
+      "source": "write_json(out / 'all_star_metrics.json', metrics)",
+      "dependencies": {
+        "metrics": 31
+      },
+      "writes": [],
+      "outputs": [
+        "all_star_metrics.json"
+      ]
+    }
+  ],
+  "targets": {
+    "cluster_prepare": [
+      8
+    ],
+    "cluster_fit": [
+      16,
+      17
+    ],
+    "cluster_profile": [
+      19,
+      20
+    ],
+    "prediction_prepare": [
+      22
+    ],
+    "prediction_fit": [
+      28,
+      30
+    ],
+    "prediction_evaluate": [
+      32
+    ]
+  }
+}

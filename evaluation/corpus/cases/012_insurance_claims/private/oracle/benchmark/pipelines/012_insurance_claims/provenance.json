@@ -1,0 +1,18 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "012_insurance_claims",
+  "selection_reason": "Financial, processing, and fraud analyses are independently computable from claims and only need to converge for portfolio synthesis.",
+  "input_transformations": [
+    {
+      "source": "claims.csv",
+      "benchmark_file": "claims.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "claims.csv": "7496bbfed6164035e7317861dee1f4b492fa37ce4e96e8298f03847534740a1e"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

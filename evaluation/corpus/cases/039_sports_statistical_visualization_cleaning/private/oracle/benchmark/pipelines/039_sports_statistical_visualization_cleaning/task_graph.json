@@ -1,0 +1,183 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "039_sports_statistical_visualization_cleaning",
+  "benchmark_revision": "batch-09",
+  "review_status": "author_review_pending",
+  "title": "Independent sports summaries converging into one report",
+  "domain": "sports",
+  "family_id": "sports_summary_fanin_v3",
+  "topology": "fan_in",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "field_goal_pct",
+        "three_point_pct",
+        "free_throw_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "teams",
+      "name": "Summarize teams",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "team_summary.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate team production."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "positions",
+      "name": "Summarize positions",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "position_summary.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate position play and shooting."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "ages",
+      "name": "Summarize age bands",
+      "operation": "binned_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "age_summary.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate four age bands."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Synthesize sports summaries",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "team_summary.csv",
+        "position_summary.csv",
+        "age_summary.csv"
+      ],
+      "outputs": [
+        "sports_report.json"
+      ],
+      "requirements": [
+        "Reconcile counts and publish the leader."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "team_summary.csv",
+      "path": "team_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "mean_points"
+      ]
+    },
+    {
+      "id": "position_summary.csv",
+      "path": "position_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "player_count",
+        "mean_assists"
+      ]
+    },
+    {
+      "id": "age_summary.csv",
+      "path": "age_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "age_band",
+        "player_count",
+        "mean_salary"
+      ]
+    },
+    {
+      "id": "sports_report.json",
+      "path": "sports_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "ages",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "age_summary.csv"
+      ]
+    },
+    {
+      "source": "positions",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "position_summary.csv"
+      ]
+    },
+    {
+      "source": "teams",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "team_summary.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "teams": "fanin",
+      "positions": "fanin",
+      "ages": "fanin",
+      "report": "fanin"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

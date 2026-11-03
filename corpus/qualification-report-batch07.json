@@ -1,0 +1,162 @@
+{
+  "status": "passed",
+  "scope": "Batch-07 Python references, independent invariants, invalid-ID rejection, topology classification, graph consistency, and export allowlists; not Dagster execution or generated-code evaluation",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "018_sports_clustering_visualization_integration",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear_to_fan_out",
+      "tasks": 6,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 3,
+        "joins": 0,
+        "splits": 1
+      },
+      "output_sha256": {
+        "cluster_profiles.csv": "def9a84c8af363ab1aed5eb6d10cd10994c35fcfe844cb5ada9ba31d18ffb321",
+        "cluster_plot_data.csv": "8e0f9e3c9e00f999db96b8efde5e592f7f4e6f3290954bea30c081a0c352e2b3",
+        "cluster_model.pkl": "d8ed43a7c9a856a5d50a551ef5da6ff4b38e89596b5181389960db38fce84614",
+        "team_cluster_mix.csv": "fb7298babc9092a9104d4a98512ac36af616b505f85952ae415e5d1f05f6ee03",
+        "player_clusters.csv": "50d1a7ffa10dce6891c661a51cb113cf148cab2e9106d3f226d1782f602f7839",
+        "players_clean.csv": "87554f6fef88756e19a1d0ffaab763a9372bbbd903f8358ec4f5db10d28bca72",
+        "cluster_features.csv": "20a0100f2905368c656f3155f5924c87596a1d346e351313272cbba5d62526c4"
+      }
+    },
+    {
+      "case": "018_sports_clustering_visualization_integration",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "021_sports_prediction_statistical_visualization_v2",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in_fan_out",
+      "tasks": 9,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 2,
+        "splits": 2
+      },
+      "output_sha256": {
+        "metrics.json": "cf0dcb55d0434d0ffd9a633347463b318eae19a5fa1ab04806d1635cef17e816",
+        "calibration_bins.csv": "aa9d8d16bd618ab348b6c8a8aa7715c615241b4e1427249ca0a2722d1503b2f6",
+        "predictions.csv": "9dd6c6c9e5a419f54adf4e8d34cfd4aa8c47d13a496e886c4e7aa4525562d7ec",
+        "allstar_report.json": "e6411eea911daf4402415cb2021c0ad5ad5e38214b7da5f57e317fcf1c0c7160",
+        "model.pkl": "cef55d1cef99f053fb6bb507c310beb1bada187a5b7188ed7884a4598e264f35",
+        "shooting_features.csv": "c427f88590608a601734244d2bb1d9e3a35e49859ddbefbf89b24bbe9a68f563",
+        "players_clean.csv": "93bc696013261cc3605c6d0c0f289fc09532b4da6d4a76bdb6699a7c392a38e7",
+        "position_model_summary.csv": "f6ce86f5435ccc0749acaa0a77d63d6b30e3e1fc37d64490945706f7c85fd988",
+        "performance_features.csv": "a857f3177166a5654b0f1878432804618bca4325602046c25ab9da2307c80f5a",
+        "model_data.csv": "1a2d18b92dba6770f50215df7f861c595b575b3852a83581eab4ebe272fcd9cd"
+      }
+    },
+    {
+      "case": "021_sports_prediction_statistical_visualization_v2",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "031_sports_statistical_cleaning_integration",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "fan_in",
+      "tasks": 4,
+      "structure": {
+        "components": 1,
+        "roots": 3,
+        "sinks": 1,
+        "joins": 1,
+        "splits": 0
+      },
+      "output_sha256": {
+        "position_shooting.csv": "b2fabfab6d49655629b65069eec19aac93da1d6790264c8f061230ad93c03348",
+        "experience_summary.csv": "8c250b03dc996e202e4e7ebf6d5e454005328bfebad19a818ae524f6843c6edf",
+        "sports_summary_report.json": "6d72c37c599eb3a14548288642380ea8ee30a8b2ee726578a59079197586d3e9",
+        "team_production.csv": "de883285944c8b673c82d150553de1a480bdd2552d2f4af851a664c028540a6d"
+      }
+    },
+    {
+      "case": "031_sports_statistical_cleaning_integration",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "057_transportation_cleaning_integration",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "linear",
+      "tasks": 5,
+      "structure": {
+        "components": 1,
+        "roots": 1,
+        "sinks": 1,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "trips_clean.csv": "4e6aebf8ce68279e9960a4807f61dd67810d781cb49e48a8aa7182e59cc499aa",
+        "route_performance_report.json": "d956a95d88c50f113d120f8907f369129e2a8cdade29b01e0085359c1f9aa261",
+        "route_metrics.csv": "5a5969b34bbcfb7062e55644e17384b6c059db52379ff510d87ddd80d3be85ae",
+        "trip_features.csv": "c695ad900fdd570396322aae5fab6405abe2c43ac0dcd1d244bdc78c83f549a5",
+        "ranked_routes.csv": "ac3b080fec568874a0eb1cdea6ff90289365de61225e67e5115d95f447c92fa3"
+      }
+    },
+    {
+      "case": "057_transportation_cleaning_integration",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "085_transportation_statistical_geospatial",
+      "probe": "reference_outputs_independent_invariants_and_topology",
+      "status": "passed",
+      "topology": "parallel",
+      "tasks": 6,
+      "structure": {
+        "components": 2,
+        "roots": 2,
+        "sinks": 2,
+        "joins": 0,
+        "splits": 0
+      },
+      "output_sha256": {
+        "route_spatial_summary.csv": "5431fdee453ddf82bb1deaef2c96fa63f48cc034e0e53d5c28577c1a0c3ab1d4",
+        "service_report.json": "c1ac13304dfc92c1457e7a5fbfb99af3b3e2a12d135532021225ed93f63b61e3",
+        "trip_spatial_metrics.csv": "a37571586a4c1035f39533af47fb4ca6ddce208e2ca29fd1263724cc199b8df1",
+        "spatial_report.json": "e5c8b6d55f4c6d2e75599bfe8354483701a74cf333f9237ef8ae3a8ec3ddb867",
+        "trip_service_metrics.csv": "e7e9f9800081d3995b79b12eaccd21678d57a6c38a3f427ac2d7122c9556ad00",
+        "service_group_summary.csv": "2068020d2b201faf3689ac8e4986834db5723e122e47fdcb65cf37d1fc3b903f"
+      }
+    },
+    {
+      "case": "085_transportation_statistical_geospatial",
+      "probe": "invalid_identifier_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-07",
+      "probe": "incorrect_topology_labels_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-07",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

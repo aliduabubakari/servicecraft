@@ -1,0 +1,7 @@
+{
+  "customers": 500,
+  "customers_with_recommendations": 500,
+  "recommendations": 1500,
+  "top_k": 3,
+  "in_stock_products": 183
+}

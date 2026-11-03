@@ -1,0 +1,219 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, cols, 'data')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'player_id', 'data')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums(d, cols[3:], 'data')",
+      "dependencies": {
+        "cols": 1,
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "clean = d[cols].sort_values('player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 4
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean.to_csv(out / 'players_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 5
+      },
+      "writes": [],
+      "outputs": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "f = clean.copy()",
+      "dependencies": {
+        "clean": 5
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "f['production_index'] = f.points_per_game + f.assists_per_game + f.rebounds_per_game",
+      "dependencies": {
+        "f": 7
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "f['shooting_index'] = f[['field_goal_pct', 'three_point_pct', 'free_throw_pct']].mean(axis=1)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "f['per_minute_production'] = f.production_index / f.minutes_per_game",
+      "dependencies": {
+        "f": 9
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "f.to_csv(out / 'player_features.csv', index=False)",
+      "dependencies": {
+        "f": 10
+      },
+      "writes": [],
+      "outputs": [
+        "player_features.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "ranked = f.sort_values(['production_index', 'shooting_index', 'player_id'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "f": 10
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "ranked['overall_rank'] = np.arange(1, len(ranked) + 1)",
+      "dependencies": {
+        "ranked": 12
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "ranked.to_csv(out / 'ranked_players.csv', index=False)",
+      "dependencies": {
+        "ranked": 13
+      },
+      "writes": [],
+      "outputs": [
+        "ranked_players.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "top = ranked.groupby('position', group_keys=False).head(5).sort_values(['position', 'overall_rank'])",
+      "dependencies": {
+        "ranked": 13
+      },
+      "writes": [
+        "top"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "top.to_csv(out / 'top_players_by_position.csv', index=False)",
+      "dependencies": {
+        "top": 15
+      },
+      "writes": [],
+      "outputs": [
+        "top_players_by_position.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "js(out / 'ranking_report.json', {'players': len(ranked), 'positions': top.position.nunique(), 'top_rows': len(top), 'overall_leader': ranked.iloc[0].player_id})",
+      "dependencies": {
+        "ranked": 13,
+        "top": 15
+      },
+      "writes": [],
+      "outputs": [
+        "ranking_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      6
+    ],
+    "features": [
+      11
+    ],
+    "rank": [
+      14
+    ],
+    "select": [
+      16
+    ],
+    "report": [
+      17
+    ]
+  }
+}

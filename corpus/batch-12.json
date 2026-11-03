@@ -1,0 +1,55 @@
+{
+  "batch_id": "batch-12",
+  "case_count": 5,
+  "topology_policy": {
+    "linear_cases": 1,
+    "required_distinct_topologies": 5
+  },
+  "cases": [
+    {
+      "pipeline_id": "027_sports_regression_prediction_visualization",
+      "title": "Convergent player features feeding two supervised models",
+      "domain": "sports",
+      "family_id": "shared_context_dual_model_fanin_fanout",
+      "topology": "fan_in_fan_out",
+      "task_count": 9,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "036_sports_statistical_cleaning_validation",
+      "title": "Linear shooting-efficiency and value ranking",
+      "domain": "sports",
+      "family_id": "shooting_value_ranking_v6",
+      "topology": "linear",
+      "task_count": 5,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "048_sports_visualization_integration_geospatial",
+      "title": "Parallel team-performance and regional home-location analysis",
+      "domain": "sports",
+      "family_id": "parallel_team_region_analysis",
+      "topology": "parallel",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "066_transportation_integration_geospatial",
+      "title": "Geographic trips fanning out to route, vehicle, and period views",
+      "domain": "transportation",
+      "family_id": "trip_geography_fanout",
+      "topology": "fan_out",
+      "task_count": 4,
+      "review_status": "author_review_pending"
+    },
+    {
+      "pipeline_id": "082_transportation_regression_statistical_integration",
+      "title": "Route economics and service summaries converging for composite ranking",
+      "domain": "transportation",
+      "family_id": "route_economics_service_fanin_scoring",
+      "topology": "linear_to_fan_in",
+      "task_count": 6,
+      "review_status": "author_review_pending"
+    }
+  ]
+}

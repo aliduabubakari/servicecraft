@@ -1,0 +1,259 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "050_sports_visualization_integration_recovery_v2",
+  "benchmark_revision": "batch-20",
+  "review_status": "author_review_pending",
+  "title": "Recovered players fanning out to cohort summaries",
+  "domain": "sports",
+  "family_id": "player_recovery_cohort_fanout_v2",
+  "topology": "linear_to_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "audit",
+      "name": "Audit recovery fixture",
+      "operation": "data_quality_audit",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "audited_players.csv"
+      ],
+      "requirements": [
+        "Validate IDs and append missing flags."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "numeric",
+      "name": "Recover numeric fields",
+      "operation": "groupwise_recovery",
+      "required": true,
+      "inputs": [
+        "audited_players.csv"
+      ],
+      "outputs": [
+        "numeric_recovered.csv"
+      ],
+      "requirements": [
+        "Use position then global median."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "categorical",
+      "name": "Recover categories and age bands",
+      "operation": "categorical_recovery",
+      "required": true,
+      "inputs": [
+        "numeric_recovered.csv"
+      ],
+      "outputs": [
+        "players_recovered.csv"
+      ],
+      "requirements": [
+        "Use deterministic modes and bands."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "teams",
+      "name": "Summarize teams",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "players_recovered.csv"
+      ],
+      "outputs": [
+        "team_summary.csv"
+      ],
+      "requirements": [
+        "Compute measures and recovery counts."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "positions",
+      "name": "Summarize positions",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "players_recovered.csv"
+      ],
+      "outputs": [
+        "position_summary.csv"
+      ],
+      "requirements": [
+        "Compute measures and recovery counts."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "ages",
+      "name": "Summarize age bands",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "players_recovered.csv"
+      ],
+      "outputs": [
+        "age_summary.csv"
+      ],
+      "requirements": [
+        "Compute measures and recovery counts."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "audited_players.csv",
+      "path": "audited_players.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "missing_points_input",
+        "missing_salary_input",
+        "missing_team_input",
+        "missing_position_input"
+      ]
+    },
+    {
+      "id": "numeric_recovered.csv",
+      "path": "numeric_recovered.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "points_per_game",
+        "salary_millions"
+      ]
+    },
+    {
+      "id": "players_recovered.csv",
+      "path": "players_recovered.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "age_band"
+      ]
+    },
+    {
+      "id": "team_summary.csv",
+      "path": "team_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "recovered_points",
+        "recovered_team"
+      ]
+    },
+    {
+      "id": "position_summary.csv",
+      "path": "position_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "player_count",
+        "recovered_salary",
+        "recovered_position"
+      ]
+    },
+    {
+      "id": "age_summary.csv",
+      "path": "age_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "age_band",
+        "player_count",
+        "mean_points"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "audit",
+      "target": "numeric",
+      "kind": "data",
+      "artifacts": [
+        "audited_players.csv"
+      ]
+    },
+    {
+      "source": "numeric",
+      "target": "categorical",
+      "kind": "data",
+      "artifacts": [
+        "numeric_recovered.csv"
+      ]
+    },
+    {
+      "source": "categorical",
+      "target": "teams",
+      "kind": "data",
+      "artifacts": [
+        "players_recovered.csv"
+      ]
+    },
+    {
+      "source": "categorical",
+      "target": "positions",
+      "kind": "data",
+      "artifacts": [
+        "players_recovered.csv"
+      ]
+    },
+    {
+      "source": "categorical",
+      "target": "ages",
+      "kind": "data",
+      "artifacts": [
+        "players_recovered.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "audit": "recovery_fanout",
+      "numeric": "recovery_fanout",
+      "categorical": "recovery_fanout",
+      "teams": "recovery_fanout",
+      "positions": "recovery_fanout",
+      "ages": "recovery_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

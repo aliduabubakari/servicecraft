@@ -1,0 +1,263 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "018_sports_clustering_visualization_integration",
+  "benchmark_revision": "batch-07",
+  "review_status": "author_review_pending",
+  "title": "Player clustering with three post-cluster views",
+  "domain": "sports",
+  "family_id": "player_cluster_multiview",
+  "topology": "linear_to_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "play_style_score",
+        "efficiency_rating",
+        "usage_rate"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate players",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_clean.csv"
+      ],
+      "requirements": [
+        "Validate unique IDs and finite fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive cluster features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "cluster_features.csv"
+      ],
+      "requirements": [
+        "Compute production index and retain ordered features."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "cluster",
+      "name": "Fit canonical clusters",
+      "operation": "kmeans_clustering",
+      "required": true,
+      "inputs": [
+        "cluster_features.csv"
+      ],
+      "outputs": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ],
+      "requirements": [
+        "Scale, fit fixed K-means, canonicalize, retain features."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "profiles",
+      "name": "Profile clusters",
+      "operation": "cluster_profiling",
+      "required": true,
+      "inputs": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ],
+      "outputs": [
+        "cluster_profiles.csv"
+      ],
+      "requirements": [
+        "Compute declared counts/means."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "team_mix",
+      "name": "Compute team cluster mix",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "player_clusters.csv"
+      ],
+      "outputs": [
+        "team_cluster_mix.csv"
+      ],
+      "requirements": [
+        "Compute counts and within-team shares."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "plot_data",
+      "name": "Prepare PCA plot data",
+      "operation": "dimensionality_reduction",
+      "required": true,
+      "inputs": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ],
+      "outputs": [
+        "cluster_plot_data.csv"
+      ],
+      "requirements": [
+        "Compute deterministic PC1/PC2."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_clean.csv",
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position"
+      ]
+    },
+    {
+      "id": "cluster_features.csv",
+      "path": "cluster_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index"
+      ]
+    },
+    {
+      "id": "player_clusters.csv",
+      "path": "player_clusters.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "cluster"
+      ]
+    },
+    {
+      "id": "cluster_model.pkl",
+      "path": "cluster_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "cluster_profiles.csv",
+      "path": "cluster_profiles.csv",
+      "format": "csv",
+      "required_columns": [
+        "cluster",
+        "player_count"
+      ]
+    },
+    {
+      "id": "team_cluster_mix.csv",
+      "path": "team_cluster_mix.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "cluster",
+        "player_count",
+        "team_share"
+      ]
+    },
+    {
+      "id": "cluster_plot_data.csv",
+      "path": "cluster_plot_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "cluster",
+        "pc1",
+        "pc2"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "cluster",
+      "kind": "data",
+      "artifacts": [
+        "cluster_features.csv"
+      ]
+    },
+    {
+      "source": "cluster",
+      "target": "profiles",
+      "kind": "data",
+      "artifacts": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "source": "cluster",
+      "target": "team_mix",
+      "kind": "data",
+      "artifacts": [
+        "player_clusters.csv"
+      ]
+    },
+    {
+      "source": "cluster",
+      "target": "plot_data",
+      "kind": "data",
+      "artifacts": [
+        "player_clusters.csv",
+        "cluster_model.pkl"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "cluster_views",
+      "features": "cluster_views",
+      "cluster": "cluster_views",
+      "profiles": "cluster_views",
+      "team_mix": "cluster_views",
+      "plot_data": "cluster_views"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

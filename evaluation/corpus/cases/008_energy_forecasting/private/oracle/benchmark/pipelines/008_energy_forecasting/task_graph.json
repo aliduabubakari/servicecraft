@@ -1,0 +1,374 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "008_energy_forecasting",
+  "benchmark_revision": "pilot-01",
+  "review_status": "author_review_pending",
+  "title": "Energy demand regression with lagged weather and chronological evaluation",
+  "domain": "energy",
+  "family_id": "temporal_multisource_supervised_regression",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:energy_consumption.csv",
+      "path": "inputs/energy_consumption.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh",
+        "is_holiday"
+      ]
+    },
+    {
+      "id": "input:weather.csv",
+      "path": "inputs/weather.csv",
+      "format": "csv",
+      "required_columns": [
+        "date",
+        "temp_avg",
+        "humidity_avg",
+        "cloud_cover_avg",
+        "wind_avg"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ingest",
+      "name": "Validate and order energy and weather sources",
+      "operation": "multisource_ingestion",
+      "required": true,
+      "inputs": [
+        "input:energy_consumption.csv",
+        "input:weather.csv"
+      ],
+      "outputs": [
+        "hourly.csv",
+        "daily_weather.csv"
+      ],
+      "requirements": [
+        "Select named fields; parse keys, sort, and validate continuity, uniqueness and numeric source preconditions."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "align",
+      "name": "Align observations with preceding-day weather",
+      "operation": "temporal_join",
+      "required": true,
+      "inputs": [
+        "hourly.csv",
+        "daily_weather.csv"
+      ],
+      "outputs": [
+        "aligned.csv"
+      ],
+      "requirements": [
+        "Left join the calendar date to D-1 daily weather with many-to-one cardinality."
+      ],
+      "parameters": {
+        "weather_day_offset": -1,
+        "join": "left",
+        "cardinality": "many_to_one"
+      }
+    },
+    {
+      "id": "features",
+      "name": "Derive lagged and calendar predictors",
+      "operation": "temporal_features",
+      "required": true,
+      "inputs": [
+        "aligned.csv"
+      ],
+      "outputs": [
+        "features.csv"
+      ],
+      "requirements": [
+        "Construct the exact predictor set and retain target/timestamp outside it.",
+        "Drop missing predictor rows only after deriving lag and joins."
+      ],
+      "parameters": {
+        "consumption_lag_hours": 24,
+        "weekday_origin": "Monday=0",
+        "minimum_eligible_rows": 10
+      }
+    },
+    {
+      "id": "split",
+      "name": "Create chronological training and test partitions",
+      "operation": "temporal_split",
+      "required": true,
+      "inputs": [
+        "features.csv"
+      ],
+      "outputs": [
+        "train.csv",
+        "test.csv"
+      ],
+      "requirements": [
+        "Use earliest floor(0.8*N) eligible rows for training and all remaining rows for testing, without shuffling."
+      ],
+      "parameters": {
+        "train_fraction": 0.8,
+        "rounding": "floor",
+        "shuffle": false
+      }
+    },
+    {
+      "id": "fit_predict",
+      "name": "Fit train-only preprocessing and Ridge; predict test demand",
+      "operation": "supervised_regression",
+      "required": true,
+      "inputs": [
+        "train.csv",
+        "test.csv"
+      ],
+      "outputs": [
+        "model.pkl",
+        "predictions.csv",
+        "fit_metadata.json"
+      ],
+      "requirements": [
+        "Fit scaler and model exclusively on training rows.",
+        "Predict every test row with the fitted pipeline; save model and preprocessing metadata."
+      ],
+      "parameters": {
+        "estimator": "Ridge",
+        "alpha": 1.0,
+        "fit_intercept": true,
+        "solver": "svd",
+        "scaler": "StandardScaler",
+        "scaler_ddof": 0,
+        "scaler_fit_rows": "train_only",
+        "target": "consumption_kwh",
+        "feature_columns": [
+          "lag_24h_kwh",
+          "hour",
+          "day_of_week",
+          "month",
+          "is_holiday",
+          "previous_temp_avg",
+          "previous_humidity_avg",
+          "previous_cloud_cover_avg",
+          "previous_wind_avg"
+        ]
+      }
+    },
+    {
+      "id": "evaluate",
+      "name": "Measure held-out regression errors",
+      "operation": "regression_evaluation",
+      "required": true,
+      "inputs": [
+        "predictions.csv",
+        "fit_metadata.json"
+      ],
+      "outputs": [
+        "metrics.json"
+      ],
+      "requirements": [
+        "Compute MAE/RMSE from actual and predicted test demand; retain fit metadata."
+      ],
+      "parameters": {
+        "metrics": [
+          "mae_kwh",
+          "rmse_kwh"
+        ]
+      }
+    },
+    {
+      "id": "report",
+      "name": "Publish demand evaluation summary",
+      "operation": "model_report",
+      "required": true,
+      "inputs": [
+        "metrics.json"
+      ],
+      "outputs": [
+        "energy_report.json"
+      ],
+      "requirements": [
+        "Publish computed model evaluation and fit metadata."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "hourly.csv",
+      "path": "hourly.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh",
+        "is_holiday"
+      ]
+    },
+    {
+      "id": "daily_weather.csv",
+      "path": "daily_weather.csv",
+      "format": "csv",
+      "required_columns": [
+        "date",
+        "temp_avg",
+        "humidity_avg",
+        "cloud_cover_avg",
+        "wind_avg"
+      ]
+    },
+    {
+      "id": "aligned.csv",
+      "path": "aligned.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "previous_temp_avg"
+      ]
+    },
+    {
+      "id": "features.csv",
+      "path": "features.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh",
+        "lag_24h_kwh",
+        "hour",
+        "day_of_week",
+        "month",
+        "is_holiday",
+        "previous_temp_avg",
+        "previous_humidity_avg",
+        "previous_cloud_cover_avg",
+        "previous_wind_avg"
+      ]
+    },
+    {
+      "id": "train.csv",
+      "path": "train.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh"
+      ]
+    },
+    {
+      "id": "test.csv",
+      "path": "test.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "consumption_kwh"
+      ]
+    },
+    {
+      "id": "model.pkl",
+      "path": "model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "predictions.csv",
+      "path": "predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "timestamp",
+        "actual_kwh",
+        "predicted_kwh"
+      ]
+    },
+    {
+      "id": "fit_metadata.json",
+      "path": "fit_metadata.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "metrics.json",
+      "path": "metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "energy_report.json",
+      "path": "energy_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "ingest",
+      "target": "align",
+      "kind": "data",
+      "artifacts": [
+        "hourly.csv",
+        "daily_weather.csv"
+      ]
+    },
+    {
+      "source": "align",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "aligned.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "split",
+      "kind": "data",
+      "artifacts": [
+        "features.csv"
+      ]
+    },
+    {
+      "source": "split",
+      "target": "fit_predict",
+      "kind": "data",
+      "artifacts": [
+        "train.csv",
+        "test.csv"
+      ]
+    },
+    {
+      "source": "fit_predict",
+      "target": "evaluate",
+      "kind": "data",
+      "artifacts": [
+        "predictions.csv",
+        "fit_metadata.json"
+      ]
+    },
+    {
+      "source": "evaluate",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "metrics.json"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "ingest": "ingest",
+      "align": "align",
+      "features": "features",
+      "split": "split",
+      "fit_predict": "fit_predict",
+      "evaluate": "evaluate",
+      "report": "report"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

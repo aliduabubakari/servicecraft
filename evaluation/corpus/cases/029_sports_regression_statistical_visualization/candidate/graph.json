@@ -1,0 +1,435 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "029_sports_regression_statistical_visualization",
+  "benchmark_revision": "batch-15",
+  "review_status": "author_review_pending",
+  "title": "Valuation modeling with three feature branches and multiview diagnostics",
+  "domain": "sports",
+  "family_id": "valuation_three_feature_multiview_fanin_fanout",
+  "topology": "fan_in_fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "market_value",
+        "win_shares",
+        "field_goal_pct",
+        "three_point_pct",
+        "free_throw_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate players",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "players_clean.csv"
+      ],
+      "requirements": [
+        "Validate identifiers and required fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "production",
+      "name": "Derive production features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "production_features.csv"
+      ],
+      "requirements": [
+        "Compute production and per-minute production."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "shooting",
+      "name": "Derive shooting features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "shooting_features.csv"
+      ],
+      "requirements": [
+        "Compute mean and weighted shooting indices."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "context",
+      "name": "Derive context features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "players_clean.csv"
+      ],
+      "outputs": [
+        "context_features.csv"
+      ],
+      "requirements": [
+        "Compute salary per game and retain context."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate valuation features",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "production_features.csv",
+        "shooting_features.csv",
+        "context_features.csv"
+      ],
+      "outputs": [
+        "model_data.csv"
+      ],
+      "requirements": [
+        "Join all branches one-to-one."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "fit",
+      "name": "Fit valuation model",
+      "operation": "ridge_regression",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "valuation_model.pkl",
+        "valuation_predictions.csv"
+      ],
+      "requirements": [
+        "Use fixed split, scaling, and Ridge."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "evaluate",
+      "name": "Evaluate valuation model",
+      "operation": "regression_evaluation",
+      "required": true,
+      "inputs": [
+        "valuation_predictions.csv"
+      ],
+      "outputs": [
+        "valuation_metrics.json"
+      ],
+      "requirements": [
+        "Compute MAE, RMSE, and R2."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "teams",
+      "name": "Compute team diagnostics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "team_diagnostics.csv"
+      ],
+      "requirements": [
+        "Aggregate team valuation and features."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "positions",
+      "name": "Compute position diagnostics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "model_data.csv"
+      ],
+      "outputs": [
+        "position_diagnostics.csv"
+      ],
+      "requirements": [
+        "Aggregate position valuation and features."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Reconcile valuation outputs",
+      "operation": "multi_input_report",
+      "required": true,
+      "inputs": [
+        "valuation_metrics.json",
+        "team_diagnostics.csv",
+        "position_diagnostics.csv"
+      ],
+      "outputs": [
+        "valuation_report.json"
+      ],
+      "requirements": [
+        "Reconcile player counts and publish group counts."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "players_clean.csv",
+      "path": "players_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "market_value"
+      ]
+    },
+    {
+      "id": "production_features.csv",
+      "path": "production_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "production_index",
+        "production_per_minute"
+      ]
+    },
+    {
+      "id": "shooting_features.csv",
+      "path": "shooting_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "shooting_index",
+        "weighted_shooting_index"
+      ]
+    },
+    {
+      "id": "context_features.csv",
+      "path": "context_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "team",
+        "position",
+        "salary_per_game"
+      ]
+    },
+    {
+      "id": "model_data.csv",
+      "path": "model_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "market_value",
+        "production_index",
+        "shooting_index"
+      ]
+    },
+    {
+      "id": "valuation_model.pkl",
+      "path": "valuation_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "valuation_predictions.csv",
+      "path": "valuation_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_market_value",
+        "predicted_market_value"
+      ]
+    },
+    {
+      "id": "valuation_metrics.json",
+      "path": "valuation_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "team_diagnostics.csv",
+      "path": "team_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "team",
+        "player_count",
+        "mean_market_value"
+      ]
+    },
+    {
+      "id": "position_diagnostics.csv",
+      "path": "position_diagnostics.csv",
+      "format": "csv",
+      "required_columns": [
+        "position",
+        "player_count",
+        "mean_market_value"
+      ]
+    },
+    {
+      "id": "valuation_report.json",
+      "path": "valuation_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "production",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "shooting",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "validate",
+      "target": "context",
+      "kind": "data",
+      "artifacts": [
+        "players_clean.csv"
+      ]
+    },
+    {
+      "source": "context",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "context_features.csv"
+      ]
+    },
+    {
+      "source": "production",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "production_features.csv"
+      ]
+    },
+    {
+      "source": "shooting",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "shooting_features.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "fit",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "fit",
+      "target": "evaluate",
+      "kind": "data",
+      "artifacts": [
+        "valuation_predictions.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "teams",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "positions",
+      "kind": "data",
+      "artifacts": [
+        "model_data.csv"
+      ]
+    },
+    {
+      "source": "evaluate",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "valuation_metrics.json"
+      ]
+    },
+    {
+      "source": "positions",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "position_diagnostics.csv"
+      ]
+    },
+    {
+      "source": "teams",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "team_diagnostics.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "valuation_multiview",
+      "production": "valuation_multiview",
+      "shooting": "valuation_multiview",
+      "context": "valuation_multiview",
+      "integrate": "valuation_multiview",
+      "fit": "valuation_multiview",
+      "evaluate": "valuation_multiview",
+      "teams": "valuation_multiview",
+      "positions": "valuation_multiview",
+      "report": "valuation_multiview"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

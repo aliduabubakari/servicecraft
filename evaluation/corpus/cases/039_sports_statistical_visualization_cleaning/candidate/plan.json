@@ -1,0 +1,139 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['player_id', 'team', 'position', 'age', 'experience_years', 'salary_millions', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'field_goal_pct', 'three_point_pct', 'free_throw_pct']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "prep(d, cols, 'player_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "team = d.groupby('team', as_index=False).agg(player_count=('player_id', 'size'), mean_points=('points_per_game', 'mean'), mean_salary=('salary_millions', 'mean')).sort_values('team')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "team"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "team.to_csv(out / 'team_summary.csv', index=False)",
+      "dependencies": {
+        "team": 3
+      },
+      "writes": [],
+      "outputs": [
+        "team_summary.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "pos = d.groupby('position', as_index=False).agg(player_count=('player_id', 'size'), mean_assists=('assists_per_game', 'mean'), mean_rebounds=('rebounds_per_game', 'mean'), mean_shooting=('field_goal_pct', 'mean')).sort_values('position')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "pos"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "pos.to_csv(out / 'position_summary.csv', index=False)",
+      "dependencies": {
+        "pos": 5
+      },
+      "writes": [],
+      "outputs": [
+        "position_summary.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "age = pd.cut(d.age, [0, 24, 29, 34, np.inf], labels=['<=24', '25-29', '30-34', '35+'])",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "age"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "ages = d.assign(age_band=age).groupby('age_band', observed=True, as_index=False).agg(player_count=('player_id', 'size'), mean_experience=('experience_years', 'mean'), mean_salary=('salary_millions', 'mean')).astype({'age_band': str})",
+      "dependencies": {
+        "age": 7,
+        "d": 2
+      },
+      "writes": [
+        "ages"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "ages.to_csv(out / 'age_summary.csv', index=False)",
+      "dependencies": {
+        "ages": 8
+      },
+      "writes": [],
+      "outputs": [
+        "age_summary.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "js(out / 'sports_report.json', {'players': int(team.player_count.sum()), 'teams': len(team), 'positions': len(pos), 'age_bands': len(ages), 'top_scoring_team': team.sort_values(['mean_points', 'team'], ascending=[False, True]).iloc[0].team})",
+      "dependencies": {
+        "pos": 5,
+        "team": 3,
+        "ages": 8
+      },
+      "writes": [],
+      "outputs": [
+        "sports_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "teams": [
+      4
+    ],
+    "positions": [
+      6
+    ],
+    "ages": [
+      9
+    ],
+    "report": [
+      10
+    ]
+  }
+}

@@ -1,0 +1,391 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition', 'revenue', 'operational_cost']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, cols, 'data.csv')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'trip_id', 'data.csv')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums(d, ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'is_holiday', 'revenue', 'operational_cost'], 'data.csv')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if (d[['distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'revenue', 'operational_cost']] < 0).any().any():\n    raise ValueError('negative economics')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean = d[cols].sort_values('trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean.to_csv(out / 'trips_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "rev = clean[['trip_id', 'revenue', 'passengers', 'fare_amount']].copy()",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [
+        "rev"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "rev['revenue_per_passenger'] = rev.revenue / rev.passengers",
+      "dependencies": {
+        "rev": 8
+      },
+      "writes": [
+        "rev"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "rev['fare_revenue_gap'] = rev.revenue - rev.fare_amount * rev.passengers",
+      "dependencies": {
+        "rev": 9
+      },
+      "writes": [
+        "rev"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "rev.to_csv(out / 'revenue_features.csv', index=False)",
+      "dependencies": {
+        "rev": 10
+      },
+      "writes": [],
+      "outputs": [
+        "revenue_features.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "cost = clean[['trip_id', 'operational_cost', 'distance_km', 'delay_minutes']].copy()",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [
+        "cost"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "cost['cost_per_km'] = cost.operational_cost / cost.distance_km",
+      "dependencies": {
+        "cost": 12
+      },
+      "writes": [
+        "cost"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "cost['cost_per_delay_minute'] = np.where(cost.delay_minutes > 0, cost.operational_cost / cost.delay_minutes, 0)",
+      "dependencies": {
+        "cost": 13
+      },
+      "writes": [
+        "cost"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "cost.to_csv(out / 'cost_features.csv', index=False)",
+      "dependencies": {
+        "cost": 14
+      },
+      "writes": [],
+      "outputs": [
+        "cost_features.csv"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "table = clean.merge(rev.drop(columns=['revenue', 'passengers', 'fare_amount']), on='trip_id', validate='one_to_one').merge(cost.drop(columns=['operational_cost', 'distance_km', 'delay_minutes']), on='trip_id', validate='one_to_one')",
+      "dependencies": {
+        "cost": 14,
+        "rev": 10,
+        "clean": 6
+      },
+      "writes": [
+        "table"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "table['profit'] = table.revenue - table.operational_cost",
+      "dependencies": {
+        "table": 16
+      },
+      "writes": [
+        "table"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "table['profit_margin'] = table.profit / table.revenue",
+      "dependencies": {
+        "table": 17
+      },
+      "writes": [
+        "table"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "table.to_csv(out / 'trip_economics.csv', index=False)",
+      "dependencies": {
+        "table": 18
+      },
+      "writes": [],
+      "outputs": [
+        "trip_economics.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "features = ['departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'is_holiday', 'revenue_per_passenger', 'fare_revenue_gap', 'cost_per_km', 'cost_per_delay_minute']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "train, test = train_test_split(table, test_size=0.2, random_state=42)",
+      "dependencies": {
+        "table": 18
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', LinearRegression())])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "model.fit(train[features], train.profit)",
+      "dependencies": {
+        "model": 22,
+        "features": 20,
+        "train": 21
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "pred = model.predict(test[features])",
+      "dependencies": {
+        "model": 23,
+        "features": 20,
+        "test": 21
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "with (out / 'profit_model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 23
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "profit_model.pkl"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "pd.DataFrame({'trip_id': test.trip_id, 'actual_profit': test.profit, 'predicted_profit': pred}).sort_values('trip_id').to_csv(out / 'profit_predictions.csv', index=False)",
+      "dependencies": {
+        "test": 21,
+        "pred": 24
+      },
+      "writes": [],
+      "outputs": [
+        "profit_predictions.csv"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "metrics = {'train_rows': len(train), 'test_rows': len(test), 'features': features, 'mae': mean_absolute_error(test.profit, pred), 'rmse': mean_squared_error(test.profit, pred) ** 0.5, 'r2': model.score(test[features], test.profit)}",
+      "dependencies": {
+        "features": 20,
+        "train": 21,
+        "model": 23,
+        "test": 21,
+        "pred": 24
+      },
+      "writes": [
+        "metrics"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "js(out / 'profit_metrics.json', metrics)",
+      "dependencies": {
+        "metrics": 27
+      },
+      "writes": [],
+      "outputs": [
+        "profit_metrics.json"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "routes = table.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), total_revenue=('revenue', 'sum'), total_cost=('operational_cost', 'sum'), total_profit=('profit', 'sum'), mean_profit_margin=('profit_margin', 'mean')).sort_values('route')",
+      "dependencies": {
+        "table": 18
+      },
+      "writes": [
+        "routes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 30,
+      "source": "routes.to_csv(out / 'route_profitability.csv', index=False)",
+      "dependencies": {
+        "routes": 29
+      },
+      "writes": [],
+      "outputs": [
+        "route_profitability.csv"
+      ]
+    },
+    {
+      "index": 31,
+      "source": "js(out / 'economics_report.json', {'trips': len(table), 'total_revenue': table.revenue.sum(), 'total_cost': table.operational_cost.sum(), 'total_profit': table.profit.sum(), 'model': metrics, 'most_profitable_route': routes.sort_values(['total_profit', 'route'], ascending=[False, True]).iloc[0].route})",
+      "dependencies": {
+        "metrics": 27,
+        "table": 18,
+        "routes": 29
+      },
+      "writes": [],
+      "outputs": [
+        "economics_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      7
+    ],
+    "revenue": [
+      11
+    ],
+    "cost": [
+      15
+    ],
+    "integrate": [
+      19
+    ],
+    "model": [
+      25,
+      26,
+      28
+    ],
+    "routes": [
+      30
+    ],
+    "report": [
+      31
+    ]
+  }
+}

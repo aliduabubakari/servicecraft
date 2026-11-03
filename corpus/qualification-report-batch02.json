@@ -1,0 +1,102 @@
+{
+  "status": "passed",
+  "scope": "Batch-02 Python references, independent invariants, invalid-key rejection, graph consistency, and export allowlists; not Dagster execution or generated-code evaluation",
+  "dagster_runtime_qualification": "not_run",
+  "review_status": "author_review_pending",
+  "python": "3.12.3",
+  "packages": {
+    "pandas": "2.3.0",
+    "numpy": "2.3.1",
+    "scikit-learn": "1.7.0",
+    "jsonschema": "4.24.0"
+  },
+  "checks": [
+    {
+      "case": "003_credit_risk",
+      "probe": "reference_outputs_and_independent_invariants",
+      "status": "passed",
+      "output_sha256": {
+        "metrics.json": "7c5249ac50de755dddaf819f7eb01a1fbc732ced701a060c7bbc2918d2e59ced",
+        "fit_metadata.json": "aca56afdadfcbf00529988300608c130e5d547d2eb3f9fd62b42b5793bd8e0d8",
+        "test.csv": "f1000f38e374888fc52e8003dfd3b1fc50fdd1b1efe7873c26644507165c5440",
+        "predictions.csv": "482c73615fe6cbac8df6d6232cb4a261aa22fc3308d83a6c801858d529b38e99",
+        "model.pkl": "d62e464190176de9c11b27ccfc049855a0396ff635bec7786b71468d76e110d5",
+        "credit_report.json": "7c5249ac50de755dddaf819f7eb01a1fbc732ced701a060c7bbc2918d2e59ced",
+        "train.csv": "1e907d9c0fa356d2ab719b476610bd39ec89f32e3910fd5b9c2521214d67be0f",
+        "integrated.csv": "536ac6f98694c4922c0deab988b11ff09d5a93e365738fbadf07bd7fb24e41e7"
+      }
+    },
+    {
+      "case": "003_credit_risk",
+      "probe": "broken_identifier_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "004_customer_churn",
+      "probe": "reference_outputs_and_independent_invariants",
+      "status": "passed",
+      "output_sha256": {
+        "customer_metrics.csv": "5d9dc68f8d1e454e9fe07c80abf49ef99fa8f479e32dbda868ffd3c41b92e1ce",
+        "customer_analysis.csv": "3bb6a695a359f0b77e2b53437ff2f619bfbe69e82627a8f2a4aee93a40d5b9e7",
+        "churn_report.json": "f648e6ccec2a5345a2d45413d56b554c8e2023eacb50f16e428d7597d5d04c3a",
+        "segment_summary.csv": "2d9e0b9338ee4b1c008b4c3f044a4760be6ba89ba0086b583706c7cfd7441577"
+      }
+    },
+    {
+      "case": "004_customer_churn",
+      "probe": "broken_identifier_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "005_demand_forecasting",
+      "probe": "reference_outputs_and_independent_invariants",
+      "status": "passed",
+      "output_sha256": {
+        "inventory_report.json": "99594a2f0fa1cc3b59532b671bdcfab794940d90d1036d91477c756dae7330fa",
+        "inventory_plan.csv": "914256cbc732295f34c0911498b283a1cba63c847e6f777453c4b4e1377d1e3a",
+        "daily_demand.csv": "f2d881179b10912aa1c6b2acd0d4f09bc7c52154e88600b5bb39f1c605aa2160"
+      }
+    },
+    {
+      "case": "005_demand_forecasting",
+      "probe": "broken_identifier_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "006_ecommerce_recommendation",
+      "probe": "reference_outputs_and_independent_invariants",
+      "status": "passed",
+      "output_sha256": {
+        "recommendations.csv": "22965a13b539090db6153214eb90e29035cbd7d9360aecee0cc18674e491fe60",
+        "recommendation_report.json": "7be446249a0dcf1441410a202f86189d9476712f167743a880f9f74d40970630",
+        "interactions.csv": "0623a21207d4d14a4c7d9ed741e8a887714fd8698663103cea99a42bc358dba3"
+      }
+    },
+    {
+      "case": "006_ecommerce_recommendation",
+      "probe": "broken_identifier_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "014_sports_clustering_integration_validation",
+      "probe": "reference_outputs_and_independent_invariants",
+      "status": "passed",
+      "output_sha256": {
+        "clustering_report.json": "260d66323974a4a66bb9865ebd2acf9f63dd72efd11736d24d78ef4520dcb9f1",
+        "cluster_profiles.csv": "1d39a11815b0353ae0158296986f3324e307eadba9a5c91d8ea56443d130e853",
+        "player_clusters.csv": "447d97a7ddd6ed1c7ae32fd1ea4fa0a5f9c9df3b3301e68b14b9a0fb4b4b7dd3",
+        "model.pkl": "20d144c38d7a0e7a18b07036ba2db5ebba72922bd1684ffc5ab9d50548a2fb70"
+      }
+    },
+    {
+      "case": "014_sports_clustering_integration_validation",
+      "probe": "broken_identifier_contract_rejected",
+      "status": "passed"
+    },
+    {
+      "case": "batch-02",
+      "probe": "generator_input_allowlist_both_tracks",
+      "status": "passed"
+    }
+  ]
+}

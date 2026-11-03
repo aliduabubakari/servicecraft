@@ -1,0 +1,313 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "format": {
+          "enum": [
+            "csv",
+            "json",
+            "file"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "required_columns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Columns",
+          "type": "array"
+        },
+        "required_keys": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Keys",
+          "type": "array"
+        },
+        "min_rows": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Min Rows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "format"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "ExternalOracle": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "directory": {
+          "title": "Directory",
+          "type": "string"
+        },
+        "script": {
+          "default": "check.py",
+          "title": "Script",
+          "type": "string"
+        },
+        "image": {
+          "title": "Image",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "directory",
+        "image"
+      ],
+      "title": "ExternalOracle",
+      "type": "object"
+    },
+    "Oracle": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "artifact": {
+          "title": "Artifact",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "json_equals",
+            "csv_equals"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reference": {
+          "title": "Reference",
+          "type": "string"
+        },
+        "atol": {
+          "default": 1e-06,
+          "minimum": 0,
+          "title": "Atol",
+          "type": "number"
+        },
+        "rtol": {
+          "default": 1e-06,
+          "minimum": 0,
+          "title": "Rtol",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "artifact",
+        "kind",
+        "reference"
+      ],
+      "title": "Oracle",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "servicecraft.evaluation-spec@1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "module": {
+      "title": "Module",
+      "type": "string"
+    },
+    "attribute": {
+      "default": "defs",
+      "title": "Attribute",
+      "type": "string"
+    },
+    "project_dir": {
+      "default": ".",
+      "title": "Project Dir",
+      "type": "string"
+    },
+    "python_paths": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Python Paths",
+      "type": "array"
+    },
+    "bundle_inputs": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Bundle Inputs"
+    },
+    "bundle_outputs": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Bundle Outputs"
+    },
+    "environment_aliases": {
+      "additionalProperties": {
+        "enum": [
+          "input_dir",
+          "input_manifest",
+          "output_dir"
+        ],
+        "type": "string"
+      },
+      "title": "Environment Aliases",
+      "type": "object"
+    },
+    "mode": {
+      "default": "assets",
+      "enum": [
+        "assets",
+        "job"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "job_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Job Name"
+    },
+    "run_config": {
+      "additionalProperties": true,
+      "title": "Run Config",
+      "type": "object"
+    },
+    "expected_nodes": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Expected Nodes",
+      "type": "array"
+    },
+    "expected_edges": {
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Expected Edges",
+      "type": "array"
+    },
+    "artifacts": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "minItems": 1,
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "oracles": {
+      "items": {
+        "$ref": "#/$defs/Oracle"
+      },
+      "minItems": 1,
+      "title": "Oracles",
+      "type": "array"
+    },
+    "external_oracles": {
+      "items": {
+        "$ref": "#/$defs/ExternalOracle"
+      },
+      "title": "External Oracles",
+      "type": "array"
+    },
+    "image": {
+      "default": "servicecraft-runtime:1.13.12",
+      "title": "Image",
+      "type": "string"
+    },
+    "timeout_seconds": {
+      "default": 120,
+      "maximum": 3600,
+      "minimum": 1,
+      "title": "Timeout Seconds",
+      "type": "integer"
+    },
+    "memory": {
+      "default": "1g",
+      "title": "Memory",
+      "type": "string"
+    },
+    "cpus": {
+      "default": 1.0,
+      "exclusiveMinimum": 0,
+      "maximum": 16,
+      "title": "Cpus",
+      "type": "number"
+    },
+    "required_packages": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Required Packages",
+      "type": "object"
+    },
+    "required_imports": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Imports",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "case_id",
+    "module",
+    "expected_nodes",
+    "artifacts",
+    "oracles"
+  ],
+  "title": "EvaluationSpec",
+  "type": "object"
+}

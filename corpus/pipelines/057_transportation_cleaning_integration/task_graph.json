@@ -1,0 +1,216 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "057_transportation_cleaning_integration",
+  "benchmark_revision": "batch-07",
+  "review_status": "author_review_pending",
+  "title": "Linear route performance ranking",
+  "domain": "transportation",
+  "family_id": "route_performance_ranking",
+  "topology": "linear",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "validate",
+      "name": "Validate trips",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_clean.csv"
+      ],
+      "requirements": [
+        "Validate IDs and finite measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive trip features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "trips_clean.csv"
+      ],
+      "outputs": [
+        "trip_features.csv"
+      ],
+      "requirements": [
+        "Compute passenger-km, fare/passenger, on-time."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "aggregate",
+      "name": "Aggregate routes",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trip_features.csv"
+      ],
+      "outputs": [
+        "route_metrics.csv"
+      ],
+      "requirements": [
+        "Compute declared route metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rank",
+      "name": "Rank routes",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_metrics.csv"
+      ],
+      "outputs": [
+        "ranked_routes.csv"
+      ],
+      "requirements": [
+        "Apply declared ordering."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish route report",
+      "operation": "ranking_report",
+      "required": true,
+      "inputs": [
+        "ranked_routes.csv"
+      ],
+      "outputs": [
+        "route_performance_report.json"
+      ],
+      "requirements": [
+        "Publish counts and leader."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_clean.csv",
+      "path": "trips_clean.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route"
+      ]
+    },
+    {
+      "id": "trip_features.csv",
+      "path": "trip_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "fare_per_passenger",
+        "on_time"
+      ]
+    },
+    {
+      "id": "route_metrics.csv",
+      "path": "route_metrics.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_km",
+        "on_time_rate"
+      ]
+    },
+    {
+      "id": "ranked_routes.csv",
+      "path": "ranked_routes.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "on_time_rate"
+      ]
+    },
+    {
+      "id": "route_performance_report.json",
+      "path": "route_performance_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "validate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "aggregate",
+      "kind": "data",
+      "artifacts": [
+        "trip_features.csv"
+      ]
+    },
+    {
+      "source": "aggregate",
+      "target": "rank",
+      "kind": "data",
+      "artifacts": [
+        "route_metrics.csv"
+      ]
+    },
+    {
+      "source": "rank",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "ranked_routes.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "validate": "linear_trip",
+      "features": "linear_trip",
+      "aggregate": "linear_trip",
+      "rank": "linear_trip",
+      "report": "linear_trip"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

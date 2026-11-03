@@ -1,0 +1,378 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "base = ['player_id', 'team', 'position']",
+      "dependencies": {},
+      "writes": [
+        "base"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "reg = ['games_played', 'points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'efficiency_rating', 'usage_rate', 'win_shares']",
+      "dependencies": {},
+      "writes": [
+        "reg"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "clu = ['points_per_game', 'assists_per_game', 'rebounds_per_game', 'play_style_score', 'efficiency_rating', 'usage_rate']",
+      "dependencies": {},
+      "writes": [
+        "clu"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "req(d, [*base, *reg, *clu, 'market_value'], 'data.csv')",
+      "dependencies": {
+        "reg": 2,
+        "d": 0,
+        "base": 1,
+        "clu": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "key(d, 'player_id', 'data.csv')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "nums(d, list(set(reg + clu + ['market_value'])), 'data.csv')",
+      "dependencies": {
+        "reg": 2,
+        "d": 5,
+        "clu": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "regression = d[['player_id', 'market_value', *reg]].sort_values('player_id')",
+      "dependencies": {
+        "reg": 2,
+        "d": 6
+      },
+      "writes": [
+        "regression"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "regression.to_csv(out / 'regression_features.csv', index=False)",
+      "dependencies": {
+        "regression": 7
+      },
+      "writes": [],
+      "outputs": [
+        "regression_features.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "train, test = train_test_split(regression, test_size=0.2, random_state=42)",
+      "dependencies": {
+        "regression": 7
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', LinearRegression())])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "model.fit(train[reg], train.market_value)",
+      "dependencies": {
+        "reg": 2,
+        "train": 9,
+        "model": 10
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "pred = model.predict(test[reg])",
+      "dependencies": {
+        "reg": 2,
+        "test": 9,
+        "model": 11
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "with (out / 'market_value_model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 11
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "market_value_model.pkl"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "pd.DataFrame({'player_id': test.player_id, 'actual_market_value': test.market_value, 'predicted_market_value': pred}).sort_values('player_id').to_csv(out / 'market_value_predictions.csv', index=False)",
+      "dependencies": {
+        "pred": 12,
+        "test": 9
+      },
+      "writes": [],
+      "outputs": [
+        "market_value_predictions.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "js(out / 'market_value_metrics.json', {'train_rows': len(train), 'test_rows': len(test), 'features': reg, 'mae': mean_absolute_error(test.market_value, pred), 'rmse': mean_squared_error(test.market_value, pred) ** 0.5, 'r2': model.score(test[reg], test.market_value)})",
+      "dependencies": {
+        "train": 9,
+        "reg": 2,
+        "test": 9,
+        "model": 11,
+        "pred": 12
+      },
+      "writes": [],
+      "outputs": [
+        "market_value_metrics.json"
+      ]
+    },
+    {
+      "index": 16,
+      "source": "clustering = d[[*base, *clu]].sort_values('player_id')",
+      "dependencies": {
+        "base": 1,
+        "d": 6,
+        "clu": 3
+      },
+      "writes": [
+        "clustering"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "clustering.to_csv(out / 'clustering_features.csv', index=False)",
+      "dependencies": {
+        "clustering": 16
+      },
+      "writes": [],
+      "outputs": [
+        "clustering_features.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "scaler = StandardScaler()",
+      "dependencies": {},
+      "writes": [
+        "scaler"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "x = scaler.fit_transform(clustering[clu])",
+      "dependencies": {
+        "clustering": 16,
+        "scaler": 18,
+        "clu": 3
+      },
+      "writes": [
+        "scaler",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "km = KMeans(n_clusters=4, random_state=42, n_init=20, algorithm='lloyd').fit(x)",
+      "dependencies": {
+        "x": 19
+      },
+      "writes": [
+        "km"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "order = np.lexsort((np.arange(4), km.cluster_centers_[:, clu.index('usage_rate')], km.cluster_centers_[:, clu.index('efficiency_rating')]))",
+      "dependencies": {
+        "km": 20,
+        "clu": 3
+      },
+      "writes": [
+        "order"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 22,
+      "source": "mapping = {int(raw): int(label) for label, raw in enumerate(order)}",
+      "dependencies": {
+        "order": 21
+      },
+      "writes": [
+        "mapping"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "assigned = clustering.copy()",
+      "dependencies": {
+        "clustering": 16
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 24,
+      "source": "assigned['cluster'] = [mapping[int(v)] for v in km.labels_]",
+      "dependencies": {
+        "km": 20,
+        "mapping": 22,
+        "assigned": 23
+      },
+      "writes": [
+        "assigned"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "assigned.to_csv(out / 'player_clusters.csv', index=False)",
+      "dependencies": {
+        "assigned": 24
+      },
+      "writes": [],
+      "outputs": [
+        "player_clusters.csv"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "with (out / 'cluster_model.pkl').open('wb') as h:\n    pickle.dump({'scaler': scaler, 'model': km, 'mapping': mapping, 'features': clu}, h)",
+      "dependencies": {
+        "km": 20,
+        "mapping": 22,
+        "scaler": 19,
+        "clu": 3
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "cluster_model.pkl"
+      ]
+    },
+    {
+      "index": 27,
+      "source": "profile = assigned.groupby('cluster', as_index=False).agg(player_count=('player_id', 'size'), mean_points=('points_per_game', 'mean'), mean_assists=('assists_per_game', 'mean'), mean_rebounds=('rebounds_per_game', 'mean'), mean_efficiency=('efficiency_rating', 'mean'), mean_usage=('usage_rate', 'mean')).sort_values('cluster')",
+      "dependencies": {
+        "assigned": 24
+      },
+      "writes": [
+        "profile"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 28,
+      "source": "profile.to_csv(out / 'cluster_profiles.csv', index=False)",
+      "dependencies": {
+        "profile": 27
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "index": 29,
+      "source": "js(out / 'cluster_report.json', {'players': len(assigned), 'clusters': 4, 'silhouette_score': silhouette_score(x, km.labels_)})",
+      "dependencies": {
+        "km": 20,
+        "x": 19,
+        "assigned": 24
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "reg_prepare": [
+      8
+    ],
+    "reg_fit": [
+      13,
+      14
+    ],
+    "reg_evaluate": [
+      15
+    ],
+    "cluster_prepare": [
+      17
+    ],
+    "cluster_fit": [
+      25,
+      26
+    ],
+    "cluster_profile": [
+      28,
+      29
+    ]
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "$defs": {
+    "BinaryScores": {
+      "additionalProperties": false,
+      "properties": {
+        "dagster_executable": {
+          "anyOf": [
+            {
+              "enum": [
+                0,
+                1
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Dagster Executable"
+        },
+        "output_contract_valid": {
+          "anyOf": [
+            {
+              "enum": [
+                0,
+                1
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Output Contract Valid"
+        },
+        "behaviorally_correct": {
+          "anyOf": [
+            {
+              "enum": [
+                0,
+                1
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Behaviorally Correct"
+        },
+        "complete_success": {
+          "anyOf": [
+            {
+              "enum": [
+                0,
+                1
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Complete Success"
+        }
+      },
+      "required": [
+        "dagster_executable",
+        "output_contract_valid",
+        "behaviorally_correct",
+        "complete_success"
+      ],
+      "title": "BinaryScores",
+      "type": "object"
+    },
+    "EvaluationStages": {
+      "additionalProperties": false,
+      "properties": {
+        "submission": {
+          "$ref": "#/$defs/StageReport"
+        },
+        "static": {
+          "$ref": "#/$defs/StageReport"
+        },
+        "definition_graph": {
+          "$ref": "#/$defs/StageReport"
+        },
+        "execution": {
+          "$ref": "#/$defs/StageReport"
+        },
+        "contracts": {
+          "$ref": "#/$defs/StageReport"
+        },
+        "oracle": {
+          "$ref": "#/$defs/StageReport"
+        }
+      },
+      "required": [
+        "submission",
+        "static",
+        "definition_graph",
+        "execution",
+        "contracts",
+        "oracle"
+      ],
+      "title": "EvaluationStages",
+      "type": "object"
+    },
+    "StageReport": {
+      "additionalProperties": true,
+      "properties": {
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_reached",
+            "timeout",
+            "infra_error"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "StageReport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "servicecraft.evaluation-result@1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "stages": {
+      "$ref": "#/$defs/EvaluationStages"
+    },
+    "scores": {
+      "$ref": "#/$defs/BinaryScores"
+    },
+    "elapsed_seconds": {
+      "minimum": 0,
+      "title": "Elapsed Seconds",
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "metadata",
+    "stages",
+    "scores",
+    "elapsed_seconds"
+  ],
+  "title": "EvaluationResult",
+  "type": "object"
+}

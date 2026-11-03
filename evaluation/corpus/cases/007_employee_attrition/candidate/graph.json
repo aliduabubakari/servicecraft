@@ -1,0 +1,288 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "007_employee_attrition",
+  "benchmark_revision": "batch-03",
+  "review_status": "author_review_pending",
+  "title": "Independent workforce, engagement, and performance analytics",
+  "domain": "human_resources",
+  "family_id": "parallel_workforce_analytics",
+  "topology": "parallel",
+  "inputs": [
+    {
+      "id": "input:employees.csv",
+      "path": "inputs/employees.csv",
+      "format": "csv",
+      "required_columns": [
+        "employee_id",
+        "department",
+        "monthly_salary",
+        "overtime",
+        "job_satisfaction",
+        "is_attrited"
+      ]
+    },
+    {
+      "id": "input:engagement_surveys.csv",
+      "path": "inputs/engagement_surveys.csv",
+      "format": "csv",
+      "required_columns": [
+        "employee_id",
+        "survey_date",
+        "engagement_score",
+        "satisfaction_score",
+        "manager_score",
+        "career_growth_score",
+        "work_env_score"
+      ]
+    },
+    {
+      "id": "input:performance_reviews.csv",
+      "path": "inputs/performance_reviews.csv",
+      "format": "csv",
+      "required_columns": [
+        "employee_id",
+        "review_year",
+        "performance_score",
+        "goal_achievement_pct",
+        "peer_feedback_score",
+        "manager_rating",
+        "promotion_recommended"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "prepare_workforce",
+      "name": "Validate workforce records",
+      "operation": "source_validation",
+      "required": true,
+      "inputs": [
+        "input:employees.csv"
+      ],
+      "outputs": [
+        "workforce.csv"
+      ],
+      "requirements": [
+        "Validate employee keys, target flag, and required measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "summarize_attrition",
+      "name": "Summarize attrition by department",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "workforce.csv"
+      ],
+      "outputs": [
+        "attrition_by_department.csv",
+        "attrition_report.json"
+      ],
+      "requirements": [
+        "Compute department and global attrition measures from workforce records."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "aggregate_engagement",
+      "name": "Aggregate engagement surveys",
+      "operation": "temporal_aggregation",
+      "required": true,
+      "inputs": [
+        "input:engagement_surveys.csv",
+        "input:employees.csv"
+      ],
+      "outputs": [
+        "engagement_by_employee.csv"
+      ],
+      "requirements": [
+        "Validate employee membership/dates/scores and compute employee composites."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "summarize_engagement",
+      "name": "Summarize engagement by month",
+      "operation": "temporal_summary",
+      "required": true,
+      "inputs": [
+        "engagement_by_employee.csv",
+        "input:engagement_surveys.csv"
+      ],
+      "outputs": [
+        "engagement_by_month.csv",
+        "engagement_report.json"
+      ],
+      "requirements": [
+        "Compute month-level and global survey measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "aggregate_performance",
+      "name": "Aggregate performance reviews",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:performance_reviews.csv",
+        "input:employees.csv"
+      ],
+      "outputs": [
+        "performance_by_employee.csv"
+      ],
+      "requirements": [
+        "Validate employee membership and aggregate review measures per employee."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "summarize_performance",
+      "name": "Summarize performance by department",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "performance_by_employee.csv",
+        "input:employees.csv"
+      ],
+      "outputs": [
+        "performance_by_department.csv",
+        "performance_report.json"
+      ],
+      "requirements": [
+        "Attach departments and compute department/global performance measures."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "workforce.csv",
+      "path": "workforce.csv",
+      "format": "csv",
+      "required_columns": [
+        "employee_id",
+        "department",
+        "is_attrited"
+      ]
+    },
+    {
+      "id": "attrition_by_department.csv",
+      "path": "attrition_by_department.csv",
+      "format": "csv",
+      "required_columns": [
+        "department",
+        "employee_count",
+        "attrition_count",
+        "attrition_rate"
+      ]
+    },
+    {
+      "id": "attrition_report.json",
+      "path": "attrition_report.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "engagement_by_employee.csv",
+      "path": "engagement_by_employee.csv",
+      "format": "csv",
+      "required_columns": [
+        "employee_id",
+        "survey_count",
+        "mean_engagement_composite",
+        "latest_survey_date"
+      ]
+    },
+    {
+      "id": "engagement_by_month.csv",
+      "path": "engagement_by_month.csv",
+      "format": "csv",
+      "required_columns": [
+        "month",
+        "survey_count",
+        "mean_engagement_composite"
+      ]
+    },
+    {
+      "id": "engagement_report.json",
+      "path": "engagement_report.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "performance_by_employee.csv",
+      "path": "performance_by_employee.csv",
+      "format": "csv",
+      "required_columns": [
+        "employee_id",
+        "review_count",
+        "mean_performance_score"
+      ]
+    },
+    {
+      "id": "performance_by_department.csv",
+      "path": "performance_by_department.csv",
+      "format": "csv",
+      "required_columns": [
+        "department",
+        "reviewed_employees",
+        "mean_performance_score"
+      ]
+    },
+    {
+      "id": "performance_report.json",
+      "path": "performance_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "prepare_workforce",
+      "target": "summarize_attrition",
+      "kind": "data",
+      "artifacts": [
+        "workforce.csv"
+      ]
+    },
+    {
+      "source": "aggregate_engagement",
+      "target": "summarize_engagement",
+      "kind": "data",
+      "artifacts": [
+        "engagement_by_employee.csv"
+      ]
+    },
+    {
+      "source": "aggregate_performance",
+      "target": "summarize_performance",
+      "kind": "data",
+      "artifacts": [
+        "performance_by_employee.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "prepare_workforce": "attrition_parallel",
+      "summarize_attrition": "attrition_parallel",
+      "aggregate_engagement": "attrition_parallel",
+      "summarize_engagement": "attrition_parallel",
+      "aggregate_performance": "attrition_parallel",
+      "summarize_performance": "attrition_parallel"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

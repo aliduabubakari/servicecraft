@@ -1,0 +1,249 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "082_transportation_regression_statistical_integration",
+  "benchmark_revision": "batch-12",
+  "review_status": "author_review_pending",
+  "title": "Route economics and service summaries converging for composite ranking",
+  "domain": "transportation",
+  "family_id": "route_economics_service_fanin_scoring",
+  "topology": "linear_to_fan_in",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "distance_km",
+        "passengers",
+        "delay_minutes",
+        "revenue",
+        "operational_cost",
+        "on_time_pct",
+        "passenger_satisfaction"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "economics",
+      "name": "Summarize route economics",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_economics.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate economics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "service",
+      "name": "Summarize route service",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "route_service.csv"
+      ],
+      "requirements": [
+        "Validate and aggregate service."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "integrate",
+      "name": "Integrate route summaries",
+      "operation": "feature_join",
+      "required": true,
+      "inputs": [
+        "route_economics.csv",
+        "route_service.csv"
+      ],
+      "outputs": [
+        "route_context.csv"
+      ],
+      "requirements": [
+        "Join one-to-one and reconcile counts."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "score",
+      "name": "Score routes",
+      "operation": "composite_scoring",
+      "required": true,
+      "inputs": [
+        "route_context.csv"
+      ],
+      "outputs": [
+        "route_scores.csv"
+      ],
+      "requirements": [
+        "Compute fixed weighted score."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rank",
+      "name": "Rank routes",
+      "operation": "deterministic_ranking",
+      "required": true,
+      "inputs": [
+        "route_scores.csv"
+      ],
+      "outputs": [
+        "route_ranking.csv"
+      ],
+      "requirements": [
+        "Apply declared ordering."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "report",
+      "name": "Publish route report",
+      "operation": "ranking_report",
+      "required": true,
+      "inputs": [
+        "route_ranking.csv"
+      ],
+      "outputs": [
+        "route_report.json"
+      ],
+      "requirements": [
+        "Publish route/trip totals and leader."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "route_economics.csv",
+      "path": "route_economics.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "economic_trip_count",
+        "total_profit",
+        "profit_margin"
+      ]
+    },
+    {
+      "id": "route_service.csv",
+      "path": "route_service.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "service_trip_count",
+        "mean_on_time"
+      ]
+    },
+    {
+      "id": "route_context.csv",
+      "path": "route_context.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "economic_trip_count",
+        "service_trip_count"
+      ]
+    },
+    {
+      "id": "route_scores.csv",
+      "path": "route_scores.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "route_score"
+      ]
+    },
+    {
+      "id": "route_ranking.csv",
+      "path": "route_ranking.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "rank",
+        "route_score"
+      ]
+    },
+    {
+      "id": "route_report.json",
+      "path": "route_report.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "economics",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "route_economics.csv"
+      ]
+    },
+    {
+      "source": "service",
+      "target": "integrate",
+      "kind": "data",
+      "artifacts": [
+        "route_service.csv"
+      ]
+    },
+    {
+      "source": "integrate",
+      "target": "score",
+      "kind": "data",
+      "artifacts": [
+        "route_context.csv"
+      ]
+    },
+    {
+      "source": "score",
+      "target": "rank",
+      "kind": "data",
+      "artifacts": [
+        "route_scores.csv"
+      ]
+    },
+    {
+      "source": "rank",
+      "target": "report",
+      "kind": "data",
+      "artifacts": [
+        "route_ranking.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "economics": "economics_service_fanin",
+      "service": "economics_service_fanin",
+      "integrate": "economics_service_fanin",
+      "score": "economics_service_fanin",
+      "rank": "economics_service_fanin",
+      "report": "economics_service_fanin"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

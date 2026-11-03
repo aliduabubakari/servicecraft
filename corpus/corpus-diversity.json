@@ -1,0 +1,1238 @@
+{
+  "policy": {
+    "maximum_linear_cases_per_new_five_case_batch": 1,
+    "minimum_distinct_topologies_per_new_five_case_batch": 4,
+    "topology_must_be_computation_justified": true,
+    "task_count_must_follow_required_observable_operations": true
+  },
+  "corpus": {
+    "case_count": 100,
+    "topology_counts": {
+      "fan_in": 9,
+      "fan_in_fan_out": 17,
+      "fan_out": 16,
+      "linear": 27,
+      "linear_to_fan_in": 5,
+      "linear_to_fan_out": 11,
+      "parallel": 15
+    },
+    "task_count_range": [
+      3,
+      11
+    ],
+    "distinct_domains": 11,
+    "distinct_families": 100
+  },
+  "batches": [
+    {
+      "batch_id": "batch-01",
+      "case_count": 3,
+      "linear_cases": 3,
+      "distinct_topologies": 1,
+      "topology_counts": {
+        "linear": 3
+      },
+      "task_count_range": [
+        4,
+        7
+      ],
+      "complies_with_new_batch_policy": false,
+      "cases": [
+        {
+          "pipeline_id": "042_sports_validation_recovery",
+          "domain": "sports",
+          "family_id": "validation_groupwise_recovery",
+          "topology": "linear",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "058_transportation_cleaning_integration_geospatial",
+          "domain": "transportation",
+          "family_id": "spatial_etl_grouped_aggregation",
+          "topology": "linear",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "008_energy_forecasting",
+          "domain": "energy",
+          "family_id": "temporal_multisource_supervised_regression",
+          "topology": "linear",
+          "tasks": 7,
+          "dependencies": 6
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-02",
+      "case_count": 5,
+      "linear_cases": 5,
+      "distinct_topologies": 1,
+      "topology_counts": {
+        "linear": 5
+      },
+      "task_count_range": [
+        3,
+        5
+      ],
+      "complies_with_new_batch_policy": false,
+      "cases": [
+        {
+          "pipeline_id": "003_credit_risk",
+          "domain": "finance",
+          "family_id": "multisource_supervised_binary_classification",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "004_customer_churn",
+          "domain": "finance",
+          "family_id": "relational_aggregation_cohort_analysis",
+          "topology": "linear",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "005_demand_forecasting",
+          "domain": "manufacturing",
+          "family_id": "temporal_aggregation_inventory_optimization",
+          "topology": "linear",
+          "tasks": 3,
+          "dependencies": 2
+        },
+        {
+          "pipeline_id": "006_ecommerce_recommendation",
+          "domain": "retail",
+          "family_id": "relational_ranking_recommendation",
+          "topology": "linear",
+          "tasks": 3,
+          "dependencies": 2
+        },
+        {
+          "pipeline_id": "014_sports_clustering_integration_validation",
+          "domain": "sports",
+          "family_id": "unsupervised_clustering_profiling",
+          "topology": "linear",
+          "tasks": 3,
+          "dependencies": 2
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-03",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_in": 1,
+        "linear_to_fan_out": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        5,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "001_analytics_statistical_cleaning_integration",
+          "domain": "finance",
+          "family_id": "multisource_market_integration",
+          "topology": "linear_to_fan_in",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "007_employee_attrition",
+          "domain": "human_resources",
+          "family_id": "parallel_workforce_analytics",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "009_healthcare_readmission",
+          "domain": "healthcare",
+          "family_id": "multisource_readmission_analysis",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 10
+        },
+        {
+          "pipeline_id": "010_hr_regression_visualization_integration",
+          "domain": "human_resources",
+          "family_id": "workforce_fanout_analysis",
+          "topology": "linear_to_fan_out",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "054_student_performance",
+          "domain": "education",
+          "family_id": "student_supervised_regression",
+          "topology": "linear",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-04",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        8
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "011_hr_visualization_integration_validation",
+          "domain": "human_resources",
+          "family_id": "workforce_descriptive_fanout",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "012_insurance_claims",
+          "domain": "insurance",
+          "family_id": "claims_descriptive_fanin",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "013_predictive_maintenance",
+          "domain": "manufacturing",
+          "family_id": "temporal_maintenance_multioutput",
+          "topology": "fan_in_fan_out",
+          "tasks": 8,
+          "dependencies": 11
+        },
+        {
+          "pipeline_id": "015_sports_clustering_prediction_statistical",
+          "domain": "sports",
+          "family_id": "parallel_unsupervised_supervised_analysis",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "055_transportation_analysis",
+          "domain": "transportation",
+          "family_id": "trip_delay_regression",
+          "topology": "linear",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-05",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        7
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "002_analytics_statistical_integration",
+          "domain": "experimental_analytics",
+          "family_id": "treatment_change_contrasts",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "019_sports_prediction_cleaning_integration",
+          "domain": "sports",
+          "family_id": "player_prediction_availability_compensation",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "023_sports_regression_clustering_visualization",
+          "domain": "sports",
+          "family_id": "parallel_regression_clustering",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "063_transportation_clustering_validation",
+          "domain": "transportation",
+          "family_id": "trip_clustering_multiview",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        },
+        {
+          "pipeline_id": "079_transportation_regression",
+          "domain": "transportation",
+          "family_id": "trip_economics_modeling",
+          "topology": "fan_in_fan_out",
+          "tasks": 7,
+          "dependencies": 9
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-06",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_in": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "017_sports_clustering_statistical_visualization",
+          "domain": "sports",
+          "family_id": "player_style_multiview_clustering",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 12
+        },
+        {
+          "pipeline_id": "020_sports_prediction_statistical_visualization",
+          "domain": "sports",
+          "family_id": "parallel_player_analytics",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "030_sports_statistical_cleaning",
+          "domain": "sports",
+          "family_id": "player_efficiency_ranking",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "084_transportation_statistical_cleaning_integration",
+          "domain": "transportation",
+          "family_id": "route_service_scoring",
+          "topology": "linear_to_fan_in",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "099_transportation_visualization_recovery_reporting",
+          "domain": "transportation",
+          "family_id": "trip_recovery_fanout",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-07",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "018_sports_clustering_visualization_integration",
+          "domain": "sports",
+          "family_id": "player_cluster_multiview",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        },
+        {
+          "pipeline_id": "021_sports_prediction_statistical_visualization_v2",
+          "domain": "sports",
+          "family_id": "allstar_multibranch_diagnostics",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 12
+        },
+        {
+          "pipeline_id": "031_sports_statistical_cleaning_integration",
+          "domain": "sports",
+          "family_id": "sports_descriptive_fanin",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "057_transportation_cleaning_integration",
+          "domain": "transportation",
+          "family_id": "route_performance_ranking",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "085_transportation_statistical_geospatial",
+          "domain": "transportation",
+          "family_id": "parallel_spatial_service_analysis",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-08",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1
+      },
+      "task_count_range": [
+        4,
+        8
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "022_sports_prediction_visualization_cleaning",
+          "domain": "sports",
+          "family_id": "allstar_availability_diagnostics",
+          "topology": "fan_in_fan_out",
+          "tasks": 8,
+          "dependencies": 10
+        },
+        {
+          "pipeline_id": "032_sports_statistical_cleaning_integration_v2",
+          "domain": "sports",
+          "family_id": "shooting_efficiency_ranking",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "038_sports_statistical_integration_v2",
+          "domain": "sports",
+          "family_id": "sports_summary_fanin_v2",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "056_transportation_cleaning",
+          "domain": "transportation",
+          "family_id": "trip_operations_fanout",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "087_transportation_statistical_integration",
+          "domain": "transportation",
+          "family_id": "route_service_fanout",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-09",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        6
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "024_sports_regression_prediction_statistical",
+          "domain": "sports",
+          "family_id": "dual_market_allstar_parallel",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "033_sports_statistical_cleaning_integration_v3",
+          "domain": "sports",
+          "family_id": "shooting_value_ranking_v3",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "039_sports_statistical_visualization_cleaning",
+          "domain": "sports",
+          "family_id": "sports_summary_fanin_v3",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "059_transportation_cleaning_integration_recovery",
+          "domain": "transportation",
+          "family_id": "trip_operations_fanout_v2",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "088_transportation_statistical_integration_v2",
+          "domain": "transportation",
+          "family_id": "route_service_fanout_v2",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-10",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_in": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "016_sports_clustering_prediction_visualization",
+          "domain": "sports",
+          "family_id": "player_style_cluster_fanin_fanout_v2",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 11
+        },
+        {
+          "pipeline_id": "034_sports_statistical_cleaning_integration_v4",
+          "domain": "sports",
+          "family_id": "shooting_value_ranking_v4",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "060_transportation_cleaning_integration_validation",
+          "domain": "transportation",
+          "family_id": "trip_operations_fanout_v3",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "076_transportation_prediction_visualization_geospatial",
+          "domain": "transportation",
+          "family_id": "parallel_delay_geospatial_analysis",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "086_transportation_statistical_geospatial_validation",
+          "domain": "transportation",
+          "family_id": "route_geo_service_fanin_scoring",
+          "topology": "linear_to_fan_in",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-11",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "025_sports_regression_prediction_statistical_v2",
+          "domain": "sports",
+          "family_id": "shared_feature_dual_model_fanin_fanout",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 10
+        },
+        {
+          "pipeline_id": "035_sports_statistical_cleaning_integration_v5",
+          "domain": "sports",
+          "family_id": "shooting_value_ranking_v5",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "061_transportation_cleaning_v2",
+          "domain": "transportation",
+          "family_id": "trip_operations_fanout_v4",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "068_transportation_prediction_cleaning",
+          "domain": "transportation",
+          "family_id": "parallel_delay_risk_models",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "081_transportation_regression_statistical_cleaning",
+          "domain": "transportation",
+          "family_id": "route_economics_service_fanout",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-12",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_in": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "027_sports_regression_prediction_visualization",
+          "domain": "sports",
+          "family_id": "shared_context_dual_model_fanin_fanout",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 10
+        },
+        {
+          "pipeline_id": "036_sports_statistical_cleaning_validation",
+          "domain": "sports",
+          "family_id": "shooting_value_ranking_v6",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "048_sports_visualization_integration_geospatial",
+          "domain": "sports",
+          "family_id": "parallel_team_region_analysis",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "066_transportation_integration_geospatial",
+          "domain": "transportation",
+          "family_id": "trip_geography_fanout",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "082_transportation_regression_statistical_integration",
+          "domain": "transportation",
+          "family_id": "route_economics_service_fanin_scoring",
+          "topology": "linear_to_fan_in",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-13",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1
+      },
+      "task_count_range": [
+        4,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "028_sports_regression_prediction_visualization_v2",
+          "domain": "sports",
+          "family_id": "player_valuation_multiview_fanin_fanout",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 11
+        },
+        {
+          "pipeline_id": "037_sports_statistical_integration",
+          "domain": "sports",
+          "family_id": "position_performance_linear",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "067_transportation_integration_validation",
+          "domain": "transportation",
+          "family_id": "trip_route_weekday_weather_fanout",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "083_transportation_regression_visualization_integration",
+          "domain": "transportation",
+          "family_id": "trip_economics_multiview_fanout",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        },
+        {
+          "pipeline_id": "089_transportation_statistical_visualization_integration",
+          "domain": "transportation",
+          "family_id": "transport_service_fanin",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-14",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_in": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        9
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "026_sports_regression_prediction_statistical_v3",
+          "domain": "sports",
+          "family_id": "shared_shooting_dual_model_fanin_fanout_v2",
+          "topology": "fan_in_fan_out",
+          "tasks": 9,
+          "dependencies": 10
+        },
+        {
+          "pipeline_id": "043_sports_visualization",
+          "domain": "sports",
+          "family_id": "team_performance_chart_linear",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "062_transportation_cleaning_validation_features",
+          "domain": "transportation",
+          "family_id": "trip_route_period_weather_fanout",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "071_transportation_prediction_statistical_cleaning",
+          "domain": "transportation",
+          "family_id": "parallel_delay_route_service",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "080_transportation_regression_cleaning_integration",
+          "domain": "transportation",
+          "family_id": "revenue_cost_fanin_economics",
+          "topology": "linear_to_fan_in",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-15",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        10
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "029_sports_regression_statistical_visualization",
+          "domain": "sports",
+          "family_id": "valuation_three_feature_multiview_fanin_fanout",
+          "topology": "fan_in_fan_out",
+          "tasks": 10,
+          "dependencies": 13
+        },
+        {
+          "pipeline_id": "044_sports_visualization_cleaning_integration",
+          "domain": "sports",
+          "family_id": "team_performance_chart_linear_v2",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "064_transportation_integration",
+          "domain": "transportation",
+          "family_id": "trip_route_weekday_weather_fanout_v2",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "072_transportation_prediction_statistical_integration",
+          "domain": "transportation",
+          "family_id": "parallel_delay_route_service_v2",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "095_transportation_visualization_geospatial",
+          "domain": "transportation",
+          "family_id": "trip_geography_linear_fanout",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-16",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        10
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "040_sports_statistical_visualization_cleaning_v2",
+          "domain": "sports",
+          "family_id": "sports_feature_cohort_fanin_fanout",
+          "topology": "fan_in_fan_out",
+          "tasks": 10,
+          "dependencies": 14
+        },
+        {
+          "pipeline_id": "047_sports_visualization_integration_features",
+          "domain": "sports",
+          "family_id": "position_feature_ranking_linear",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "065_transportation_integration_extra",
+          "domain": "transportation",
+          "family_id": "trip_route_vehicle_period_fanout",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "069_transportation_prediction_cleaning_integration",
+          "domain": "transportation",
+          "family_id": "parallel_delay_risk_models_v2",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "090_transportation_statistical_visualization_integration_v2",
+          "domain": "transportation",
+          "family_id": "transport_service_fanin_v2",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-17",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        10
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "045_sports_visualization_cleaning_recovery",
+          "domain": "sports",
+          "family_id": "audited_numeric_categorical_recovery",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "070_transportation_prediction_cleaning_validation",
+          "domain": "transportation",
+          "family_id": "parallel_delay_risk_models_v3",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "077_transportation_prediction_visualization_integration",
+          "domain": "transportation",
+          "family_id": "delay_model_multiview_fanin_fanout",
+          "topology": "fan_in_fan_out",
+          "tasks": 10,
+          "dependencies": 13
+        },
+        {
+          "pipeline_id": "091_transportation_visualization",
+          "domain": "transportation",
+          "family_id": "trip_route_vehicle_period_fanout_v2",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "096_transportation_visualization_integration",
+          "domain": "transportation",
+          "family_id": "transport_operations_fanin",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-18",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        10
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "046_sports_visualization_cleaning_recovery_v2",
+          "domain": "sports",
+          "family_id": "audited_numeric_categorical_recovery_v2",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "049_sports_visualization_integration_recovery",
+          "domain": "sports",
+          "family_id": "player_recovery_cohort_fanout",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        },
+        {
+          "pipeline_id": "073_transportation_prediction_validation",
+          "domain": "transportation",
+          "family_id": "parallel_delay_risk_models_v4",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "078_transportation_prediction_visualization_integration_v2",
+          "domain": "transportation",
+          "family_id": "delay_model_multiview_fanin_fanout_v2",
+          "topology": "fan_in_fan_out",
+          "tasks": 10,
+          "dependencies": 13
+        },
+        {
+          "pipeline_id": "092_transportation_visualization_cleaning_integration",
+          "domain": "transportation",
+          "family_id": "trip_route_vehicle_period_fanout_v3",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-19",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "parallel": 1
+      },
+      "task_count_range": [
+        4,
+        10
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "041_sports_statistical_visualization_integration",
+          "domain": "sports",
+          "family_id": "sports_feature_cohort_fanin_fanout_v2",
+          "topology": "fan_in_fan_out",
+          "tasks": 10,
+          "dependencies": 14
+        },
+        {
+          "pipeline_id": "051_sports_visualization_integration_validation",
+          "domain": "sports",
+          "family_id": "position_feature_ranking_linear_v2",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "075_transportation_prediction_validation_v2",
+          "domain": "transportation",
+          "family_id": "parallel_delay_risk_models_v5",
+          "topology": "parallel",
+          "tasks": 6,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "093_transportation_visualization_cleaning_validation",
+          "domain": "transportation",
+          "family_id": "trip_route_vehicle_period_fanout_v4",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "097_transportation_visualization_integration_v2",
+          "domain": "transportation",
+          "family_id": "transport_operations_fanin_v2",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-20",
+      "case_count": 5,
+      "linear_cases": 1,
+      "distinct_topologies": 5,
+      "topology_counts": {
+        "fan_in": 1,
+        "fan_in_fan_out": 1,
+        "fan_out": 1,
+        "linear": 1,
+        "linear_to_fan_out": 1
+      },
+      "task_count_range": [
+        4,
+        11
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "050_sports_visualization_integration_recovery_v2",
+          "domain": "sports",
+          "family_id": "player_recovery_cohort_fanout_v2",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        },
+        {
+          "pipeline_id": "052_sports_visualization_integration_validation_v2",
+          "domain": "sports",
+          "family_id": "position_feature_ranking_linear_v3",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        },
+        {
+          "pipeline_id": "074_transportation_prediction_validation_recovery",
+          "domain": "transportation",
+          "family_id": "recovered_delay_model_fanin_fanout",
+          "topology": "fan_in_fan_out",
+          "tasks": 11,
+          "dependencies": 15
+        },
+        {
+          "pipeline_id": "094_transportation_visualization_cleaning_validation_v2",
+          "domain": "transportation",
+          "family_id": "trip_route_vehicle_period_fanout_v5",
+          "topology": "fan_out",
+          "tasks": 4,
+          "dependencies": 3
+        },
+        {
+          "pipeline_id": "098_transportation_visualization_integration_validation",
+          "domain": "transportation",
+          "family_id": "transport_operations_fanin_v3",
+          "topology": "fan_in",
+          "tasks": 4,
+          "dependencies": 3
+        }
+      ]
+    },
+    {
+      "batch_id": "batch-21",
+      "case_count": 2,
+      "linear_cases": 1,
+      "distinct_topologies": 2,
+      "topology_counts": {
+        "linear": 1,
+        "linear_to_fan_out": 1
+      },
+      "task_count_range": [
+        5,
+        6
+      ],
+      "complies_with_new_batch_policy": true,
+      "cases": [
+        {
+          "pipeline_id": "053_sports_visualization_validation_recovery",
+          "domain": "sports",
+          "family_id": "player_recovery_cohort_fanout_v3",
+          "topology": "linear_to_fan_out",
+          "tasks": 6,
+          "dependencies": 5
+        },
+        {
+          "pipeline_id": "100_transportation_visualization_v2",
+          "domain": "transportation",
+          "family_id": "route_performance_chart_linear",
+          "topology": "linear",
+          "tasks": 5,
+          "dependencies": 4
+        }
+      ]
+    }
+  ],
+  "migration_note": "Batches 01 and 02 predate the topology-diversity policy and remain queued for behavioral/topology redesign; relabeling without real dependency changes is prohibited."
+}

@@ -1,0 +1,236 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "001_analytics_statistical_cleaning_integration",
+  "module": "definitions",
+  "attribute": "defs",
+  "project_dir": ".",
+  "python_paths": [
+    ".",
+    "src"
+  ],
+  "bundle_inputs": null,
+  "bundle_outputs": null,
+  "environment_aliases": {},
+  "mode": "assets",
+  "job_name": null,
+  "run_config": {},
+  "expected_nodes": [
+    "validate_stocks",
+    "validate_market",
+    "integrate",
+    "analyze",
+    "report"
+  ],
+  "expected_edges": [
+    [
+      "validate_market",
+      "integrate"
+    ],
+    [
+      "validate_stocks",
+      "integrate"
+    ],
+    [
+      "integrate",
+      "analyze"
+    ],
+    [
+      "analyze",
+      "report"
+    ]
+  ],
+  "artifacts": [
+    {
+      "path": "clean_stocks.csv",
+      "format": "csv",
+      "required_columns": [
+        "ticker",
+        "sector",
+        "date",
+        "close"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "stock_quality.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "clean_market.csv",
+      "format": "csv",
+      "required_columns": [
+        "date",
+        "sp500",
+        "nasdaq"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_quality.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_panel.csv",
+      "format": "csv",
+      "required_columns": [
+        "ticker",
+        "date",
+        "stock_return",
+        "sp500_return",
+        "nasdaq_return",
+        "excess_sp500_return"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "integration.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "ticker_statistics.csv",
+      "format": "csv",
+      "required_columns": [
+        "ticker",
+        "sector",
+        "observations",
+        "mean_return",
+        "volatility",
+        "mean_excess_sp500_return"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "market_relationships.csv",
+      "format": "csv",
+      "required_columns": [
+        "ticker",
+        "sp500_correlation",
+        "nasdaq_correlation"
+      ],
+      "required_keys": [],
+      "min_rows": 0
+    },
+    {
+      "path": "finance_report.json",
+      "format": "json",
+      "required_columns": [],
+      "required_keys": [],
+      "min_rows": 0
+    }
+  ],
+  "oracles": [
+    {
+      "id": "clean_stocks.csv",
+      "artifact": "clean_stocks.csv",
+      "kind": "csv_equals",
+      "reference": "expected/clean_stocks.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "stock_quality.json",
+      "artifact": "stock_quality.json",
+      "kind": "json_equals",
+      "reference": "expected/stock_quality.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "clean_market.csv",
+      "artifact": "clean_market.csv",
+      "kind": "csv_equals",
+      "reference": "expected/clean_market.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "market_quality.json",
+      "artifact": "market_quality.json",
+      "kind": "json_equals",
+      "reference": "expected/market_quality.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "market_panel.csv",
+      "artifact": "market_panel.csv",
+      "kind": "csv_equals",
+      "reference": "expected/market_panel.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "integration.json",
+      "artifact": "integration.json",
+      "kind": "json_equals",
+      "reference": "expected/integration.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "ticker_statistics.csv",
+      "artifact": "ticker_statistics.csv",
+      "kind": "csv_equals",
+      "reference": "expected/ticker_statistics.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "market_relationships.csv",
+      "artifact": "market_relationships.csv",
+      "kind": "csv_equals",
+      "reference": "expected/market_relationships.csv",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    },
+    {
+      "id": "finance_report.json",
+      "artifact": "finance_report.json",
+      "kind": "json_equals",
+      "reference": "expected/finance_report.json",
+      "atol": 1e-6,
+      "rtol": 1e-6
+    }
+  ],
+  "external_oracles": [
+    {
+      "id": "independent-assertions-and-model-probes",
+      "directory": "oracle",
+      "script": "check.py",
+      "image": "sha256:206e94940d5f531527496c2397c7079916edb89e595db3e51351889032588e86"
+    }
+  ],
+  "image": "servicecraft-runtime:1.13.12",
+  "timeout_seconds": 900,
+  "memory": "2g",
+  "cpus": 1.0,
+  "required_packages": {
+    "dagster": "1.13.12",
+    "numpy": "2.0.1",
+    "pandas": "2.2.2",
+    "scikit-learn": "1.5.1",
+    "scipy": "1.14.1",
+    "openpyxl": "3.1.5"
+  },
+  "required_imports": [
+    "dagster",
+    "numpy",
+    "pandas",
+    "sklearn",
+    "scipy",
+    "openpyxl"
+  ]
+}

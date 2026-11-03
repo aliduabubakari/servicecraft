@@ -1,0 +1,8 @@
+{
+  "claims": 1000,
+  "total_claim_amount": 5927218,
+  "fraudulent_claims": 75,
+  "highest_amount_claim_type": "Home",
+  "slowest_claim_status": "Under Investigation",
+  "highest_fraud_rate_policy_type": "Platinum"
+}

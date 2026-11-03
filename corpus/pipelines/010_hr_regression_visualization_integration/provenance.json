@@ -1,0 +1,24 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "010_hr_regression_visualization_integration",
+  "selection_reason": "Employee and department records share a common integration/feature prefix, after which salary modeling and two summaries are independent consumers.",
+  "input_transformations": [
+    {
+      "source": "employees.csv",
+      "benchmark_file": "employees.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "departments.csv",
+      "benchmark_file": "departments.csv",
+      "conversion": "byte_copy"
+    }
+  ],
+  "pilot_input_sha256": {
+    "departments.csv": "fb887280ed999b41dadf009312a1ad2f4d4297c8b2c47db91980f77f5cd46ef6",
+    "employees.csv": "b9313ab6aca90848671d60b545297db9684cf1d8271ac7569ab1ef6d6482afdc"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

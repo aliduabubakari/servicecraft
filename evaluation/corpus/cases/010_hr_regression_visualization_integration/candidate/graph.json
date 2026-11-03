@@ -1,0 +1,246 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "010_hr_regression_visualization_integration",
+  "benchmark_revision": "batch-03",
+  "review_status": "author_review_pending",
+  "title": "Integrated workforce features with three analytical outputs",
+  "domain": "human_resources",
+  "family_id": "workforce_fanout_analysis",
+  "topology": "linear_to_fan_out",
+  "inputs": [
+    {
+      "id": "input:employees.csv",
+      "path": "inputs/employees.csv",
+      "format": "csv",
+      "required_columns": [
+        "emp_id",
+        "department",
+        "role",
+        "experience_years",
+        "education",
+        "performance_score",
+        "age",
+        "gender",
+        "salary"
+      ]
+    },
+    {
+      "id": "input:departments.csv",
+      "path": "inputs/departments.csv",
+      "format": "csv",
+      "required_columns": [
+        "department",
+        "headcount",
+        "budget_millions",
+        "location"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "integrate",
+      "name": "Validate and join employee/department sources",
+      "operation": "many_to_one_join",
+      "required": true,
+      "inputs": [
+        "input:employees.csv",
+        "input:departments.csv"
+      ],
+      "outputs": [
+        "workforce.csv"
+      ],
+      "requirements": [
+        "Validate source keys/measures and join employees many-to-one with departments."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "features",
+      "name": "Derive common workforce features",
+      "operation": "feature_engineering",
+      "required": true,
+      "inputs": [
+        "workforce.csv"
+      ],
+      "outputs": [
+        "workforce_features.csv"
+      ],
+      "requirements": [
+        "Compute salary-per-experience and budget-per-head exactly as specified."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "salary_model",
+      "name": "Fit and evaluate salary regression",
+      "operation": "supervised_regression",
+      "required": true,
+      "inputs": [
+        "workforce_features.csv"
+      ],
+      "outputs": [
+        "salary_model.pkl",
+        "salary_predictions.csv",
+        "salary_metrics.json"
+      ],
+      "requirements": [
+        "Use the fixed predictors, random split, LinearRegression, and held-out metrics."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "department_summary",
+      "name": "Summarize department workforce",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "workforce_features.csv"
+      ],
+      "outputs": [
+        "department_summary.csv"
+      ],
+      "requirements": [
+        "Compute the declared department measures."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "gender_summary",
+      "name": "Summarize pay by gender",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "workforce_features.csv"
+      ],
+      "outputs": [
+        "gender_pay_summary.csv"
+      ],
+      "requirements": [
+        "Compute the declared gender measures."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "workforce.csv",
+      "path": "workforce.csv",
+      "format": "csv",
+      "required_columns": [
+        "emp_id",
+        "department",
+        "headcount",
+        "budget_millions"
+      ]
+    },
+    {
+      "id": "workforce_features.csv",
+      "path": "workforce_features.csv",
+      "format": "csv",
+      "required_columns": [
+        "emp_id",
+        "salary_per_experience_year",
+        "budget_per_head_millions"
+      ]
+    },
+    {
+      "id": "salary_model.pkl",
+      "path": "salary_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "salary_predictions.csv",
+      "path": "salary_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "emp_id",
+        "actual_salary",
+        "predicted_salary"
+      ]
+    },
+    {
+      "id": "salary_metrics.json",
+      "path": "salary_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "department_summary.csv",
+      "path": "department_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "department",
+        "employee_rows",
+        "declared_headcount",
+        "mean_salary"
+      ]
+    },
+    {
+      "id": "gender_pay_summary.csv",
+      "path": "gender_pay_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "gender",
+        "employee_count",
+        "mean_salary",
+        "median_salary"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "integrate",
+      "target": "features",
+      "kind": "data",
+      "artifacts": [
+        "workforce.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "salary_model",
+      "kind": "data",
+      "artifacts": [
+        "workforce_features.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "department_summary",
+      "kind": "data",
+      "artifacts": [
+        "workforce_features.csv"
+      ]
+    },
+    {
+      "source": "features",
+      "target": "gender_summary",
+      "kind": "data",
+      "artifacts": [
+        "workforce_features.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "integrate": "hr_fanout",
+      "features": "hr_fanout",
+      "salary_model": "hr_fanout",
+      "department_summary": "hr_fanout",
+      "gender_summary": "hr_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

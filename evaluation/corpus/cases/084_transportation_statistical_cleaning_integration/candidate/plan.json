@@ -1,0 +1,218 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'distance_km', 'passengers', 'delay_minutes', 'on_time_pct', 'passenger_satisfaction']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, cols, 'data')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'trip_id', 'data')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums(d, cols[3:], 'data')",
+      "dependencies": {
+        "cols": 1,
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "rel = d.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), mean_delay_minutes=('delay_minutes', 'mean'), mean_on_time_pct=('on_time_pct', 'mean'), delay_std=('delay_minutes', lambda s: s.std(ddof=1))).sort_values('route')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "rel"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "rel.to_csv(out / 'route_reliability.csv', index=False)",
+      "dependencies": {
+        "rel": 5
+      },
+      "writes": [],
+      "outputs": [
+        "route_reliability.csv"
+      ]
+    },
+    {
+      "index": 7,
+      "source": "sat = d.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), mean_satisfaction=('passenger_satisfaction', 'mean'), mean_passengers=('passengers', 'mean'), mean_distance_km=('distance_km', 'mean')).sort_values('route')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "sat"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "sat.to_csv(out / 'route_satisfaction.csv', index=False)",
+      "dependencies": {
+        "sat": 7
+      },
+      "writes": [],
+      "outputs": [
+        "route_satisfaction.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "score = rel.merge(sat, on=['route', 'trip_count'], validate='one_to_one')",
+      "dependencies": {
+        "rel": 5,
+        "sat": 7
+      },
+      "writes": [
+        "score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "score['reliability_score'] = score.mean_on_time_pct",
+      "dependencies": {
+        "score": 9
+      },
+      "writes": [
+        "score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "score['satisfaction_score'] = score.mean_satisfaction / 5",
+      "dependencies": {
+        "score": 10
+      },
+      "writes": [
+        "score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "score['combined_score'] = (score.reliability_score + score.satisfaction_score) / 2",
+      "dependencies": {
+        "score": 11
+      },
+      "writes": [
+        "score"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "score.to_csv(out / 'route_scores.csv', index=False)",
+      "dependencies": {
+        "score": 12
+      },
+      "writes": [],
+      "outputs": [
+        "route_scores.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "ranked = score.sort_values(['combined_score', 'route'], ascending=[False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "score": 12
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "ranked['rank'] = np.arange(1, len(ranked) + 1)",
+      "dependencies": {
+        "ranked": 14
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "ranked.to_csv(out / 'ranked_routes.csv', index=False)",
+      "dependencies": {
+        "ranked": 15
+      },
+      "writes": [],
+      "outputs": [
+        "ranked_routes.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "js(out / 'route_report.json', {'routes': len(ranked), 'trips': int(ranked.trip_count.sum()), 'top_route': ranked.iloc[0].route, 'top_score': ranked.iloc[0].combined_score})",
+      "dependencies": {
+        "ranked": 15
+      },
+      "writes": [],
+      "outputs": [
+        "route_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "reliability": [
+      6
+    ],
+    "satisfaction": [
+      8
+    ],
+    "integrate": [
+      13
+    ],
+    "rank": [
+      16
+    ],
+    "report": [
+      17
+    ]
+  }
+}

@@ -1,0 +1,248 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "players = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "players"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "features = ['points_per_game', 'assists_per_game', 'rebounds_per_game', 'minutes_per_game', 'age', 'experience_years', 'salary_millions', 'play_style_score', 'efficiency_rating', 'usage_rate']",
+      "dependencies": {},
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "require(players, ['player_id', 'team', 'position', *features], 'data.csv')",
+      "dependencies": {
+        "players": 0,
+        "features": 1
+      },
+      "writes": [
+        "players"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "if not players.player_id.is_unique or players.player_id.astype(str).str.strip().eq('').any():\n    raise ValueError('player_id must be unique and nonblank')",
+      "dependencies": {
+        "players": 2
+      },
+      "writes": [
+        "players"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "finite(players, features, 'data.csv')",
+      "dependencies": {
+        "players": 3,
+        "features": 1
+      },
+      "writes": [
+        "players"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "ordered = players.sort_values('player_id').reset_index(drop=True)",
+      "dependencies": {
+        "players": 4
+      },
+      "writes": [
+        "ordered"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "scaler = StandardScaler()",
+      "dependencies": {},
+      "writes": [
+        "scaler"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "x = scaler.fit_transform(ordered[features])",
+      "dependencies": {
+        "scaler": 6,
+        "ordered": 5,
+        "features": 1
+      },
+      "writes": [
+        "scaler",
+        "x"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "model = KMeans(n_clusters=4, random_state=42, n_init=20, algorithm='lloyd').fit(x)",
+      "dependencies": {
+        "x": 7
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "raw = model.labels_",
+      "dependencies": {
+        "model": 8
+      },
+      "writes": [
+        "raw"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "ranking = pd.DataFrame({'raw': range(4), 'efficiency': model.cluster_centers_[:, features.index('efficiency_rating')], 'usage': model.cluster_centers_[:, features.index('usage_rate')]}).sort_values(['efficiency', 'usage', 'raw'])",
+      "dependencies": {
+        "model": 8,
+        "features": 1
+      },
+      "writes": [
+        "ranking"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "mapping = {int(raw_id): int(canonical) for canonical, raw_id in enumerate(ranking.raw)}",
+      "dependencies": {
+        "ranking": 10
+      },
+      "writes": [
+        "mapping"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 12,
+      "source": "result = ordered[['player_id', 'team', 'position', *features]].copy()",
+      "dependencies": {
+        "ordered": 5,
+        "features": 1
+      },
+      "writes": [
+        "result"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "result['cluster'] = [mapping[int(v)] for v in raw]",
+      "dependencies": {
+        "mapping": 11,
+        "result": 12,
+        "raw": 9
+      },
+      "writes": [
+        "result"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "result.to_csv(out / 'player_clusters.csv', index=False)",
+      "dependencies": {
+        "result": 13
+      },
+      "writes": [],
+      "outputs": [
+        "player_clusters.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "profile = result.groupby('cluster', as_index=False).agg(player_count=('player_id', 'size'), mean_points_per_game=('points_per_game', 'mean'), mean_assists_per_game=('assists_per_game', 'mean'), mean_rebounds_per_game=('rebounds_per_game', 'mean'), mean_efficiency_rating=('efficiency_rating', 'mean'), mean_usage_rate=('usage_rate', 'mean')).sort_values('cluster')",
+      "dependencies": {
+        "result": 13
+      },
+      "writes": [
+        "profile"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "profile.to_csv(out / 'cluster_profiles.csv', index=False)",
+      "dependencies": {
+        "profile": 15
+      },
+      "writes": [],
+      "outputs": [
+        "cluster_profiles.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "with (out / 'model.pkl').open('wb') as handle:\n    pickle.dump({'scaler': scaler, 'model': model, 'canonical_mapping': mapping, 'features': features}, handle)",
+      "dependencies": {
+        "mapping": 11,
+        "scaler": 7,
+        "features": 1,
+        "model": 8
+      },
+      "writes": [
+        "handle"
+      ],
+      "outputs": [
+        "model.pkl"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "report = {'players': len(result), 'clusters': 4, 'features': features, 'random_state': 42, 'n_init': 20, 'silhouette_score': silhouette_score(x, raw), 'cluster_sizes': {str(int(r.cluster)): int(r.player_count) for r in profile.itertuples()}}",
+      "dependencies": {
+        "x": 7,
+        "features": 1,
+        "result": 13,
+        "profile": 15,
+        "raw": 9
+      },
+      "writes": [
+        "report"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "write_json(out / 'clustering_report.json', report)",
+      "dependencies": {
+        "report": 18
+      },
+      "writes": [],
+      "outputs": [
+        "clustering_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "cluster": [
+      14,
+      17
+    ],
+    "profile": [
+      16
+    ],
+    "report": [
+      19
+    ]
+  }
+}

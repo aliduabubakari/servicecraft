@@ -1,0 +1,198 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "099_transportation_visualization_recovery_reporting",
+  "benchmark_revision": "batch-06",
+  "review_status": "author_review_pending",
+  "title": "Recovered trip data with independent route, vehicle, and weather views",
+  "domain": "transportation",
+  "family_id": "trip_recovery_fanout",
+  "topology": "fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "weather_condition"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "recover",
+      "name": "Validate and recover trips",
+      "operation": "groupwise_recovery",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ],
+      "requirements": [
+        "Apply stated string normalization and route/global/zero numeric recovery."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Summarize routes",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ],
+      "outputs": [
+        "route_summary.csv"
+      ],
+      "requirements": [
+        "Compute route view from recovered rows."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Summarize vehicle types",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ],
+      "outputs": [
+        "vehicle_summary.csv"
+      ],
+      "requirements": [
+        "Compute vehicle view from recovered rows."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "weather",
+      "name": "Summarize weather conditions",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ],
+      "outputs": [
+        "weather_summary.csv"
+      ],
+      "requirements": [
+        "Compute weather view from recovered rows."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_recovered.csv",
+      "path": "trips_recovered.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "weather_condition"
+      ]
+    },
+    {
+      "id": "recovery_audit.json",
+      "path": "recovery_audit.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "route_summary.csv",
+      "path": "route_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "mean_delay"
+      ]
+    },
+    {
+      "id": "vehicle_summary.csv",
+      "path": "vehicle_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_delay"
+      ]
+    },
+    {
+      "id": "weather_summary.csv",
+      "path": "weather_summary.csv",
+      "format": "csv",
+      "required_columns": [
+        "weather_condition",
+        "trip_count",
+        "mean_delay"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "recover",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ]
+    },
+    {
+      "source": "recover",
+      "target": "vehicles",
+      "kind": "data",
+      "artifacts": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ]
+    },
+    {
+      "source": "recover",
+      "target": "weather",
+      "kind": "data",
+      "artifacts": [
+        "trips_recovered.csv",
+        "recovery_audit.json"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "recover": "recovery",
+      "routes": "recovery",
+      "vehicles": "recovery",
+      "weather": "recovery"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

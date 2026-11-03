@@ -1,0 +1,37 @@
+# Prepared player data with three independent analytical leaves
+
+1. Objective
+
+Build a pure `fan_out` DAG. The root validates unique nonblank player_id, finite measures, and binary all_star; derives availability_rate=max(games_played-injury_games_missed,0)/games_played and salary_per_point=salary_millions/points_per_game (missing when points are zero); and emits players_clean.csv sorted by ID.
+
+2. Available input files
+
+- inputs/data.csv
+  Columns present: player_id, team, position, games_played, points_per_game, assists_per_game, rebounds_per_game, minutes_per_game, age, experience_years, salary_millions, all_star, injury_games_missed, contract_year
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Three leaves consume only that table. Prediction leaf uses the ten declared numeric predictors, 75/25 stratified split seed 42, train-only StandardScaler, LogisticRegression(C=1, liblinear, max_iter=1000, seed 42), threshold 0.5, and outputs model/predictions plus accuracy, precision, recall, F1, ROC AUC. Availability leaf groups by team into player count and mean games, injury games, availability. Compensation leaf groups by position into player count and mean salary, points, and salary-per-point. Sort grouped outputs. Do not add a final join.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `players_clean.csv`
+- `all_star_model.pkl`
+- `all_star_predictions.csv`
+- `all_star_metrics.json`
+- `team_availability.csv`
+- `position_compensation.csv`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without networks, prior-run outputs, fixed answers, or human intervention. Preserve the declared topology and artifact-backed dependencies; an alternative node decomposition is acceptable only when logical tasks, observable checkpoints, and dependency semantics remain equivalent. Write outputs below the run output directory. Numeric comparisons use atol=1e-6 and rtol=1e-6; JSON must be finite. Missing columns, invalid identifiers, broken bounds, and non-finite required values fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

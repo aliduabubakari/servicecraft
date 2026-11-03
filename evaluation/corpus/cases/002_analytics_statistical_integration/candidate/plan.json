@@ -1,0 +1,279 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['subject_id', 'group', 'baseline_score', 'post_score', 'age', 'region', 'sessions_attended', 'outcome']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "req(d, cols, 'data.csv')",
+      "dependencies": {
+        "d": 0,
+        "cols": 1
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "key(d, 'subject_id', 'data.csv')",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "nums(d, ['baseline_score', 'post_score', 'age', 'sessions_attended', 'outcome'], 'data.csv')",
+      "dependencies": {
+        "d": 3
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if not d[['baseline_score', 'post_score']].apply(lambda s: s.between(0, 100)).all().all() or not set(d.outcome.unique()) <= {0, 1}:\n    raise ValueError('score/outcome bounds')",
+      "dependencies": {
+        "d": 4
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean = d[cols].sort_values('subject_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean.to_csv(out / 'subjects_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "subjects_clean.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "changes = clean.copy()",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [
+        "changes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "changes['score_change'] = changes.post_score - changes.baseline_score",
+      "dependencies": {
+        "changes": 8
+      },
+      "writes": [
+        "changes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "changes['improved'] = (changes.score_change > 0).astype(int)",
+      "dependencies": {
+        "changes": 9
+      },
+      "writes": [
+        "changes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "changes.to_csv(out / 'subject_changes.csv', index=False)",
+      "dependencies": {
+        "changes": 10
+      },
+      "writes": [],
+      "outputs": [
+        "subject_changes.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "summary = changes.groupby('group', as_index=False).agg(subject_count=('subject_id', 'size'), mean_baseline=('baseline_score', 'mean'), mean_post=('post_score', 'mean'), mean_change=('score_change', 'mean'), std_change=('score_change', lambda s: s.std(ddof=1)), improvement_rate=('improved', 'mean'), outcome_rate=('outcome', 'mean')).sort_values('group')",
+      "dependencies": {
+        "changes": 10
+      },
+      "writes": [
+        "summary"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "summary.to_csv(out / 'group_summary.csv', index=False)",
+      "dependencies": {
+        "summary": 12
+      },
+      "writes": [],
+      "outputs": [
+        "group_summary.csv"
+      ]
+    },
+    {
+      "index": 14,
+      "source": "indexed = summary.set_index('group')",
+      "dependencies": {
+        "summary": 12
+      },
+      "writes": [
+        "indexed"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "control = indexed.loc['Control']",
+      "dependencies": {
+        "indexed": 14
+      },
+      "writes": [
+        "control"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "rows = []",
+      "dependencies": {},
+      "writes": [
+        "rows"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 17,
+      "source": "for group in sorted(set(summary.group) - {'Control'}):\n    values = indexed.loc[group]\n    difference = values.mean_change - control.mean_change\n    se = np.sqrt(values.std_change ** 2 / values.subject_count + control.std_change ** 2 / control.subject_count)\n    rows.append([group, int(values.subject_count), int(control.subject_count), difference, se, difference - 1.96 * se, difference + 1.96 * se])",
+      "dependencies": {
+        "indexed": 14,
+        "summary": 12,
+        "rows": 16,
+        "control": 15
+      },
+      "writes": [
+        "difference",
+        "group",
+        "rows",
+        "se",
+        "values"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 18,
+      "source": "contrasts = pd.DataFrame(rows, columns=['treatment_group', 'treatment_n', 'control_n', 'difference_in_mean_change', 'standard_error', 'ci95_low', 'ci95_high'])",
+      "dependencies": {
+        "rows": 17
+      },
+      "writes": [
+        "contrasts"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "contrasts.to_csv(out / 'treatment_contrasts.csv', index=False)",
+      "dependencies": {
+        "contrasts": 18
+      },
+      "writes": [],
+      "outputs": [
+        "treatment_contrasts.csv"
+      ]
+    },
+    {
+      "index": 20,
+      "source": "context = {'subjects': int(summary.subject_count.sum()), 'groups': len(summary), 'overall_mean_change': np.average(summary.mean_change, weights=summary.subject_count), 'overall_improvement_rate': np.average(summary.improvement_rate, weights=summary.subject_count), 'largest_mean_change_group': summary.sort_values(['mean_change', 'group'], ascending=[False, True]).iloc[0].group, 'contrasts': len(contrasts)}",
+      "dependencies": {
+        "summary": 12,
+        "contrasts": 18
+      },
+      "writes": [
+        "context"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "js(out / 'contrast_context.json', context)",
+      "dependencies": {
+        "context": 20
+      },
+      "writes": [],
+      "outputs": [
+        "contrast_context.json"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "js(out / 'experiment_report.json', context)",
+      "dependencies": {
+        "context": 20
+      },
+      "writes": [],
+      "outputs": [
+        "experiment_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      7
+    ],
+    "changes": [
+      11
+    ],
+    "summarize": [
+      13
+    ],
+    "contrast": [
+      19,
+      21
+    ],
+    "report": [
+      22
+    ]
+  }
+}

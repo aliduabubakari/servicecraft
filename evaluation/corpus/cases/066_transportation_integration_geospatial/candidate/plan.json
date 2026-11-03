@@ -1,0 +1,148 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition', 'origin_lat', 'origin_lon', 'dest_lat', 'dest_lon']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "valid(d, cols, 'trip_id', ['route', 'vehicle_type', 'day_of_week', 'weather_condition'])",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "assert d.origin_lat.between(-90, 90).all() and d.dest_lat.between(-90, 90).all() and d.origin_lon.between(-180, 180).all() and d.dest_lon.between(-180, 180).all()",
+      "dependencies": {
+        "d": 2
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "g = d[cols].sort_values('trip_id').copy()",
+      "dependencies": {
+        "cols": 1,
+        "d": 3
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "g['geodesic_km'] = haversine(g.origin_lat, g.origin_lon, g.dest_lat, g.dest_lon)",
+      "dependencies": {
+        "g": 4
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "g['passenger_geodesic_km'] = g.geodesic_km * g.passengers",
+      "dependencies": {
+        "g": 5
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "g['time_period'] = pd.cut(g.departure_hour, [-1, 5, 11, 17, 23], labels=['night', 'morning', 'afternoon', 'evening']).astype(str)",
+      "dependencies": {
+        "g": 6
+      },
+      "writes": [
+        "g"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "g.to_csv(out / 'trips_geographic.csv', index=False)",
+      "dependencies": {
+        "g": 7
+      },
+      "writes": [],
+      "outputs": [
+        "trips_geographic.csv"
+      ]
+    },
+    {
+      "index": 9,
+      "source": "g.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), mean_geodesic_km=('geodesic_km', 'mean'), total_passenger_geodesic_km=('passenger_geodesic_km', 'sum'), mean_delay=('delay_minutes', 'mean')).sort_values('route').to_csv(out / 'route_geography.csv', index=False)",
+      "dependencies": {
+        "g": 7
+      },
+      "writes": [],
+      "outputs": [
+        "route_geography.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "g.groupby('vehicle_type', as_index=False).agg(trip_count=('trip_id', 'size'), mean_geodesic_km=('geodesic_km', 'mean'), mean_passengers=('passengers', 'mean'), mean_fare=('fare_amount', 'mean')).sort_values('vehicle_type').to_csv(out / 'vehicle_geography.csv', index=False)",
+      "dependencies": {
+        "g": 7
+      },
+      "writes": [],
+      "outputs": [
+        "vehicle_geography.csv"
+      ]
+    },
+    {
+      "index": 11,
+      "source": "g.groupby('time_period', as_index=False).agg(trip_count=('trip_id', 'size'), mean_geodesic_km=('geodesic_km', 'mean'), mean_delay=('delay_minutes', 'mean'), total_passengers=('passengers', 'sum')).sort_values('time_period').to_csv(out / 'period_geography.csv', index=False)",
+      "dependencies": {
+        "g": 7
+      },
+      "writes": [],
+      "outputs": [
+        "period_geography.csv"
+      ]
+    }
+  ],
+  "targets": {
+    "prepare": [
+      8
+    ],
+    "routes": [
+      9
+    ],
+    "vehicles": [
+      10
+    ],
+    "periods": [
+      11
+    ]
+  }
+}

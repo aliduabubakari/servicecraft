@@ -1,0 +1,35 @@
+# Validated workforce data with independent analytical leaves
+
+1. Objective
+
+Build a pure `fan_out` workforce DAG. One root task validates unique nonblank employee IDs, finite measures, nonnegative tenure/salary/bonus/age, and performance_score in [1,5]. It derives total_compensation=salary+bonus and emits workforce_clean.csv sorted by emp_id. That root artifact must fan directly into three independent leaf tasks; do not add a synthetic final join.
+
+2. Available input files
+
+- inputs/hr_data.csv
+  Columns present: emp_id, department, status, tenure_years, salary, bonus, performance_score, gender, age
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+The compensation leaf groups by department and emits employee_count, mean_salary, median_salary, total_bonus, and mean_total_compensation. The performance leaf groups by department and emits employee_count, mean_performance_score, high_performer_count (score >=4), and mean_tenure_years. The composition leaf groups by status and gender and emits employee_count, mean_age, and mean_tenure_years. Sort grouped outputs lexicographically by their keys. All three leaves are mandatory and must depend only on workforce_clean.csv.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `workforce_clean.csv`
+- `compensation_by_department.csv`
+- `performance_by_department.csv`
+- `workforce_composition.csv`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code without network services, prior-run outputs, fixed analytical answers, or human intervention. The declared topology is a scored semantic property: preserve independent branches and every artifact-backed join. Alternative Dagster decomposition is allowed only when logical requirements, dependencies, topology, and observable checkpoints remain equivalent. Write outputs beneath the run output directory. Preserve numeric precision; comparisons use atol=1e-6 and rtol=1e-6. JSON must be finite. Missing columns, invalid identifiers/dates, broken relationships, and non-finite required values must fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

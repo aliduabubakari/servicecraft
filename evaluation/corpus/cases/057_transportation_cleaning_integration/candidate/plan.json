@@ -1,0 +1,196 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "d = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "cols = ['trip_id', 'route', 'vehicle_type', 'departure_hour', 'distance_km', 'passengers', 'fare_amount', 'delay_minutes', 'day_of_week', 'is_holiday', 'weather_condition']",
+      "dependencies": {},
+      "writes": [
+        "cols"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "check(d, cols, 'trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 0
+      },
+      "writes": [
+        "d"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "clean = d[cols].sort_values('trip_id')",
+      "dependencies": {
+        "cols": 1,
+        "d": 2
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "clean.to_csv(out / 'trips_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [],
+      "outputs": [
+        "trips_clean.csv"
+      ]
+    },
+    {
+      "index": 5,
+      "source": "f = clean.copy()",
+      "dependencies": {
+        "clean": 3
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "f['passenger_km'] = f.passengers * f.distance_km",
+      "dependencies": {
+        "f": 5
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "f['fare_per_passenger'] = f.fare_amount / f.passengers",
+      "dependencies": {
+        "f": 6
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 8,
+      "source": "f['on_time'] = (f.delay_minutes <= 5).astype(int)",
+      "dependencies": {
+        "f": 7
+      },
+      "writes": [
+        "f"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "f.to_csv(out / 'trip_features.csv', index=False)",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [],
+      "outputs": [
+        "trip_features.csv"
+      ]
+    },
+    {
+      "index": 10,
+      "source": "routes = f.groupby('route', as_index=False).agg(trip_count=('trip_id', 'size'), total_passenger_km=('passenger_km', 'sum'), mean_fare_per_passenger=('fare_per_passenger', 'mean'), on_time_rate=('on_time', 'mean'), mean_delay=('delay_minutes', 'mean')).sort_values('route')",
+      "dependencies": {
+        "f": 8
+      },
+      "writes": [
+        "routes"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "routes.to_csv(out / 'route_metrics.csv', index=False)",
+      "dependencies": {
+        "routes": 10
+      },
+      "writes": [],
+      "outputs": [
+        "route_metrics.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "ranked = routes.sort_values(['on_time_rate', 'total_passenger_km', 'route'], ascending=[False, False, True]).reset_index(drop=True)",
+      "dependencies": {
+        "routes": 10
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "ranked['rank'] = np.arange(1, len(ranked) + 1)",
+      "dependencies": {
+        "ranked": 12
+      },
+      "writes": [
+        "ranked"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "ranked.to_csv(out / 'ranked_routes.csv', index=False)",
+      "dependencies": {
+        "ranked": 13
+      },
+      "writes": [],
+      "outputs": [
+        "ranked_routes.csv"
+      ]
+    },
+    {
+      "index": 15,
+      "source": "js(out / 'route_performance_report.json', {'trips': int(routes.trip_count.sum()), 'routes': len(routes), 'top_route': ranked.iloc[0].route, 'top_on_time_rate': ranked.iloc[0].on_time_rate})",
+      "dependencies": {
+        "routes": 10,
+        "ranked": 13
+      },
+      "writes": [],
+      "outputs": [
+        "route_performance_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      4
+    ],
+    "features": [
+      9
+    ],
+    "aggregate": [
+      11
+    ],
+    "rank": [
+      14
+    ],
+    "report": [
+      15
+    ]
+  }
+}

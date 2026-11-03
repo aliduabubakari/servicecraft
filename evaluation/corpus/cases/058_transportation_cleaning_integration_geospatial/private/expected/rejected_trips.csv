@@ -1,0 +1,3 @@
+trip_id,route,origin_lat,origin_lon,dest_lat,dest_lon,distance_km,passengers,delay_minutes
+T000001,Route_19,95.0,-73.83924,40.61175,-73.79916,16.6,29,15.4
+T000002,Route_19,40.69854,-73.99051,40.72805,,8.0,32,9.5

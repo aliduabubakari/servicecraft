@@ -1,0 +1,17 @@
+{
+  "rows": 528,
+  "missing": {
+    "player_id": 0,
+    "team": 1,
+    "position": 1,
+    "games_played": 0,
+    "points_per_game": 1,
+    "assists_per_game": 0,
+    "rebounds_per_game": 0,
+    "minutes_per_game": 0,
+    "age": 0,
+    "experience_years": 0,
+    "salary_millions": 1
+  },
+  "total_missing": 4
+}

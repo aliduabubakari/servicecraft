@@ -1,0 +1,50 @@
+# Independent workforce, engagement, and performance analytics
+
+1. Objective
+
+Build three independent two-task analytics branches. The required `parallel` topology has no artifact dependency between branches: workforce attrition uses employees.csv, engagement trends use engagement_surveys.csv, and performance summaries use performance_reviews.csv. Employee IDs in the latter sources must be members of employees.csv, but that source is a validation lookup rather than an output dependency. Do not merge the three analytical tables.
+
+2. Available input files
+
+- inputs/employees.csv
+  Columns present: employee_id, department, job_role, education, marital_status, location, age, gender, hire_date, tenure_days, monthly_salary, commute_miles, work_life_balance, job_satisfaction, num_companies_worked, promotions, overtime, training_hours, is_attrited
+- inputs/engagement_surveys.csv
+  Columns present: employee_id, survey_date, engagement_score, satisfaction_score, manager_score, career_growth_score, work_env_score
+- inputs/performance_reviews.csv
+  Columns present: employee_id, review_year, performance_score, goal_achievement_pct, peer_feedback_score, manager_rating, promotion_recommended
+
+These are available source columns, not a requirement to use every column. Follow the task-specific column-selection and validation rules below. Input paths are relative to the supplied generation workspace.
+
+3. Required processing behavior
+
+Workforce branch: validate unique nonblank employee_id and binary is_attrited, retain the six named columns in workforce.csv sorted by employee_id, then group by department into employee_count, attrition_count, attrition_rate, mean_salary, and mean_job_satisfaction. attrition_report.json gives total employees, attrited employees, overall rate, and department count.
+
+Engagement branch: parse dates and validate the five finite score fields. Compute engagement_composite as their row mean. Aggregate by employee into survey_count, mean_engagement_composite, latest_survey_date; separately group by YYYY-MM into survey_count and mean composite. engagement_report.json gives survey rows, surveyed employees, months, and overall mean composite.
+
+Performance branch: validate finite review measures. Aggregate by employee into review_count, mean performance, mean goal achievement, and count/sum of promotion recommendations. Use employees.csv only to attach department, then summarize reviewed employees, performance, goal achievement, and recommendations by department. performance_report.json gives review rows, reviewed employees, department count, and overall mean performance.
+
+All branch outputs are mandatory. Parallelism is part of RQ1: connecting one branch after another, or combining them through a synthetic final report, is dependency-incorrect.
+
+4. Dependency and topology requirements
+
+Preserve the logical ordering, data dependencies, independent branches and joins specified in the objective and processing requirements. Independent branches must not acquire dependencies on one another; joins must consume the required current-run upstream artifacts. Do not replace a required branched pipeline with a sequential chain or add a join between independent components. Logical task counts stated in the requirements describe required operations; any permitted alternative Dagster decomposition must preserve their behavior, topology and observable checkpoints.
+
+5. Mandatory output artifacts
+
+- `workforce.csv`
+- `attrition_by_department.csv`
+- `attrition_report.json`
+- `engagement_by_employee.csv`
+- `engagement_by_month.csv`
+- `engagement_report.json`
+- `performance_by_employee.csv`
+- `performance_by_department.csv`
+- `performance_report.json`
+
+6. Execution and numerical requirements
+
+Execution contract: generate executable local Dagster code. Do not use networks, external services, prior-run outputs, fixed analytical answers, or human intervention. The required topology is semantically necessary: independent branches must not consume one another's outputs, while every declared join must consume the listed branch artifacts. A different Dagster asset/op decomposition is allowed only if it preserves the logical tasks, data dependencies, topology class, and observable checkpoints. Write outputs beneath the run output directory. Preserve full numeric precision; comparisons use atol=1e-6 and rtol=1e-6. JSON must be finite. Missing columns, invalid primary/foreign keys, invalid dates, or non-finite required values must fail clearly.
+
+7. Deliverable
+
+Produce executable local Dagster source implementing this specification. Write every mandatory artifact beneath the run output directory supplied by the experiment harness. The shared runtime/submission contract supplies the entry point, paths, package versions and resource limits. Use those instructions together with this task prompt. No human corrections are available during a scored run.

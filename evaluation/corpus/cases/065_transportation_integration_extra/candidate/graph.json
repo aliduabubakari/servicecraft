@@ -1,0 +1,185 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "065_transportation_integration_extra",
+  "benchmark_revision": "batch-16",
+  "review_status": "author_review_pending",
+  "title": "Prepared trips fanning out to route, vehicle, and period operations",
+  "domain": "transportation",
+  "family_id": "trip_route_vehicle_period_fanout",
+  "topology": "fan_out",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "route",
+        "vehicle_type",
+        "departure_hour",
+        "distance_km",
+        "passengers",
+        "fare_amount",
+        "delay_minutes",
+        "day_of_week",
+        "is_holiday",
+        "weather_condition"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "prepare",
+      "name": "Validate and prepare trips",
+      "operation": "source_validation_features",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "trips_prepared.csv"
+      ],
+      "requirements": [
+        "Validate and derive three fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "routes",
+      "name": "Summarize routes",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_prepared.csv"
+      ],
+      "outputs": [
+        "route_operations.csv"
+      ],
+      "requirements": [
+        "Compute route operations."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "vehicles",
+      "name": "Summarize vehicles",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_prepared.csv"
+      ],
+      "outputs": [
+        "vehicle_operations.csv"
+      ],
+      "requirements": [
+        "Compute vehicle operations."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "periods",
+      "name": "Summarize periods",
+      "operation": "grouped_aggregation",
+      "required": true,
+      "inputs": [
+        "trips_prepared.csv"
+      ],
+      "outputs": [
+        "period_operations.csv"
+      ],
+      "requirements": [
+        "Compute period operations."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "trips_prepared.csv",
+      "path": "trips_prepared.csv",
+      "format": "csv",
+      "required_columns": [
+        "trip_id",
+        "passenger_km",
+        "on_time",
+        "time_period"
+      ]
+    },
+    {
+      "id": "route_operations.csv",
+      "path": "route_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "route",
+        "trip_count",
+        "total_passenger_km"
+      ]
+    },
+    {
+      "id": "vehicle_operations.csv",
+      "path": "vehicle_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "vehicle_type",
+        "trip_count",
+        "mean_passengers"
+      ]
+    },
+    {
+      "id": "period_operations.csv",
+      "path": "period_operations.csv",
+      "format": "csv",
+      "required_columns": [
+        "time_period",
+        "trip_count",
+        "on_time_rate"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "prepare",
+      "target": "routes",
+      "kind": "data",
+      "artifacts": [
+        "trips_prepared.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "vehicles",
+      "kind": "data",
+      "artifacts": [
+        "trips_prepared.csv"
+      ]
+    },
+    {
+      "source": "prepare",
+      "target": "periods",
+      "kind": "data",
+      "artifacts": [
+        "trips_prepared.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "prepare": "trip_fanout",
+      "routes": "trip_fanout",
+      "vehicles": "trip_fanout",
+      "periods": "trip_fanout"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

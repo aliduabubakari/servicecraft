@@ -1,0 +1,36 @@
+{
+  "upstream_repository": "https://github.com/aliduabubakari/custom-pipelines",
+  "upstream_commit": "c1b821273a314418bf551bf85aa78d6bee197452",
+  "upstream_pipeline": "009_healthcare_readmission",
+  "selection_reason": "Four patient-related sources must be independently prepared, joined once, and then reused by distinct model/utilization/clinical analyses before a final synthesis.",
+  "input_transformations": [
+    {
+      "source": "patients.csv",
+      "benchmark_file": "patients.csv",
+      "conversion": "byte_copy"
+    },
+    {
+      "source": "admissions.json",
+      "benchmark_file": "admissions.csv",
+      "conversion": "json_to_csv"
+    },
+    {
+      "source": "lab_results.json",
+      "benchmark_file": "lab_results.csv",
+      "conversion": "json_to_csv"
+    },
+    {
+      "source": "medications.xlsx",
+      "benchmark_file": "medications.csv",
+      "conversion": "xlsx_to_csv"
+    }
+  ],
+  "pilot_input_sha256": {
+    "admissions.csv": "ee97e3b701b043ee4e405e754d6b2a46316abb8b16e632aa3986d0052adcd23a",
+    "lab_results.csv": "a427f3126a18bd65955a00801ee387611dbe591bb7cfb78525f9c4c73bea36a6",
+    "medications.csv": "352062aef13e133f92a175e358e852304b261736127a52fb01c14711c49ab6eb",
+    "patients.csv": "d9ac0b6da864dfafd93004d3ffc6779d1fedbf151ba3bbba095098a7ae244c2a"
+  },
+  "description_status": "behaviorally_rewritten_for_evaluation",
+  "review_status": "author_review_pending"
+}

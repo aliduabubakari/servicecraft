@@ -1,0 +1,257 @@
+{
+  "schema_version": "inlumen.benchmark.task-graph@2",
+  "pipeline_id": "024_sports_regression_prediction_statistical",
+  "benchmark_revision": "batch-09",
+  "review_status": "author_review_pending",
+  "title": "Parallel market-value regression and All-Star classification",
+  "domain": "sports",
+  "family_id": "dual_market_allstar_parallel",
+  "topology": "parallel",
+  "inputs": [
+    {
+      "id": "input:data.csv",
+      "path": "inputs/data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "games_played",
+        "points_per_game",
+        "assists_per_game",
+        "rebounds_per_game",
+        "minutes_per_game",
+        "age",
+        "experience_years",
+        "salary_millions",
+        "all_star",
+        "injury_games_missed",
+        "contract_year",
+        "market_value",
+        "win_shares",
+        "field_goal_pct",
+        "three_point_pct",
+        "free_throw_pct"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "reg_prepare",
+      "name": "Prepare market-value data",
+      "operation": "model_data_preparation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "regression_data.csv"
+      ],
+      "requirements": [
+        "Validate unique IDs and finite regression fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "reg_fit",
+      "name": "Fit market-value model",
+      "operation": "linear_regression",
+      "required": true,
+      "inputs": [
+        "regression_data.csv"
+      ],
+      "outputs": [
+        "market_model.pkl",
+        "market_predictions.csv"
+      ],
+      "requirements": [
+        "Use the fixed split, train-only scaling, and model."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "reg_evaluate",
+      "name": "Evaluate market-value model",
+      "operation": "regression_evaluation",
+      "required": true,
+      "inputs": [
+        "market_predictions.csv"
+      ],
+      "outputs": [
+        "market_metrics.json"
+      ],
+      "requirements": [
+        "Compute held-out MAE, RMSE, and R2."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "cls_prepare",
+      "name": "Prepare All-Star data",
+      "operation": "model_data_preparation",
+      "required": true,
+      "inputs": [
+        "input:data.csv"
+      ],
+      "outputs": [
+        "classification_data.csv"
+      ],
+      "requirements": [
+        "Validate unique IDs, binary target, and finite classifier fields."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "cls_fit",
+      "name": "Fit All-Star model",
+      "operation": "binary_classification",
+      "required": true,
+      "inputs": [
+        "classification_data.csv"
+      ],
+      "outputs": [
+        "allstar_model.pkl",
+        "allstar_predictions.csv"
+      ],
+      "requirements": [
+        "Use the fixed stratified split, train-only scaling, model, and threshold."
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "cls_evaluate",
+      "name": "Evaluate All-Star model",
+      "operation": "classification_evaluation",
+      "required": true,
+      "inputs": [
+        "allstar_predictions.csv"
+      ],
+      "outputs": [
+        "allstar_metrics.json"
+      ],
+      "requirements": [
+        "Compute five held-out metrics."
+      ],
+      "parameters": {}
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "regression_data.csv",
+      "path": "regression_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "market_value"
+      ]
+    },
+    {
+      "id": "market_model.pkl",
+      "path": "market_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "market_predictions.csv",
+      "path": "market_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_market_value",
+        "predicted_market_value"
+      ]
+    },
+    {
+      "id": "market_metrics.json",
+      "path": "market_metrics.json",
+      "format": "json",
+      "required_columns": []
+    },
+    {
+      "id": "classification_data.csv",
+      "path": "classification_data.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "all_star"
+      ]
+    },
+    {
+      "id": "allstar_model.pkl",
+      "path": "allstar_model.pkl",
+      "format": "pkl",
+      "required_columns": []
+    },
+    {
+      "id": "allstar_predictions.csv",
+      "path": "allstar_predictions.csv",
+      "format": "csv",
+      "required_columns": [
+        "player_id",
+        "actual_all_star",
+        "probability",
+        "predicted_all_star"
+      ]
+    },
+    {
+      "id": "allstar_metrics.json",
+      "path": "allstar_metrics.json",
+      "format": "json",
+      "required_columns": []
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "reg_prepare",
+      "target": "reg_fit",
+      "kind": "data",
+      "artifacts": [
+        "regression_data.csv"
+      ]
+    },
+    {
+      "source": "reg_fit",
+      "target": "reg_evaluate",
+      "kind": "data",
+      "artifacts": [
+        "market_predictions.csv"
+      ]
+    },
+    {
+      "source": "cls_prepare",
+      "target": "cls_fit",
+      "kind": "data",
+      "artifacts": [
+        "classification_data.csv"
+      ]
+    },
+    {
+      "source": "cls_fit",
+      "target": "cls_evaluate",
+      "kind": "data",
+      "artifacts": [
+        "allstar_predictions.csv"
+      ]
+    }
+  ],
+  "rq1_policy": {
+    "task_matching": "reviewed_semantic_mapping",
+    "allow_split_or_merge": true,
+    "exact_node_count_required": false,
+    "data_edges_require_artifact_binding": true,
+    "unknown_semantics": "unassessed_not_pass"
+  },
+  "reference": {
+    "entrypoint": "reference.py",
+    "task_functions": {
+      "reg_prepare": "dual",
+      "reg_fit": "dual",
+      "reg_evaluate": "dual",
+      "cls_prepare": "dual",
+      "cls_fit": "dual",
+      "cls_evaluate": "dual"
+    }
+  },
+  "numeric_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  }
+}

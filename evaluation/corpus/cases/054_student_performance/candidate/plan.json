@@ -1,0 +1,329 @@
+{
+  "steps": [
+    {
+      "index": 0,
+      "source": "frame = pd.read_csv(data / 'data.csv')",
+      "dependencies": {},
+      "writes": [
+        "frame"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 1,
+      "source": "columns = ['student_id', 'major', 'year', 'age', 'study_hours_per_week', 'attendance_pct', 'previous_gpa', 'current_gpa', 'assignments_completed', 'extracurricular_hours']",
+      "dependencies": {},
+      "writes": [
+        "columns"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 2,
+      "source": "require(frame, columns, 'data.csv')",
+      "dependencies": {
+        "columns": 1,
+        "frame": 0
+      },
+      "writes": [
+        "frame"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 3,
+      "source": "nonblank_unique(frame, ['student_id'], 'data.csv')",
+      "dependencies": {
+        "frame": 2
+      },
+      "writes": [
+        "frame"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 4,
+      "source": "numeric(frame, columns[2:], 'data.csv')",
+      "dependencies": {
+        "columns": 1,
+        "frame": 3
+      },
+      "writes": [
+        "frame"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 5,
+      "source": "if not frame.attendance_pct.between(0, 100).all() or not frame[['previous_gpa', 'current_gpa']].apply(lambda s: s.between(0, 4)).all().all():\n    raise ValueError('attendance/GPA out of range')",
+      "dependencies": {
+        "frame": 4
+      },
+      "writes": [
+        "frame"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 6,
+      "source": "clean = frame[columns].sort_values('student_id')",
+      "dependencies": {
+        "columns": 1,
+        "frame": 5
+      },
+      "writes": [
+        "clean"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 7,
+      "source": "clean.to_csv(out / 'students_clean.csv', index=False)",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [],
+      "outputs": [
+        "students_clean.csv"
+      ]
+    },
+    {
+      "index": 8,
+      "source": "features = clean.copy()",
+      "dependencies": {
+        "clean": 6
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 9,
+      "source": "features['study_attendance_interaction'] = features.study_hours_per_week * features.attendance_pct / 100",
+      "dependencies": {
+        "features": 8
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 10,
+      "source": "features['gpa_change'] = features.current_gpa - features.previous_gpa",
+      "dependencies": {
+        "features": 9
+      },
+      "writes": [
+        "features"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 11,
+      "source": "features.to_csv(out / 'student_features.csv', index=False)",
+      "dependencies": {
+        "features": 10
+      },
+      "writes": [],
+      "outputs": [
+        "student_features.csv"
+      ]
+    },
+    {
+      "index": 12,
+      "source": "predictors = ['year', 'age', 'study_hours_per_week', 'attendance_pct', 'previous_gpa', 'assignments_completed', 'extracurricular_hours', 'study_attendance_interaction']",
+      "dependencies": {},
+      "writes": [
+        "predictors"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 13,
+      "source": "train, test = train_test_split(features, test_size=0.2, random_state=42)",
+      "dependencies": {
+        "features": 10
+      },
+      "writes": [
+        "test",
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 14,
+      "source": "train = train.sort_values('student_id')",
+      "dependencies": {
+        "train": 13
+      },
+      "writes": [
+        "train"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 15,
+      "source": "test = test.sort_values('student_id')",
+      "dependencies": {
+        "test": 13
+      },
+      "writes": [
+        "test"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 16,
+      "source": "train.to_csv(out / 'train.csv', index=False)",
+      "dependencies": {
+        "train": 14
+      },
+      "writes": [],
+      "outputs": [
+        "train.csv"
+      ]
+    },
+    {
+      "index": 17,
+      "source": "test.to_csv(out / 'test.csv', index=False)",
+      "dependencies": {
+        "test": 15
+      },
+      "writes": [],
+      "outputs": [
+        "test.csv"
+      ]
+    },
+    {
+      "index": 18,
+      "source": "model = Pipeline([('scale', StandardScaler()), ('model', Ridge(alpha=1.0, solver='svd'))])",
+      "dependencies": {},
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 19,
+      "source": "model.fit(train[predictors], train.current_gpa)",
+      "dependencies": {
+        "model": 18,
+        "train": 14,
+        "predictors": 12
+      },
+      "writes": [
+        "model"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 20,
+      "source": "pred = model.predict(test[predictors])",
+      "dependencies": {
+        "model": 19,
+        "test": 15,
+        "predictors": 12
+      },
+      "writes": [
+        "pred"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 21,
+      "source": "with (out / 'model.pkl').open('wb') as h:\n    pickle.dump(model, h)",
+      "dependencies": {
+        "model": 19
+      },
+      "writes": [
+        "h"
+      ],
+      "outputs": [
+        "model.pkl"
+      ]
+    },
+    {
+      "index": 22,
+      "source": "predictions = pd.DataFrame({'student_id': test.student_id, 'actual_gpa': test.current_gpa, 'predicted_gpa': pred})",
+      "dependencies": {
+        "test": 15,
+        "pred": 20
+      },
+      "writes": [
+        "predictions"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 23,
+      "source": "predictions.to_csv(out / 'predictions.csv', index=False)",
+      "dependencies": {
+        "predictions": 22
+      },
+      "writes": [],
+      "outputs": [
+        "predictions.csv"
+      ]
+    },
+    {
+      "index": 24,
+      "source": "metrics = {'train_rows': len(train), 'test_rows': len(test), 'features': predictors, 'mae': mean_absolute_error(test.current_gpa, pred), 'rmse': mean_squared_error(test.current_gpa, pred) ** 0.5}",
+      "dependencies": {
+        "train": 14,
+        "predictors": 12,
+        "test": 15,
+        "pred": 20
+      },
+      "writes": [
+        "metrics"
+      ],
+      "outputs": []
+    },
+    {
+      "index": 25,
+      "source": "write_json(out / 'metrics.json', metrics)",
+      "dependencies": {
+        "metrics": 24
+      },
+      "writes": [],
+      "outputs": [
+        "metrics.json"
+      ]
+    },
+    {
+      "index": 26,
+      "source": "write_json(out / 'student_report.json', metrics)",
+      "dependencies": {
+        "metrics": 24
+      },
+      "writes": [],
+      "outputs": [
+        "student_report.json"
+      ]
+    }
+  ],
+  "targets": {
+    "validate": [
+      7
+    ],
+    "features": [
+      11
+    ],
+    "split": [
+      16,
+      17
+    ],
+    "fit_predict": [
+      21,
+      23
+    ],
+    "evaluate": [
+      25
+    ],
+    "report": [
+      26
+    ]
+  }
+}

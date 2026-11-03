@@ -1,0 +1,8 @@
+{
+  "subjects": 500,
+  "groups": 3,
+  "overall_mean_change": 5.7383999999999995,
+  "overall_improvement_rate": 0.646,
+  "largest_mean_change_group": "Treatment_B",
+  "contrasts": 2
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "servicecraft.evaluation-spec@1",
+  "case_id": "example-fan-in",
+  "module": "definitions",
+  "expected_nodes": ["left", "right", "total"],
+  "expected_edges": [["left", "total"], ["right", "total"]],
+  "artifacts": [
+    {"path": "left.json", "format": "json", "required_keys": ["value"]},
+    {"path": "right.json", "format": "json", "required_keys": ["value"]},
+    {"path": "total.json", "format": "json", "required_keys": ["value"]}
+  ],
+  "oracles": [
+    {"id": "left-value", "artifact": "left.json", "kind": "json_equals", "reference": "left.json"},
+    {"id": "right-value", "artifact": "right.json", "kind": "json_equals", "reference": "right.json"},
+    {"id": "total-value", "artifact": "total.json", "kind": "json_equals", "reference": "total.json"}
+  ]
+}
